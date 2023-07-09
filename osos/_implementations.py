@@ -20,9 +20,9 @@ def _get_rolling_window(series, *args, **kwargs):
     roll = series.copy()
     if win.partition_by is not None:
         roll = series.groupby(win.partition_by).rolling(window=df_len,center=True,min_periods=1)
-    # if win.order_by is not None:
-    #     indices = np.argsort(win.order_by)
-    #     roll = roll.sort_values(indices) # this is wrong
+    if win.order_by is not None:
+        indices = np.argsort(win.order_by)
+        roll = roll.sort_values(indices) # this is wrong
     # if win.rows_between is not None:
     #     assert win.order_by is not None, "rowsBetween requires an order specification"
     #     bottom,top = win.rows_between
@@ -42,8 +42,11 @@ def _get_rolling_window(series, *args, **kwargs):
     return roll
 
 def sum_func(series: SeriesType, *args, **kwargs) -> pd.Series:
+    _meth = kwargs.pop("_meth")
+    if _meth == 'aggregate':
+        assert isinstance(kwargs.pop("_over"), EmptyWindow), "Cannot mix Window functions and Aggregate functions"
+        return series.sum(*args,**kwargs).reset_index()
     roll = _get_rolling_window(series, *args, **kwargs)
-
     return roll.sum(*args, **kwargs).reset_index()[series.name].astype(series.dtype)
 
 

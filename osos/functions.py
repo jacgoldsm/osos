@@ -6,16 +6,14 @@ from column import (
     Func, ArbitraryFunction,
     ArgList,
 )
-from exceptions import AnalysisException, PyTabValueError, PyTabTypeError, NotImplemented
+from exceptions import AnalysisException, OsosValueError, OsosTypeError
 from dataframe import DataFrame
 
 
 from typing import Any, Optional, Union, List, Tuple, overload
 from warnings import warn
-from _implementations import (
-    sum_func,
-    udf_func,
-)
+# all the public names in _implementations end in "_func"
+from _implementations import *
 
 from typing import Callable
 
@@ -150,7 +148,7 @@ def asc(col: "AbstractColOrName") -> AbstractCol:
     |  4|
     +---+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -189,7 +187,7 @@ def desc(col: "AbstractColOrName") -> AbstractCol:
     |  0|
     +---+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -223,7 +221,7 @@ def sqrt(col: "AbstractColOrName") -> AbstractCol:
     |    2.0|
     +-------+
     """
-    raise NotImplemented
+    return Func(sqrt_func, col)
 
 
 
@@ -257,7 +255,7 @@ def abs(col: "AbstractColOrName") -> AbstractCol:
     |      1|
     +-------+
     """
-    raise NotImplemented
+    return Func(abs_func, col)
 
 
 
@@ -296,7 +294,7 @@ def mode(col: "AbstractColOrName") -> AbstractCol:
     |dotNET|      2012|
     +------+----------+
     """
-    raise NotImplemented
+    return Func(mode_func, col)
 
 
 
@@ -330,7 +328,7 @@ def max(col: "AbstractColOrName") -> AbstractCol:
     |      9|
     +-------+
     """
-    raise NotImplemented
+    return Func(max_func, col)
 
 
 
@@ -364,7 +362,10 @@ def min(col: "AbstractColOrName") -> AbstractCol:
     |      0|
     +-------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(min_func, col)
 
 
 
@@ -404,7 +405,10 @@ def max_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> AbstractCol:
     |dotNET|                  2013|
     +------+----------------------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(max_by_func, col, ord)
 
 
 
@@ -444,8 +448,10 @@ def min_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> AbstractCol:
     |dotNET|                  2012|
     +------+----------------------+
     """
-    raise NotImplemented
-
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(min_by_func, col, ord)
 
 
 @try_remote_functions
@@ -480,7 +486,10 @@ def count(col: "AbstractColOrName") -> AbstractCol:
     |       4|               3|
     +--------+----------------+
     """
-    pass
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(count_func, col)
 
 
 
@@ -551,7 +560,10 @@ def avg(col: "AbstractColOrName") -> AbstractCol:
     |    4.5|
     +-------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(avg_func, col)
 
 
 
@@ -586,7 +598,10 @@ def mean(col: "AbstractColOrName") -> AbstractCol:
     |    4.5|
     +-------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(sum_func, col)
 
 
 
@@ -625,7 +640,10 @@ def median(col: "AbstractColOrName") -> AbstractCol:
     |dotNET|         10000.0|
     +------+----------------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(median_func, col)
 
 
 
@@ -643,8 +661,10 @@ def sumDistinct(col: "AbstractColOrName") -> AbstractCol:
         Use :func:`sum_distinct` instead.
     """
     warn("Deprecated in 3.2, use sum_distinct instead.", FutureWarning)
-    return sum_distinct(col)
-
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(sum_distinct_func, col)
 
 
 @try_remote_functions
@@ -677,7 +697,10 @@ def sum_distinct(col: "AbstractColOrName") -> AbstractCol:
     |                    3|
     +---------------------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(sum_distict_func, col)
 
 
 
@@ -714,7 +737,10 @@ def product(col: "AbstractColOrName") -> AbstractCol:
     |   2|   80.0|
     +----+-------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(product_func, col)
 
 
 
@@ -749,7 +775,10 @@ def acos(col: "AbstractColOrName") -> AbstractCol:
     |     NaN|
     +--------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(acos_func, col)
 
 
 
@@ -784,7 +813,10 @@ def acosh(col: "AbstractColOrName") -> AbstractCol:
     |      0.0|
     +---------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(acosh_func, col)
 
 
 
@@ -819,7 +851,10 @@ def asin(col: "AbstractColOrName") -> AbstractCol:
     |     NaN|
     +--------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(asin_func, col)
 
 
 
@@ -853,7 +888,10 @@ def asinh(col: "AbstractColOrName") -> AbstractCol:
     |      0.0|
     +---------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(asinh_func, col)
 
 
 
@@ -887,7 +925,10 @@ def atan(col: "AbstractColOrName") -> AbstractCol:
     |     0.0|
     +--------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(atan_func, col)
 
 
 
@@ -922,7 +963,10 @@ def atanh(col: "AbstractColOrName") -> AbstractCol:
     |           NaN|
     +--------------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(atanh_func, col)
 
 
 
@@ -956,7 +1000,10 @@ def cbrt(col: "AbstractColOrName") -> AbstractCol:
     |     3.0|
     +--------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(cbrt_func, col)
 
 
 
@@ -990,7 +1037,10 @@ def ceil(col: "AbstractColOrName") -> AbstractCol:
     |         0|
     +----------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(ceil_func, col)
 
 
 
@@ -1021,7 +1071,10 @@ def cos(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(cos(lit(math.pi))).first()
     Row(COS(3.14159...)=-1.0)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(cos_func, col)
 
 
 
@@ -1051,7 +1104,10 @@ def cosh(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(cosh(lit(1))).first()
     Row(COSH(1)=1.54308...)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(cosh_func, col)
 
 
 
@@ -1082,7 +1138,10 @@ def cot(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(cot(lit(math.radians(45)))).first()
     Row(COT(0.78539...)=1.00000...)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(cot_func, col)
 
 
 
@@ -1113,7 +1172,10 @@ def csc(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(csc(lit(math.radians(90)))).first()
     Row(CSC(1.57079...)=1.0)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(csc_func, col)
 
 
 
@@ -1147,7 +1209,10 @@ def exp(col: "AbstractColOrName") -> AbstractCol:
     |   1.0|
     +------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(exp_func, col)
 
 
 
@@ -1177,7 +1242,10 @@ def expm1(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(expm1(lit(1))).first()
     Row(EXPM1(1)=1.71828...)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(expm_func, col)
 
 
 
@@ -1211,7 +1279,10 @@ def floor(col: "AbstractColOrName") -> AbstractCol:
     |         2|
     +----------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(floor_func, col)
 
 
 
@@ -1242,7 +1313,10 @@ def log(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(log(lit(math.e))).first()
     Row(ln(2.71828...)=1.0)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(log_func, col)
 
 
 @try_remote_functions
@@ -1275,7 +1349,10 @@ def log10(col: "AbstractColOrName") -> AbstractCol:
     |       2.0|
     +----------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(log10_func, col)
 
 
 
@@ -1311,7 +1388,10 @@ def log1p(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(log(lit(math.e+1))).first()
     Row(ln(3.71828...)=1.31326...)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(log1p_func, col)
 
 
 
@@ -1353,7 +1433,10 @@ def rint(col: "AbstractColOrName") -> AbstractCol:
     |      10.0|
     +----------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(rint_func, col)
 
 
 
@@ -1383,7 +1466,10 @@ def sec(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(sec(lit(1.5))).first()
     Row(SEC(1.5)=14.13683...)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(sec_func, col)
 
 
 
@@ -1424,7 +1510,10 @@ def signum(col: "AbstractColOrName") -> AbstractCol:
     |      1.0|
     +---------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(signum_func, col)
 
 
 
@@ -1455,7 +1544,10 @@ def sin(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(sin(lit(math.radians(90)))).first()
     Row(SIN(1.57079...)=1.0)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(sin_func, col)
 
 
 
@@ -1486,7 +1578,10 @@ def sinh(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(sinh(lit(1.1))).first()
     Row(SINH(1.1)=1.33564...)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(sinh_func, col)
 
 
 
@@ -1517,7 +1612,10 @@ def tan(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(tan(lit(math.radians(45)))).first()
     Row(TAN(0.78539...)=0.99999...)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(tan_func, col)
 
 
 
@@ -1549,7 +1647,10 @@ def tanh(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(tanh(lit(math.radians(90)))).first()
     Row(TANH(1.57079...)=0.91715...)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(tanh_func, col)
 
 
 
@@ -1639,7 +1740,10 @@ def bitwise_not(col: "AbstractColOrName") -> AbstractCol:
     | -2|
     +---+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(bitwise_not_func, col)
 
 
 
@@ -1679,7 +1783,10 @@ def asc_nulls_first(col: "AbstractColOrName") -> AbstractCol:
     +---+-----+
 
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(asc_func, col, nulls_first=True)
 
 
 
@@ -1719,7 +1826,10 @@ def asc_nulls_last(col: "AbstractColOrName") -> AbstractCol:
     +---+-----+
 
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(asc_func, col, nulls_first=False)
 
 
 
@@ -1759,7 +1869,10 @@ def desc_nulls_first(col: "AbstractColOrName") -> AbstractCol:
     +---+-----+
 
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(desc_func, col, nulls_first=True)
 
 
 
@@ -1799,11 +1912,10 @@ def desc_nulls_last(col: "AbstractColOrName") -> AbstractCol:
     +---+-----+
 
     """
-    return (
-        col.desc_nulls_last()
-        if isinstance(col, AbstractCol)
-        else col(col).desc_nulls_last()
-    )
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(desc_func, col, nulls_first=False)
 
 
 
@@ -1833,7 +1945,10 @@ def stddev(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(stddev(df.id)).first()
     Row(stddev_samp(id)=1.87082...)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(stdev_func, col)
 
 
 
@@ -1864,7 +1979,10 @@ def stddev_samp(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(stddev_samp(df.id)).first()
     Row(stddev_samp(id)=1.87082...)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(stdev_samp_func, col)
 
 
 
@@ -1895,7 +2013,10 @@ def stddev_pop(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(stddev_pop(df.id)).first()
     Row(stddev_pop(id)=1.70782...)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(stdev_func, col)
 
 
 
@@ -1929,7 +2050,10 @@ def variance(col: "AbstractColOrName") -> AbstractCol:
     |         3.5|
     +------------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(variance_func, col)
 
 
 
@@ -1964,7 +2088,10 @@ def var_samp(col: "AbstractColOrName") -> AbstractCol:
     |         3.5|
     +------------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(var_samp_func, col)
 
 
 
@@ -1994,7 +2121,10 @@ def var_pop(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(var_pop(df.id)).first()
     Row(var_pop(id)=2.91666...)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(variance_func, col)
 
 
 
@@ -2024,7 +2154,10 @@ def skewness(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(skewness(df.c)).first()
     Row(skewness(c)=0.70710...)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(skewness_func, col)
 
 
 
@@ -2058,7 +2191,10 @@ def kurtosis(col: "AbstractColOrName") -> AbstractCol:
     |       -1.5|
     +-----------+
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(kurtosis_func, col)
 
 
 
@@ -2093,7 +2229,7 @@ def collect_list(col: "AbstractColOrName") -> AbstractCol:
     >>> df2.agg(collect_list('age')).collect()
     [Row(collect_list(age)=[2, 5, 5])]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -2128,7 +2264,7 @@ def collect_set(col: "AbstractColOrName") -> AbstractCol:
     >>> df2.agg(array_sort(collect_set('age')).alias('c')).collect()
     [Row(c=[2, 5])]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -2160,7 +2296,10 @@ def degrees(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(degrees(lit(math.pi))).first()
     Row(DEGREES(3.14159...)=180.0)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(degrees_func, col)
 
 
 
@@ -2191,7 +2330,10 @@ def radians(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(radians(lit(180))).first()
     Row(RADIANS(180)=3.14159...)
     """
-    raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(radians_func, col)
 
 
 
@@ -2225,7 +2367,13 @@ def atan2(col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrNam
     >>> df.select(atan2(lit(1), lit(2))).first()
     Row(ATAN2(1, 2)=0.46364...)
     """
-    raise NotImplemented
+    if isinstance(col1, str):
+        col = AbstractCol(col)
+
+    if isinstance(col1, str):
+        col = AbstractCol(col)
+    
+    return Func(atan2_func, col1, col2)
 
 
 
@@ -2257,7 +2405,13 @@ def hypot(col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrNam
     >>> df.select(hypot(lit(1), lit(2))).first()
     Row(HYPOT(1, 2)=2.23606...)
     """
-    raise NotImplemented
+    if isinstance(col1, str):
+        col = AbstractCol(col)
+
+    if isinstance(col1, str):
+        col = AbstractCol(col)
+    
+    return Func(hypot_func, col1, col2)
 
 
 
@@ -2289,7 +2443,13 @@ def pow(col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName"
     >>> df.select(pow(lit(3), lit(2))).first()
     Row(POWER(3, 2)=9.0)
     """
-    raise NotImplemented
+    if isinstance(col1, str):
+        col = AbstractCol(col)
+
+    if isinstance(col1, str):
+        col = AbstractCol(col)
+    
+    return Func(pow_func, col1, col2)
 
 
 
@@ -2338,7 +2498,14 @@ def pmod(dividend: Union["AbstractColOrName", float], divisor: Union["AbstractCo
     |       1.0|
     +----------+
     """
-    raise NotImplemented
+    col1, col2 = dividend, divisor
+    if isinstance(col1, str):
+        col = AbstractCol(col)
+
+    if isinstance(col1, str):
+        col = AbstractCol(col)
+    
+    return Func(pmod_func, col1, col2)
 
 
 
@@ -2371,7 +2538,7 @@ def row_number() -> AbstractCol:
     |  0|         3|
     +---+----------+
     """
-    raise NotImplemented
+    return row_number_func()
 
 
 
@@ -2415,7 +2582,7 @@ def dense_rank() -> AbstractCol:
     |    4|    4|
     +-----+-----+
     """
-    raise NotImplemented
+    return row_number_func()
 
 
 
@@ -2459,7 +2626,7 @@ def rank() -> AbstractCol:
     |    4|    6|
     +-----+-----+
     """
-    raise NotImplemented
+    return rank_func()
 
 
 
@@ -2495,7 +2662,7 @@ def cume_dist() -> AbstractCol:
     |    4|1.0|
     +-----+---+
     """
-    raise NotImplemented
+    return rank_func()
 
 
 
@@ -2531,7 +2698,7 @@ def percent_rank() -> AbstractCol:
     |    4|1.0|
     +-----+---+
     """
-    raise NotImplemented
+    return percent_rank_func()
 
 
 
@@ -2586,10 +2753,10 @@ def approx_count_distinct(col: "AbstractColOrName", rsd: Optional[float] = None)
     |              3|
     +---------------+
     """
-    if rsd is None:
-        raise NotImplemented
-    else:
-        raise NotImplemented
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
+    return Func(approx_count_distinct_func, col, rsd or 0.05)
 
 
 
@@ -2624,7 +2791,7 @@ def broadcast(df: DataFrame) -> DataFrame:
     """
 
     
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -2677,7 +2844,11 @@ def coalesce(*cols: "AbstractColOrName") -> AbstractCol:
     |null|   2|             0.0|
     +----+----+----------------+
     """
-    raise NotImplemented
+    for col in cols:
+        if isinstance(col, str):
+            col = AbstractCol(col)
+    
+    return Func(coalesce_func, cols)
 
 
 
@@ -2711,7 +2882,7 @@ def corr(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
     >>> df.agg(corr("a", "b").alias('c')).collect()
     [Row(c=1.0)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -2745,7 +2916,7 @@ def covar_pop(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractC
     >>> df.agg(covar_pop("a", "b").alias('c')).collect()
     [Row(c=0.0)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -2779,7 +2950,7 @@ def covar_samp(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Abstract
     >>> df.agg(covar_samp("a", "b").alias('c')).collect()
     [Row(c=0.0)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -2900,7 +3071,7 @@ def first(col: "AbstractColOrName", ignorenulls: bool = False) -> AbstractCol:
     |  Bob|         5|
     +-----+----------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -2937,7 +3108,7 @@ def grouping(col: "AbstractColOrName") -> AbstractCol:
     |  Bob|             0|       5|
     +-----+--------------+--------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -2986,7 +3157,7 @@ def grouping_id(*cols: "AbstractColOrName") -> AbstractCol:
     |   b|   c|            0|      4|
     +----+----+-------------+-------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3013,7 +3184,7 @@ def input_file_name() -> AbstractCol:
     >>> df.select(input_file_name()).first()
     Row(input_file_name()='file:///...')
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3047,7 +3218,7 @@ def isnan(col: "AbstractColOrName") -> AbstractCol:
     |NaN|2.0| true|false|
     +---+---+-----+-----+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3081,7 +3252,7 @@ def isnull(col: "AbstractColOrName") -> AbstractCol:
     |null|   2| true|false|
     +----+----+-----+-----+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3136,7 +3307,7 @@ def last(col: "AbstractColOrName", ignorenulls: bool = False) -> AbstractCol:
     |  Bob|        5|
     +-----+---------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3173,7 +3344,7 @@ def monotonically_increasing_id() -> AbstractCol:
     >>> df0.select(monotonically_increasing_id().alias('id')).collect()
     [Row(id=0), Row(id=1), Row(id=2), Row(id=8589934592), Row(id=8589934593), Row(id=8589934594)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3206,7 +3377,7 @@ def nanvl(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
     >>> df.select(nanvl("a", "b").alias("r1"), nanvl(df.a, df.b).alias("r2")).collect()
     [Row(r1=1.0, r2=1.0), Row(r1=2.0, r2=2.0)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3278,7 +3449,7 @@ def percentile_approx(
         else AbstractLit(accuracy)
     )
 
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3318,9 +3489,9 @@ def rand(seed: Optional[int] = None) -> AbstractCol:
     +---+------------------+
     """
     if seed is not None:
-        raise NotImplemented
+        raise NotImplementedError
     else:
-        raise NotImplemented
+        raise NotImplementedError
 
 
 
@@ -3360,9 +3531,9 @@ def randn(seed: Optional[int] = None) -> AbstractCol:
     +---+--------------------+
     """
     if seed is not None:
-        raise NotImplemented
+        raise NotImplementedError
     else:
-        raise NotImplemented
+        raise NotImplementedError
 
 
 
@@ -3394,7 +3565,7 @@ def round(col: "AbstractColOrName", scale: int = 0) -> AbstractCol:
     >>> spark.createDataFrame([(2.5,)], ['a']).select(round('a', 0).alias('r')).collect()
     [Row(r=3.0)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3426,7 +3597,7 @@ def bround(col: "AbstractColOrName", scale: int = 0) -> AbstractCol:
     >>> spark.createDataFrame([(2.5,)], ['a']).select(bround('a', 0).alias('r')).collect()
     [Row(r=2.0)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3472,7 +3643,7 @@ def shiftleft(col: "AbstractColOrName", numBits: int) -> AbstractCol:
     >>> spark.createDataFrame([(21,)], ['a']).select(shiftleft('a', 1).alias('r')).collect()
     [Row(r=42)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3518,7 +3689,7 @@ def shiftright(col: "AbstractColOrName", numBits: int) -> AbstractCol:
     >>> spark.createDataFrame([(42,)], ['a']).select(shiftright('a', 1).alias('r')).collect()
     [Row(r=21)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3565,7 +3736,7 @@ def shiftrightunsigned(col: "AbstractColOrName", numBits: int) -> AbstractCol:
     >>> df.select(shiftrightunsigned('a', 1).alias('r')).collect()
     [Row(r=9223372036854775787)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3593,7 +3764,7 @@ def spark_partition_id() -> AbstractCol:
     >>> df.repartition(1).select(spark_partition_id().alias("pid")).collect()
     [Row(pid=0), Row(pid=0)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3627,7 +3798,7 @@ def expr(str: str) -> AbstractCol:
     |  Bob|           3|
     +-----+------------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3672,7 +3843,7 @@ def struct(
     """
     if len(cols) == 1 and isinstance(cols[0], (list, set)):
         cols = cols[0]  # type: ignore[assignment]
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3704,11 +3875,11 @@ def greatest(*cols: "AbstractColOrName") -> AbstractCol:
     [Row(greatest=4)]
     """
     if len(cols) < 2:
-        raise PyTabValueError(
+        raise OsosValueError(
             error_class="WRONG_NUM_AbstractColS",
             message_parameters={"func_name": "greatest", "num_cols": "2"},
         )
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3744,7 +3915,7 @@ def least(*cols: "AbstractColOrName") -> AbstractCol:
             error_class="WRONG_NUM_AbstractColS",
             message_parameters={"func_name": "least", "num_cols": "2"},
         )
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3800,7 +3971,7 @@ def when(condition: AbstractCol, value: Any) -> AbstractCol:
         )
     v = value._jc if isinstance(value, AbstractCol) else value
 
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3861,9 +4032,9 @@ def log(arg1: Union["AbstractColOrName", float], arg2: Optional["AbstractColOrNa
     +-----------------+
     """
     if arg2 is None:
-        raise NotImplemented
+        raise NotImplementedError
     else:
-        raise NotImplemented
+        raise NotImplementedError
 
 
 
@@ -3896,7 +4067,7 @@ def log2(col: "AbstractColOrName") -> AbstractCol:
     | 2.0|
     +----+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3930,7 +4101,7 @@ def conv(col: "AbstractColOrName", fromBase: int, toBase: int) -> AbstractCol:
     >>> df.select(conv(df.n, 2, 16).alias('hex')).collect()
     [Row(hex='15')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -3960,7 +4131,7 @@ def factorial(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(factorial(df.n).alias('f')).collect()
     [Row(f=120)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4045,7 +4216,7 @@ def lag(col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = None
     |  b|  8|           -1|
     +---+---+-------------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4127,7 +4298,7 @@ def lead(col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = Non
     |  b|  8|        -1|
     +---+---+----------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4202,7 +4373,7 @@ def nth_value(col: "AbstractColOrName", offset: int, ignoreNulls: Optional[bool]
     |  b|  8|        8|
     +---+---+---------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4261,7 +4432,7 @@ def ntile(n: int) -> AbstractCol:
     |  b|  8|    2|
     +---+---+-----+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4294,7 +4465,7 @@ def current_date() -> AbstractCol:
     |    2022-08-26|
     +--------------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4324,7 +4495,7 @@ def current_timestamp() -> AbstractCol:
     |2022-08-26 21:23:22.716|
     +-----------------------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4355,7 +4526,7 @@ def localtimestamp() -> AbstractCol:
     |2022-08-26 21:28:34.639|
     +-----------------------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4397,7 +4568,7 @@ def date_format(date: "AbstractColOrName", format: str) -> AbstractCol:
     >>> df.select(date_format('dt', 'MM/dd/yyy').alias('date')).collect()
     [Row(date='04/08/2015')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4427,7 +4598,7 @@ def year(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(year('dt').alias('year')).collect()
     [Row(year=2015)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4457,7 +4628,7 @@ def quarter(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(quarter('dt').alias('quarter')).collect()
     [Row(quarter=2)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4487,7 +4658,7 @@ def month(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(month('dt').alias('month')).collect()
     [Row(month=4)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4518,7 +4689,7 @@ def dayofweek(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(dayofweek('dt').alias('day')).collect()
     [Row(day=4)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4548,7 +4719,7 @@ def dayofmonth(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(dayofmonth('dt').alias('day')).collect()
     [Row(day=8)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4578,7 +4749,7 @@ def dayofyear(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(dayofyear('dt').alias('day')).collect()
     [Row(day=98)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4609,7 +4780,7 @@ def hour(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(hour('ts').alias('hour')).collect()
     [Row(hour=13)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4640,7 +4811,7 @@ def minute(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(minute('ts').alias('minute')).collect()
     [Row(minute=8)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4671,7 +4842,7 @@ def second(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(second('ts').alias('second')).collect()
     [Row(second=15)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4703,7 +4874,7 @@ def weekofyear(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(weekofyear(df.dt).alias('week')).collect()
     [Row(week=15)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4737,7 +4908,7 @@ def make_date(year: "AbstractColOrName", month: "AbstractColOrName", day: "Abstr
     >>> df.select(make_date(df.Y, df.M, df.D).alias("datefield")).collect()
     [Row(datefield=datetime.date(2020, 6, 26))]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4776,7 +4947,7 @@ def date_add(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) 
     [Row(prev_date=datetime.date(2015, 4, 7))]
     """
     days = lit(days) if isinstance(days, int) else days
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4815,7 +4986,7 @@ def date_sub(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) 
     [Row(next_date=datetime.date(2015, 4, 9))]
     """
     days = lit(days) if isinstance(days, int) else days
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4847,7 +5018,7 @@ def datediff(end: "AbstractColOrName", start: "AbstractColOrName") -> AbstractCo
     >>> df.select(datediff(df.d2, df.d1).alias('diff')).collect()
     [Row(diff=32)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4886,7 +5057,7 @@ def add_months(start: "AbstractColOrName", months: Union["AbstractColOrName", in
     [Row(prev_month=datetime.date(2015, 2, 8))]
     """
     months = lit(months) if isinstance(months, int) else months
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -4969,9 +5140,9 @@ def to_date(col: "AbstractColOrName", format: Optional[str] = None) -> AbstractC
     [Row(date=datetime.date(1997, 2, 28))]
     """
     if format is None:
-        raise NotImplemented
+        raise NotImplementedError
     else:
-        raise NotImplemented
+        raise NotImplementedError
 
 
 
@@ -5022,9 +5193,9 @@ def to_timestamp(col: "AbstractColOrName", format: Optional[str] = None) -> Abst
     [Row(dt=datetime.datetime(1997, 2, 28, 10, 30))]
     """
     if format is None:
-        raise NotImplemented
+        raise NotImplementedError
     else:
-        raise NotImplemented
+        raise NotImplementedError
 
 
 
@@ -5060,7 +5231,7 @@ def trunc(date: "AbstractColOrName", format: str) -> AbstractCol:
     >>> df.select(trunc(df.d, 'mon').alias('month')).collect()
     [Row(month=datetime.date(1997, 2, 1))]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5098,7 +5269,7 @@ def date_trunc(format: str, timestamp: "AbstractColOrName") -> AbstractCol:
     >>> df.select(date_trunc('mon', df.t).alias('month')).collect()
     [Row(month=datetime.datetime(1997, 2, 1, 0, 0))]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5132,7 +5303,7 @@ def next_day(date: "AbstractColOrName", dayOfWeek: str) -> AbstractCol:
     >>> df.select(next_day(df.d, 'Sun').alias('date')).collect()
     [Row(date=datetime.date(2015, 8, 2))]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5162,7 +5333,7 @@ def last_day(date: "AbstractColOrName") -> AbstractCol:
     >>> df.select(last_day(df.d).alias('date')).collect()
     [Row(date=datetime.date(1997, 2, 28))]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5198,7 +5369,7 @@ def from_unixtime(timestamp: "AbstractColOrName", format: str = "yyyy-MM-dd HH:m
     [Row(ts='2015-04-08 00:00:00')]
     >>> spark.conf.unset("spark.sql.session.timeZone")
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5249,8 +5420,8 @@ def unix_timestamp(
     >>> spark.conf.unset("spark.sql.session.timeZone")
     """
     if timestamp is None:
-        raise NotImplemented
-    raise NotImplemented
+        raise NotImplementedError
+    raise NotImplementedError
 
 
 
@@ -5305,7 +5476,7 @@ def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") 
     """
     if isinstance(tz, AbstractCol):
         tz = AbstractCol(tz)
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5360,7 +5531,7 @@ def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") ->
     """
     if isinstance(tz, AbstractCol):
         tz = AbstractCol(tz)
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5402,7 +5573,7 @@ def timestamp_seconds(col: "AbstractColOrName") -> AbstractCol:
     >>> spark.conf.unset("spark.sql.session.timeZone")
     """
 
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5488,15 +5659,15 @@ def window(
     if slideDuration and startTime:
         check_string_field(slideDuration, "slideDuration")
         check_string_field(startTime, "startTime")
-        raise NotImplemented
+        raise NotImplementedError
     elif slideDuration:
         check_string_field(slideDuration, "slideDuration")
-        raise NotImplemented
+        raise NotImplementedError
     elif startTime:
         check_string_field(startTime, "startTime")
-        raise NotImplemented
+        raise NotImplementedError
     else:
-        raise NotImplemented
+        raise NotImplementedError
 
 
 
@@ -5547,7 +5718,7 @@ def window_time(
     [Row(end='2016-03-11 09:00:10', window_time='2016-03-11 09:00:09.999999', sum=1)]
     """
     window_col = AbstractCol(windowAbstractCol)
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5613,7 +5784,7 @@ def session_window(timeAbstractCol: "AbstractColOrName", gapDuration: Union[Abst
     time_col = AbstractCol(timeAbstractCol)
     check_field(gapDuration, "gapDuration")
     gap_duration = gapDuration if isinstance(gapDuration, str) else AbstractCol(gapDuration)
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5646,7 +5817,7 @@ def crc32(col: "AbstractColOrName") -> AbstractCol:
     >>> spark.createDataFrame([('ABC',)], ['a']).select(crc32('a').alias('crc32')).collect()
     [Row(crc32=2743272264)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5674,7 +5845,7 @@ def md5(col: "AbstractColOrName") -> AbstractCol:
     >>> spark.createDataFrame([('ABC',)], ['a']).select(md5('a').alias('hash')).collect()
     [Row(hash='902fbdd2b1df0c4f70b4a5d23525e932')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5702,7 +5873,7 @@ def sha1(col: "AbstractColOrName") -> AbstractCol:
     >>> spark.createDataFrame([('ABC',)], ['a']).select(sha1('a').alias('hash')).collect()
     [Row(hash='3c01bdbb26f358bab27f267924aa2c9a03fcfdb8')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5741,7 +5912,7 @@ def sha2(col: "AbstractColOrName", numBits: int) -> AbstractCol:
     |Bob  |cd9fb1e148ccd8442e5aa74904cc73bf6fb54d1d54d333bd596aa9bb4bb4e961|
     +-----+----------------------------------------------------------------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5786,7 +5957,7 @@ def hash(*cols: "AbstractColOrName") -> AbstractCol:
     |599895104|
     +---------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5832,7 +6003,7 @@ def xxhash64(*cols: "AbstractColOrName") -> AbstractCol:
     |3233247871021311208|
     +-------------------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5874,7 +6045,7 @@ def assert_true(col: "AbstractColOrName", errMsg: Optional[Union[AbstractCol, st
     ...
     """
     if errMsg is None:
-        raise NotImplemented
+        raise NotImplementedError
     if not isinstance(errMsg, (str, AbstractCol)):
         raise PyTabTypeError(
             error_class="NOT_AbstractCol_OR_STR",
@@ -5884,7 +6055,7 @@ def assert_true(col: "AbstractColOrName", errMsg: Optional[Union[AbstractCol, st
     errMsg = (
         _create_AbstractCol_from_literal(errMsg) if isinstance(errMsg, str) else AbstractCol(errMsg)
     )
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5925,7 +6096,7 @@ def raise_error(errMsg: Union[AbstractCol, str]) -> AbstractCol:
     errMsg = (
         AbstractLit(errMsg) if isinstance(errMsg, str) else AbstractCol(errMsg)
     )
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -5964,7 +6135,7 @@ def upper(col: "AbstractColOrName") -> AbstractCol:
     |  PANDAS API|
     +------------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6000,7 +6171,7 @@ def lower(col: "AbstractColOrName") -> AbstractCol:
     |  pandas api|
     +------------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6036,7 +6207,7 @@ def ascii(col: "AbstractColOrName") -> AbstractCol:
     |          80|
     +------------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6072,7 +6243,7 @@ def base64(col: "AbstractColOrName") -> AbstractCol:
     |UGFuZGFzIEFQSQ==|
     +----------------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6110,7 +6281,7 @@ def unbase64(col: "AbstractColOrName") -> AbstractCol:
     |[50 61 6E 64 61 7...|
     +--------------------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6146,7 +6317,7 @@ def ltrim(col: "AbstractColOrName") -> AbstractCol:
     |  Spark|     5|
     +-------+------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6182,7 +6353,7 @@ def rtrim(col: "AbstractColOrName") -> AbstractCol:
     |   Spark|     6|
     +--------+------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6218,7 +6389,7 @@ def trim(col: "AbstractColOrName") -> AbstractCol:
     |Spark|     5|
     +-----+------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6251,7 +6422,7 @@ def concat_ws(sep: str, *cols: "AbstractColOrName") -> AbstractCol:
     >>> df.select(concat_ws('-', df.s, df.d).alias('s')).collect()
     [Row(s='abcd-123')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6288,7 +6459,7 @@ def decode(col: "AbstractColOrName", charset: str) -> AbstractCol:
     |            abcd|
     +----------------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6325,7 +6496,7 @@ def encode(col: "AbstractColOrName", charset: str) -> AbstractCol:
     |   [61 62 63 64]|
     +----------------+
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6355,7 +6526,7 @@ def format_number(col: "AbstractColOrName", d: int) -> AbstractCol:
     >>> spark.createDataFrame([(5,)], ['a']).select(format_number('a', 4).alias('v')).collect()
     [Row(v='5.0000')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6387,7 +6558,7 @@ def format_string(format: str, *cols: "AbstractColOrName") -> AbstractCol:
     >>> df.select(format_string('%d %s', df.a, df.b).alias('v')).collect()
     [Row(v='5 hello')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6425,7 +6596,7 @@ def instr(str: "AbstractColOrName", substr: str) -> AbstractCol:
     >>> df.select(instr(df.s, 'b').alias('s')).collect()
     [Row(s=2)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6486,7 +6657,7 @@ def overlay(
     pos = lit(pos) if isinstance(pos, int) else AbstractCol(pos)
     len = lit(len) if isinstance(len, int) else AbstractCol(len)
 
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6541,7 +6712,7 @@ def sentences(
     if country is None:
         country = lit("")
 
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6581,7 +6752,7 @@ def substring(str: "AbstractColOrName", pos: int, len: int) -> AbstractCol:
     >>> df.select(substring(df.s, 1, 2).alias('s')).collect()
     [Row(s='ab')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6620,7 +6791,7 @@ def substring_index(str: "AbstractColOrName", delim: str, count: int) -> Abstrac
     >>> df.select(substring_index(df.s, '.', -3).alias('s')).collect()
     [Row(s='b.c.d')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6651,7 +6822,7 @@ def levenshtein(left: "AbstractColOrName", right: "AbstractColOrName") -> Abstra
     >>> df0.select(levenshtein('l', 'r').alias('d')).collect()
     [Row(d=3)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6690,7 +6861,7 @@ def locate(substr: str, str: "AbstractColOrName", pos: int = 1) -> AbstractCol:
     >>> df.select(locate('b', df.s, 1).alias('s')).collect()
     [Row(s=2)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6724,7 +6895,7 @@ def lpad(col: "AbstractColOrName", len: int, pad: str) -> AbstractCol:
     >>> df.select(lpad(df.s, 6, '#').alias('s')).collect()
     [Row(s='##abcd')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6758,7 +6929,7 @@ def rpad(col: "AbstractColOrName", len: int, pad: str) -> AbstractCol:
     >>> df.select(rpad(df.s, 6, '#').alias('s')).collect()
     [Row(s='abcd##')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6790,7 +6961,7 @@ def repeat(col: "AbstractColOrName", n: int) -> AbstractCol:
     >>> df.select(repeat(df.s, 3).alias('s')).collect()
     [Row(s='ababab')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6836,7 +7007,7 @@ def split(str: "AbstractColOrName", pattern: str, limit: int = -1) -> AbstractCo
     >>> df.select(split(df.s, '[ABC]', -1).alias('s')).collect()
     [Row(s=['one', 'two', 'three', ''])]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6876,7 +7047,7 @@ def regexp_extract(str: "AbstractColOrName", pattern: str, idx: int) -> Abstract
     >>> df.select(regexp_extract('str', '(a+)(b)?(c)', 2).alias('d')).collect()
     [Row(d='')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6921,7 +7092,7 @@ def regexp_replace(
         replacement_col = lit(replacement)
     else:
         replacement_col = AbstractCol(replacement)
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6949,7 +7120,7 @@ def initcap(col: "AbstractColOrName") -> AbstractCol:
     >>> spark.createDataFrame([('ab cd',)], ['a']).select(initcap("a").alias('v')).collect()
     [Row(v='Ab Cd')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -6979,7 +7150,7 @@ def soundex(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(soundex(df.name).alias("soundex")).collect()
     [Row(soundex='P362'), Row(soundex='U612')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -7008,7 +7179,7 @@ def bin(col: "AbstractColOrName") -> AbstractCol:
     >>> df.select(bin(df.value).alias('c')).collect()
     [Row(c='10'), Row(c='101')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -7038,7 +7209,7 @@ def hex(col: "AbstractColOrName") -> AbstractCol:
     >>> spark.createDataFrame([('ABC', 3)], ['a', 'b']).select(hex('a'), hex('b')).collect()
     [Row(hex(a)='414243', hex(b)='3')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -7067,7 +7238,7 @@ def unhex(col: "AbstractColOrName") -> AbstractCol:
     >>> spark.createDataFrame([('414243',)], ['a']).select(unhex('a')).collect()
     [Row(unhex(a)=bytearray(b'ABC'))]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -7097,7 +7268,7 @@ def length(col: "AbstractColOrName") -> AbstractCol:
     >>> spark.createDataFrame([('ABC ',)], ['a']).select(length('a').alias('length')).collect()
     [Row(length=4)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -7128,7 +7299,7 @@ def octet_length(col: "AbstractColOrName") -> AbstractCol:
     ...      .select(octet_length('cat')).collect()
         [Row(octet_length(cat)=3), Row(octet_length(cat)=4)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -7159,7 +7330,7 @@ def bit_length(col: "AbstractColOrName") -> AbstractCol:
     ...      .select(bit_length('cat')).collect()
         [Row(bit_length(cat)=24), Row(bit_length(cat)=32)]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 
@@ -7196,7 +7367,7 @@ def translate(srcCol: "AbstractColOrName", matching: str, replace: str) -> Abstr
     ...     .alias('r')).collect()
     [Row(r='1a2s3ae')]
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 def udf(f: Callable) -> Callable:

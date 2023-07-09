@@ -1,11 +1,8 @@
 class AnalysisException(Exception):
     pass
 
-class PyTabValueError(Exception):
+class OsosValueError(Exception):
     pass
 
-class PyTabTypeError(Exception):
-    pass
-
-class NotImplemented(Exception):
+class OsosTypeError(Exception):
     pass
