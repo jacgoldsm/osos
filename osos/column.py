@@ -126,6 +126,7 @@ class BinaryOp(Op):
         self._rvalue = rvalue
         self._lvalue = lvalue
         self._args = (lvalue, rvalue,)
+        self._over = ForwardRef("EmptyWindow")
 
 class AbstractColOrLit(Node):
 

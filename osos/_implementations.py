@@ -43,7 +43,8 @@ def _get_rolling_window(series, *args, **kwargs):
 
 def sum_func(series: SeriesType, *args, **kwargs) -> pd.Series:
     if isinstance(kwargs['_over'], EmptyWindow):
-        return series.sum(*args,**kwargs).reset_index()
+        kwargs.pop("_over")
+        return series.sum(*args,**kwargs)
     roll = _get_rolling_window(series, *args, **kwargs)
     return roll.sum().reset_index()[series.name].astype(series.dtype)
 

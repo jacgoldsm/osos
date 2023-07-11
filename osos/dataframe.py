@@ -37,7 +37,7 @@ class DataFrame:
         return DataFrame(d)
 
     def toPandas(self) -> pd.DataFrame:
-        return self._data
+        return pd.DataFrame(self._data)
 
     def __str__(self):
         return self._data.to_string(index=False)
@@ -63,7 +63,7 @@ class DataFrame:
                 # a window is a node whose head is a function that returns a lightweight
                 # class whose attributes are partition, order, rows between, and range between.
                 # a window's `_args` are the unresolved version of those attributes
-                if isinstance(node,FuncOrOp):
+                if isinstance(node,Func):
                     res = node._name(*list(self._eval_recursive(n) for n in node._args),
                     _over = self._eval_recursive(node._over))
                 else:
@@ -78,7 +78,7 @@ class DataFrame:
         col = self._eval_recursive(expr)
         kwargs = {name:col}
         df = self._data.assign(**kwargs)
-        return df
+        return DataFrame(df)
 
     def withColumnRenamed(self, oldname: str, newname: str) -> "DataFrame":
         df = DataFrame.fromPandas(self._data.rename({oldname:newname}, axis="columns"))
@@ -107,7 +107,7 @@ class DataFrame:
             assert boolean_mask.dtype == np.bool8, "`filter` expressions must return boolean results"
             newdf = newdf._data.iloc[boolean_mask]
 
-        return newdf
+        return DataFrame(newdf)
 
 
     def groupBy(self, *exprs: Node) -> "GroupedData":
@@ -128,7 +128,8 @@ class DataFrame:
         out = []
         for expr in exprs:
             if hasattr(expr, "_over"):
-                assert isinstance(expr._over, EmptyWindow), "Cannot use window functions in aggregate method"
+                over = expr._over.reference if isinstance(expr._over, ForwardRef) else expr._over
+                assert isinstance(over, EmptyWindow) or over == 'EmptyWindow', "Cannot use window functions in aggregate method"
             out.append(pd.Series(self._eval_recursive(expr)))
         
 

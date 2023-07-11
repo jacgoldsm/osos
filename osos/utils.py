@@ -31,5 +31,5 @@ def flatten_cols(cols: list) -> list:
         return list(itertools.chain.from_iterable(cols))
 
 
-def rename_series(series: SeriesType, newname: str) -> pd.Series:
+def rename_series(series: SeriesType, newname: str, _over=None) -> pd.Series:
     return series.rename(newname)
