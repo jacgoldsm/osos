@@ -1,8 +1,8 @@
-from exceptions import AnalysisException
-from utils import flatten_cols
+from .exceptions import AnalysisException
+from .utils import flatten_cols
 from typing import Union
 
-from column import Node, AbstractCol, SimpleContainer, ColumnList, ForwardRef
+from .column import Node, AbstractCol, SimpleContainer, ColumnList, ForwardRef
 ColumnType = Union[Node, str]
 
 

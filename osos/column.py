@@ -5,10 +5,10 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 
-from utils import rename_series
+from .utils import rename_series
 
 if TYPE_CHECKING:
-    from window import WindowSpec, EmptyWindow
+    from .window import WindowSpec, EmptyWindow
 
 
 NumOrCol = Union[Number, "AbstractColOrLit"]
@@ -81,6 +81,9 @@ class ColumnList(Node):
         self._args = [AbstractCol(arg) for arg in args]
         self._over = ForwardRef("EmptyWindow")
 
+    def __bool__(self):
+        return bool(self._args)
+
 
 class FuncOrOp(Node):
     pass
@@ -140,7 +143,8 @@ class AbstractLit(AbstractColOrLit):
     pass
 
 class SimpleContainer(Node):
-    pass
+    def __bool__(self):
+        return bool(self._args)
 
 class NameString(SimpleContainer):
     pass

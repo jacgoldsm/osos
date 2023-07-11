@@ -1,4 +1,4 @@
-from column import (
+from .column import (
     AbstractColOrLit, 
     Node,
     AbstractCol, 
@@ -15,11 +15,11 @@ from typing import Iterable, Union
 import pandas as pd
 
 
-from column import make_series_from_literal, NameString,ForwardRef,Func,FuncOrOp
-from _implementations import SeriesType
-from utils import flatten_cols
-from window import WindowSpec, ConcreteWindowSpec, EmptyWindow
-import window
+from .column import make_series_from_literal, NameString,ForwardRef,Func,FuncOrOp
+from ._implementations import SeriesType
+from .utils import flatten_cols
+from .window import WindowSpec, ConcreteWindowSpec, EmptyWindow
+from . import window
 
 
 class DataFrame:
@@ -45,7 +45,7 @@ class DataFrame:
     __repr__ = __str__
 
     
-    def _eval_recursive(self, expr: Union[Node, ForwardRef], *, _meth = "nonaggregate") -> SeriesType:
+    def _eval_recursive(self, expr: Union[Node, ForwardRef]) -> SeriesType:
         """
         Takes in an expression tree and recursively evaluates it. The recursive case is
         if the node is a function or operator that applies to one or more Series. 
@@ -64,10 +64,10 @@ class DataFrame:
                 # class whose attributes are partition, order, rows between, and range between.
                 # a window's `_args` are the unresolved version of those attributes
                 if isinstance(node,FuncOrOp):
-                    res = node._name(*list(self._eval_recursive(n, _meth=_meth) for n in node._args),
+                    res = node._name(*list(self._eval_recursive(n) for n in node._args),
                     _over = self._eval_recursive(node._over))
                 else:
-                    res = node._name(*list(self._eval_recursive(n, _meth=_meth) for n in node._args))
+                    res = node._name(*list(self._eval_recursive(n) for n in node._args))
             
                     
         return res
@@ -75,7 +75,7 @@ class DataFrame:
 
     def withColumn(self, name: str, expr: Node) -> "DataFrame":
         
-        col = self._eval_recursive(expr, _meth = "nonaggregate")
+        col = self._eval_recursive(expr)
         kwargs = {name:col}
         df = self._data.assign(**kwargs)
         return df
@@ -92,7 +92,7 @@ class DataFrame:
             if isinstance(expr, str):
                 expr = AbstractCol(expr)
 
-            cols.append(self._eval_recursive(expr, _meth = "nonaggregate"))
+            cols.append(self._eval_recursive(expr))
         newdf = DataFrame(pd.concat(cols, axis=1))
         return newdf
 
@@ -100,11 +100,10 @@ class DataFrame:
         flat_exprs = flatten_cols(exprs)
         newdf = DataFrame(pd.DataFrame(self._data))
             
-        cols = []
         for expr in flat_exprs:
             if isinstance(expr, str):
                 expr = AbstractCol(expr)
-            boolean_mask: pd.Series = self._eval_recursive(expr, _meth = "nonaggregate")
+            boolean_mask: pd.Series = self._eval_recursive(expr)
             assert boolean_mask.dtype == np.bool8, "`filter` expressions must return boolean results"
             newdf = newdf._data.iloc[boolean_mask]
 
@@ -128,7 +127,9 @@ class DataFrame:
         exprs = flatten_cols(exprs)
         out = []
         for expr in exprs:
-            out.append(pd.Series(self._eval_recursive(expr, _meth = "aggregate")))
+            if hasattr(expr, "_over"):
+                assert isinstance(expr._over, EmptyWindow), "Cannot use window functions in aggregate method"
+            out.append(pd.Series(self._eval_recursive(expr)))
         
 
         newdf = DataFrame(pd.concat(out, axis=1).reset_index())

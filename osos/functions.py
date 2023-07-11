@@ -1,4 +1,4 @@
-from column import (
+from .column import (
     AbstractCol, 
     AbstractColOrName, 
     AbstractLit, 
@@ -6,16 +6,15 @@ from column import (
     Func, ArbitraryFunction,
     ArgList,
 )
-from exceptions import AnalysisException, OsosValueError, OsosTypeError
-from dataframe import DataFrame
+from .exceptions import AnalysisException, OsosValueError, OsosTypeError
+from .dataframe import DataFrame
 
 
-from typing import Any, Optional, Union, List, Tuple, overload
+from typing import Any, Optional, Union, List, Tuple, overload, Callable
 from warnings import warn
 # all the public names in _implementations end in "_func"
-from _implementations import *
+from ._implementations import *
 
-from typing import Callable
 
 def _to_seq(iterable, iter_type):
     return [iter_type(i) for i in iterable]
@@ -28,7 +27,7 @@ try_remote_functions = lambda callable: callable
 @try_remote_functions
 def lit(col: Any) -> AbstractCol:
     """
-    Creates a :class:`~pytab.Col` of literal value.
+    Creates a :class:`~osos.Col` of literal value.
 
     .. versionadded:: 1.3.0
 
@@ -37,7 +36,7 @@ def lit(col: Any) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col`, str, int, float, bool or list, NumPy literals or ndarray.
+    col : :class:`~osos.Col`, str, int, float, bool or list, NumPy literals or ndarray.
         the value to make it as a PySpark literal. If a AbstractCol is passed,
         it returns the AbstractCol as is.
 
@@ -46,7 +45,7 @@ def lit(col: Any) -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the literal instance.
 
     Examples
@@ -72,7 +71,7 @@ def lit(col: Any) -> AbstractCol:
 
 def col(col: str) -> AbstractCol:
     """
-    Returns a :class:`~pytab.Col` based on the given AbstractCol name.
+    Returns a :class:`~osos.Col` based on the given AbstractCol name.
 
     .. versionadded:: 1.3.0
 
@@ -86,7 +85,7 @@ def col(col: str) -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the corresponding AbstractCol instance.
 
     Examples
@@ -110,12 +109,12 @@ def asc(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to sort by in the ascending order.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol specifying the order.
 
     Examples
@@ -164,12 +163,12 @@ def desc(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to sort by in the descending order.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol specifying the order.
 
     Examples
@@ -203,12 +202,12 @@ def sqrt(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         AbstractCol for computed results.
 
     Examples
@@ -237,12 +236,12 @@ def abs(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         AbstractCol for computed results.
 
     Examples
@@ -271,12 +270,12 @@ def mode(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the most frequent value in a group.
 
     Examples
@@ -310,12 +309,12 @@ def max(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         AbstractCol for computed results.
 
     Examples
@@ -344,12 +343,12 @@ def min(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         AbstractCol for computed results.
 
     Examples
@@ -381,14 +380,14 @@ def max_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
-    ord : :class:`~pytab.Col` or str
+    ord : :class:`~osos.Col` or str
         AbstractCol to be maximized
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         value associated with the maximum value of ord.
 
     Examples
@@ -424,14 +423,14 @@ def min_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
-    ord : :class:`~pytab.Col` or str
+    ord : :class:`~osos.Col` or str
         AbstractCol to be minimized
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         value associated with the minimum value of ord.
 
     Examples
@@ -466,12 +465,12 @@ def count(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         AbstractCol for computed results.
 
     Examples
@@ -505,12 +504,12 @@ def sum(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -542,12 +541,12 @@ def avg(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -580,12 +579,12 @@ def mean(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -601,7 +600,7 @@ def mean(col: "AbstractColOrName") -> AbstractCol:
     if isinstance(col, str):
         col = AbstractCol(col)
     
-    return Func(sum_func, col)
+    return Func(avg_func, col)
 
 
 
@@ -617,12 +616,12 @@ def median(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the median of the values in a group.
 
     Examples
@@ -679,12 +678,12 @@ def sum_distinct(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -721,7 +720,7 @@ def product(col: "AbstractColOrName") -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -756,12 +755,12 @@ def acos(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         inverse cosine of `col`, as if computed by `java.lang.Math.acos()`
 
     Examples
@@ -794,12 +793,12 @@ def acosh(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -832,12 +831,12 @@ def asin(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         inverse sine of `col`, as if computed by `java.lang.Math.asin()`
 
     Examples
@@ -870,12 +869,12 @@ def asinh(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -907,12 +906,12 @@ def atan(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         inverse tangent of `col`, as if computed by `java.lang.Math.atan()`
 
     Examples
@@ -944,12 +943,12 @@ def atanh(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -982,12 +981,12 @@ def cbrt(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -1019,12 +1018,12 @@ def ceil(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -1056,12 +1055,12 @@ def cos(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         angle in radians
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         cosine of the angle, as if computed by `java.lang.Math.cos()`.
 
     Examples
@@ -1090,12 +1089,12 @@ def cosh(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         hyperbolic angle
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         hyperbolic cosine of the angle, as if computed by `java.lang.Math.cosh()`
 
     Examples
@@ -1123,12 +1122,12 @@ def cot(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         angle in radians.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         cotangent of the angle.
 
     Examples
@@ -1157,12 +1156,12 @@ def csc(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         angle in radians.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         cosecant of the angle.
 
     Examples
@@ -1191,12 +1190,12 @@ def exp(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         AbstractCol to calculate exponential for.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         exponential of the given value.
 
     Examples
@@ -1228,12 +1227,12 @@ def expm1(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         AbstractCol to calculate exponential for.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         exponential less one.
 
     Examples
@@ -1245,7 +1244,7 @@ def expm1(col: "AbstractColOrName") -> AbstractCol:
     if isinstance(col, str):
         col = AbstractCol(col)
     
-    return Func(expm_func, col)
+    return Func(expm1_func, col)
 
 
 
@@ -1261,12 +1260,12 @@ def floor(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         AbstractCol to find floor for.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         nearest integer that is less than or equal to given value.
 
     Examples
@@ -1298,12 +1297,12 @@ def log(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         AbstractCol to calculate natural logarithm for.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         natural logarithm of the given value.
 
     Examples
@@ -1316,7 +1315,7 @@ def log(col: "AbstractColOrName") -> AbstractCol:
     if isinstance(col, str):
         col = AbstractCol(col)
     
-    return Func(log_func, col)
+    return Func(log_func, col, np.e)
 
 
 @try_remote_functions
@@ -1331,12 +1330,12 @@ def log10(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         AbstractCol to calculate logarithm for.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         logarithm of the given value in Base 10.
 
     Examples
@@ -1352,7 +1351,7 @@ def log10(col: "AbstractColOrName") -> AbstractCol:
     if isinstance(col, str):
         col = AbstractCol(col)
     
-    return Func(log10_func, col)
+    return Func(log_func, col, 10)
 
 
 
@@ -1368,12 +1367,12 @@ def log1p(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         AbstractCol to calculate natural logarithm for.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         natural logarithm of the "given value plus one".
 
     Examples
@@ -1408,12 +1407,12 @@ def rint(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -1452,12 +1451,12 @@ def sec(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         Angle in radians
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         Secant of the angle.
 
     Examples
@@ -1485,12 +1484,12 @@ def signum(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -1529,12 +1528,12 @@ def sin(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         sine of the angle, as if computed by `java.lang.Math.sin()`
 
     Examples
@@ -1563,12 +1562,12 @@ def sinh(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         hyperbolic angle.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         hyperbolic sine of the given value,
         as if computed by `java.lang.Math.sinh()`
 
@@ -1597,12 +1596,12 @@ def tan(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         angle in radians
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         tangent of the given value, as if computed by `java.lang.Math.tan()`
 
     Examples
@@ -1631,12 +1630,12 @@ def tanh(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         hyperbolic angle
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         hyperbolic tangent of the given value
         as if computed by `java.lang.Math.tanh()`
 
@@ -1666,7 +1665,7 @@ def toDegrees(col: "AbstractColOrName") -> AbstractCol:
         Use :func:`degrees` instead.
     """
     warn("Deprecated in 2.1, use degrees instead.", FutureWarning)
-    return degrees(col)
+    return degrees_func(col)
 
 
 
@@ -1682,7 +1681,7 @@ def toRadians(col: "AbstractColOrName") -> AbstractCol:
         Use :func:`radians` instead.
     """
     warn("Deprecated in 2.1, use radians instead.", FutureWarning)
-    return radians(col)
+    return radians_func(col)
 
 
 
@@ -1700,7 +1699,7 @@ def bitwiseNOT(col: "AbstractColOrName") -> AbstractCol:
         Use :func:`bitwise_not` instead.
     """
     warn("Deprecated in 3.2, use bitwise_not instead.", FutureWarning)
-    return bitwise_not(col)
+    return bitwise_not_func(col)
 
 
 
@@ -1716,12 +1715,12 @@ def bitwise_not(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -1760,12 +1759,12 @@ def asc_nulls_first(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to sort by in the ascending order.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol specifying the order.
 
     Examples
@@ -1803,12 +1802,12 @@ def asc_nulls_last(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to sort by in the ascending order.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol specifying the order.
 
     Examples
@@ -1846,12 +1845,12 @@ def desc_nulls_first(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to sort by in the descending order.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol specifying the order.
 
     Examples
@@ -1889,12 +1888,12 @@ def desc_nulls_last(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to sort by in the descending order.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol specifying the order.
 
     Examples
@@ -1931,12 +1930,12 @@ def stddev(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         standard deviation of given AbstractCol.
 
     Examples
@@ -1965,12 +1964,12 @@ def stddev_samp(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         standard deviation of given AbstractCol.
 
     Examples
@@ -1999,12 +1998,12 @@ def stddev_pop(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         standard deviation of given AbstractCol.
 
     Examples
@@ -2032,12 +2031,12 @@ def variance(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         variance of given AbstractCol.
 
     Examples
@@ -2070,12 +2069,12 @@ def var_samp(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         variance of given AbstractCol.
 
     Examples
@@ -2107,12 +2106,12 @@ def var_pop(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         variance of given AbstractCol.
 
     Examples
@@ -2140,12 +2139,12 @@ def skewness(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         skewness of given AbstractCol.
 
     Examples
@@ -2173,12 +2172,12 @@ def kurtosis(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         kurtosis of given AbstractCol.
 
     Examples
@@ -2215,12 +2214,12 @@ def collect_list(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         list of objects with duplicates.
 
     Examples
@@ -2250,12 +2249,12 @@ def collect_set(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         list of objects with no duplicates.
 
     Examples
@@ -2281,12 +2280,12 @@ def degrees(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         angle in radians
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         angle in degrees, as if computed by `java.lang.Math.toDegrees()`
 
     Examples
@@ -2316,12 +2315,12 @@ def radians(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         angle in degrees
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         angle in radians, as if computed by `java.lang.Math.toRadians()`
 
     Examples
@@ -2347,14 +2346,14 @@ def atan2(col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrNam
 
     Parameters
     ----------
-    col1 : str, :class:`~pytab.Col` or float
+    col1 : str, :class:`~osos.Col` or float
         coordinate on y-axis
-    col2 : str, :class:`~pytab.Col` or float
+    col2 : str, :class:`~osos.Col` or float
         coordinate on x-axis
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the `theta` component of the point
         (`r`, `theta`)
         in polar coordinates that corresponds to the point
@@ -2389,14 +2388,14 @@ def hypot(col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrNam
 
     Parameters
     ----------
-    col1 : str, :class:`~pytab.Col` or float
+    col1 : str, :class:`~osos.Col` or float
         a leg.
-    col2 : str, :class:`~pytab.Col` or float
+    col2 : str, :class:`~osos.Col` or float
         b leg.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         length of the hypotenuse.
 
     Examples
@@ -2427,14 +2426,14 @@ def pow(col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName"
 
     Parameters
     ----------
-    col1 : str, :class:`~pytab.Col` or float
+    col1 : str, :class:`~osos.Col` or float
         the base number.
-    col2 : str, :class:`~pytab.Col` or float
+    col2 : str, :class:`~osos.Col` or float
         the exponent number.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the base rased to the power the argument.
 
     Examples
@@ -2465,14 +2464,14 @@ def pmod(dividend: Union["AbstractColOrName", float], divisor: Union["AbstractCo
 
     Parameters
     ----------
-    dividend : str, :class:`~pytab.Col` or float
+    dividend : str, :class:`~osos.Col` or float
         the AbstractCol that contains dividend, or the specified dividend value
-    divisor : str, :class:`~pytab.Col` or float
+    divisor : str, :class:`~osos.Col` or float
         the AbstractCol that contains divisor, or the specified divisor value
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         positive value of dividend mod divisor.
 
     Examples
@@ -2521,7 +2520,7 @@ def row_number() -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for calculating row numbers.
 
     Examples
@@ -2562,7 +2561,7 @@ def dense_rank() -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for calculating ranks.
 
     Examples
@@ -2582,7 +2581,7 @@ def dense_rank() -> AbstractCol:
     |    4|    4|
     +-----+-----+
     """
-    return row_number_func()
+    return dense_rank_func()
 
 
 
@@ -2606,7 +2605,7 @@ def rank() -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for calculating ranks.
 
     Examples
@@ -2643,7 +2642,7 @@ def cume_dist() -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for calculating cumulative distribution.
 
     Examples
@@ -2662,7 +2661,7 @@ def cume_dist() -> AbstractCol:
     |    4|1.0|
     +-----+---+
     """
-    return rank_func()
+    return cume_dist_func()
 
 
 
@@ -2678,7 +2677,7 @@ def percent_rank() -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for calculating relative rank.
 
     Examples
@@ -2714,13 +2713,13 @@ def approxCountDistinct(col: "AbstractColOrName", rsd: Optional[float] = None) -
         Use :func:`approx_count_distinct` instead.
     """
     warn("Deprecated in 2.1, use approx_count_distinct instead.", FutureWarning)
-    return approx_count_distinct(col, rsd)
+    return approx_count_distinct_func(col, rsd)
 
 
 
 @try_remote_functions
 def approx_count_distinct(col: "AbstractColOrName", rsd: Optional[float] = None) -> AbstractCol:
-    """Aggregate function: returns a new :class:`~pytab.Col` for approximate distinct count
+    """Aggregate function: returns a new :class:`~osos.Col` for approximate distinct count
     of AbstractCol `col`.
 
     .. versionadded:: 2.1.0
@@ -2733,14 +2732,14 @@ def approx_count_distinct(col: "AbstractColOrName", rsd: Optional[float] = None)
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
     rsd : float, optional
         maximum relative standard deviation allowed (default = 0.05).
         For rsd < 0.01, it is more efficient to use :func:`count_distinct`
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol of computed results.
 
     Examples
@@ -2806,12 +2805,12 @@ def coalesce(*cols: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    cols : :class:`~pytab.Col` or str
+    cols : :class:`~osos.Col` or str
         list of AbstractCols to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         value of the first AbstractCol that is not null.
 
     Examples
@@ -2854,7 +2853,7 @@ def coalesce(*cols: "AbstractColOrName") -> AbstractCol:
 
 @try_remote_functions
 def corr(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
-    """Returns a new :class:`~pytab.Col` for the Pearson Correlation Coefficient for
+    """Returns a new :class:`~osos.Col` for the Pearson Correlation Coefficient for
     ``col1`` and ``col2``.
 
     .. versionadded:: 1.6.0
@@ -2864,14 +2863,14 @@ def corr(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col1 : :class:`~pytab.Col` or str
+    col1 : :class:`~osos.Col` or str
         first AbstractCol to calculate correlation.
-    col1 : :class:`~pytab.Col` or str
+    col1 : :class:`~osos.Col` or str
         second AbstractCol to calculate correlation.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         Pearson Correlation Coefficient of these two AbstractCol values.
 
     Examples
@@ -2888,7 +2887,7 @@ def corr(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
 
 @try_remote_functions
 def covar_pop(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
-    """Returns a new :class:`~pytab.Col` for the population covariance of ``col1`` and
+    """Returns a new :class:`~osos.Col` for the population covariance of ``col1`` and
     ``col2``.
 
     .. versionadded:: 2.0.0
@@ -2898,14 +2897,14 @@ def covar_pop(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractC
 
     Parameters
     ----------
-    col1 : :class:`~pytab.Col` or str
+    col1 : :class:`~osos.Col` or str
         first AbstractCol to calculate covariance.
-    col1 : :class:`~pytab.Col` or str
+    col1 : :class:`~osos.Col` or str
         second AbstractCol to calculate covariance.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         covariance of these two AbstractCol values.
 
     Examples
@@ -2922,7 +2921,7 @@ def covar_pop(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractC
 
 @try_remote_functions
 def covar_samp(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
-    """Returns a new :class:`~pytab.Col` for the sample covariance of ``col1`` and
+    """Returns a new :class:`~osos.Col` for the sample covariance of ``col1`` and
     ``col2``.
 
     .. versionadded:: 2.0.0
@@ -2932,14 +2931,14 @@ def covar_samp(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Abstract
 
     Parameters
     ----------
-    col1 : :class:`~pytab.Col` or str
+    col1 : :class:`~osos.Col` or str
         first AbstractCol to calculate covariance.
-    col1 : :class:`~pytab.Col` or str
+    col1 : :class:`~osos.Col` or str
         second AbstractCol to calculate covariance.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         sample covariance of these two AbstractCol values.
 
     Examples
@@ -2956,7 +2955,7 @@ def covar_samp(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Abstract
 
 @try_remote_functions
 def countDistinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> AbstractCol:
-    """Returns a new :class:`~pytab.Col` for distinct count of ``col`` or ``cols``.
+    """Returns a new :class:`~osos.Col` for distinct count of ``col`` or ``cols``.
 
     An alias of :func:`count_distinct`, and it is encouraged to use :func:`count_distinct`
     directly.
@@ -2981,14 +2980,14 @@ def count_distinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Abst
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         first AbstractCol to compute on.
-    cols : :class:`~pytab.Col` or str
+    cols : :class:`~osos.Col` or str
         other AbstractCols to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         distinct values of these two AbstractCol values.
 
     Examples
@@ -3039,14 +3038,14 @@ def first(col: "AbstractColOrName", ignorenulls: bool = False) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         AbstractCol to fetch first value for.
-    ignorenulls : :class:`~pytab.Col` or str
+    ignorenulls : :class:`~osos.Col` or str
         if first value is null then look for first non-null value.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         first value of the group.
 
     Examples
@@ -3088,12 +3087,12 @@ def grouping(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         AbstractCol to check if it's aggregated.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         returns 1 for aggregated or 0 for not aggregated in the result set.
 
     Examples
@@ -3131,12 +3130,12 @@ def grouping_id(*cols: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    cols : :class:`~pytab.Col` or str
+    cols : :class:`~osos.Col` or str
         AbstractCols to check for.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         returns level of the grouping it relates to.
 
     Examples
@@ -3173,7 +3172,7 @@ def input_file_name() -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         file names.
 
     Examples
@@ -3199,12 +3198,12 @@ def isnan(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         True if value is NaN and False otherwise.
 
     Examples
@@ -3233,12 +3232,12 @@ def isnull(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         True if value is null and False otherwise.
 
     Examples
@@ -3275,14 +3274,14 @@ def last(col: "AbstractColOrName", ignorenulls: bool = False) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         AbstractCol to fetch last value for.
-    ignorenulls : :class:`~pytab.Col` or str
+    ignorenulls : :class:`~osos.Col` or str
         if last value is null then look for non-null value.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         last value of the group.
 
     Examples
@@ -3335,7 +3334,7 @@ def monotonically_increasing_id() -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         last value of the group.
 
     Examples
@@ -3361,14 +3360,14 @@ def nanvl(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col1 : :class:`~pytab.Col` or str
+    col1 : :class:`~osos.Col` or str
         first AbstractCol to check.
-    col2 : :class:`~pytab.Col` or str
+    col2 : :class:`~osos.Col` or str
         second AbstractCol to return if first is NaN.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         value from first AbstractCol or second if first is NaN .
 
     Examples
@@ -3399,21 +3398,21 @@ def percentile_approx(
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         input AbstractCol.
-    percentage : :class:`~pytab.Col`, float, list of floats or tuple of floats
+    percentage : :class:`~osos.Col`, float, list of floats or tuple of floats
         percentage in decimal (must be between 0.0 and 1.0).
         When percentage is an array, each value of the percentage array must be between 0.0 and 1.0.
         In this case, returns the approximate percentile array of AbstractCol col
         at the given percentage array.
-    accuracy : :class:`~pytab.Col` or float
+    accuracy : :class:`~osos.Col` or float
         is a positive numeric literal which controls approximation accuracy
         at the cost of memory. Higher value of accuracy yields better accuracy,
         1.0/accuracy is the relative error of the approximation. (default: 10000).
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         approximate `percentile` of the numeric AbstractCol.
 
     Examples
@@ -3474,7 +3473,7 @@ def rand(seed: Optional[int] = None) -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         random values.
 
     Examples
@@ -3516,7 +3515,7 @@ def randn(seed: Optional[int] = None) -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         random values.
 
     Examples
@@ -3550,14 +3549,14 @@ def round(col: "AbstractColOrName", scale: int = 0) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         input AbstractCol to round.
     scale : int optional default 0
         scale value.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         rounded values.
 
     Examples
@@ -3582,14 +3581,14 @@ def bround(col: "AbstractColOrName", scale: int = 0) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         input AbstractCol to round.
     scale : int optional default 0
         scale value.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         rounded values.
 
     Examples
@@ -3628,14 +3627,14 @@ def shiftleft(col: "AbstractColOrName", numBits: int) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         input AbstractCol of values to shift.
     numBits : int
         number of bits to shift.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         shifted value.
 
     Examples
@@ -3674,14 +3673,14 @@ def shiftright(col: "AbstractColOrName", numBits: int) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         input AbstractCol of values to shift.
     numBits : int
         number of bits to shift.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         shifted values.
 
     Examples
@@ -3720,14 +3719,14 @@ def shiftrightunsigned(col: "AbstractColOrName", numBits: int) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         input AbstractCol of values to shift.
     numBits : int
         number of bits to shift.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         shifted value.
 
     Examples
@@ -3755,7 +3754,7 @@ def spark_partition_id() -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         partition id the record belongs to.
 
     Examples
@@ -3784,7 +3783,7 @@ def expr(str: str) -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         AbstractCol representing the expression.
 
     Examples
@@ -3825,12 +3824,12 @@ def struct(
 
     Parameters
     ----------
-    cols : list, set, str or :class:`~pytab.Col`
-        AbstractCol names or :class:`~pytab.Col`\\s to contain in the output struct.
+    cols : list, set, str or :class:`~osos.Col`
+        AbstractCol names or :class:`~osos.Col`\\s to contain in the output struct.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         a struct type AbstractCol of given AbstractCols.
 
     Examples
@@ -3860,12 +3859,12 @@ def greatest(*cols: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         AbstractCols to check for gratest value.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         gratest value.
 
     Examples
@@ -3896,12 +3895,12 @@ def least(*cols: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    cols : :class:`~pytab.Col` or str
+    cols : :class:`~osos.Col` or str
         AbstractCol names or AbstractCols to be compared
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         least value.
 
     Examples
@@ -3911,7 +3910,7 @@ def least(*cols: "AbstractColOrName") -> AbstractCol:
     [Row(least=1)]
     """
     if len(cols) < 2:
-        raise PyTabValueError(
+        raise ososValueError(
             error_class="WRONG_NUM_AbstractColS",
             message_parameters={"func_name": "least", "num_cols": "2"},
         )
@@ -3922,7 +3921,7 @@ def least(*cols: "AbstractColOrName") -> AbstractCol:
 @try_remote_functions
 def when(condition: AbstractCol, value: Any) -> AbstractCol:
     """Evaluates a list of conditions and returns one of multiple possible result expressions.
-    If :func:`pytab.Col.otherwise` is not invoked, None is returned for unmatched
+    If :func:`osos.Col.otherwise` is not invoked, None is returned for unmatched
     conditions.
 
     .. versionadded:: 1.4.0
@@ -3932,14 +3931,14 @@ def when(condition: AbstractCol, value: Any) -> AbstractCol:
 
     Parameters
     ----------
-    condition : :class:`~pytab.Col`
-        a boolean :class:`~pytab.Col` expression.
+    condition : :class:`~osos.Col`
+        a boolean :class:`~osos.Col` expression.
     value :
-        a literal value, or a :class:`~pytab.Col` expression.
+        a literal value, or a :class:`~osos.Col` expression.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         AbstractCol representing when expression.
 
     Examples
@@ -3965,7 +3964,7 @@ def when(condition: AbstractCol, value: Any) -> AbstractCol:
     """
     # Explicitly not using AbstractColOrName type here to make reading condition less opaque
     if not isinstance(condition, AbstractCol):
-        raise PyTabTypeError(
+        raise ososTypeError(
             error_class="NOT_AbstractCol",
             message_parameters={"arg_name": "condition", "arg_type": type(condition).__name__},
         )
@@ -3998,14 +3997,14 @@ def log(arg1: Union["AbstractColOrName", float], arg2: Optional["AbstractColOrNa
 
     Parameters
     ----------
-    arg1 : :class:`~pytab.Col`, str or float
+    arg1 : :class:`~osos.Col`, str or float
         base number or actual number (in this case base is `e`)
-    arg2 : :class:`~pytab.Col`, str or float
+    arg2 : :class:`~osos.Col`, str or float
         number to calculate logariphm for.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         logariphm of given value.
 
     Examples
@@ -4049,12 +4048,12 @@ def log2(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         a AbstractCol to calculate logariphm for.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         logariphm of given value.
 
     Examples
@@ -4083,7 +4082,7 @@ def conv(col: "AbstractColOrName", fromBase: int, toBase: int) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         a AbstractCol to convert base for.
     fromBase: int
         from base number.
@@ -4092,7 +4091,7 @@ def conv(col: "AbstractColOrName", fromBase: int, toBase: int) -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         logariphm of given value.
 
     Examples
@@ -4117,12 +4116,12 @@ def factorial(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         a AbstractCol to calculate factorial for.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         factorial of given value.
 
     Examples
@@ -4154,7 +4153,7 @@ def lag(col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = None
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         name of AbstractCol or expression
     offset : int, optional default 1
         number of row to extend
@@ -4163,7 +4162,7 @@ def lag(col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = None
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         value before current row based on `offset`.
 
     Examples
@@ -4236,7 +4235,7 @@ def lead(col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = Non
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         name of AbstractCol or expression
     offset : int, optional default 1
         number of row to extend
@@ -4245,7 +4244,7 @@ def lead(col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = Non
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         value after current row based on `offset`.
 
     Examples
@@ -4320,7 +4319,7 @@ def nth_value(col: "AbstractColOrName", offset: int, ignoreNulls: Optional[bool]
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         name of AbstractCol or expression
     offset : int
         number of row to use as the value
@@ -4330,7 +4329,7 @@ def nth_value(col: "AbstractColOrName", offset: int, ignoreNulls: Optional[bool]
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         value of nth row.
 
     Examples
@@ -4399,7 +4398,7 @@ def ntile(n: int) -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         portioned group id.
 
     Examples
@@ -4452,7 +4451,7 @@ def current_date() -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         current date.
 
     Examples
@@ -4482,7 +4481,7 @@ def current_timestamp() -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         current date and time.
 
     Examples
@@ -4513,7 +4512,7 @@ def localtimestamp() -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         current local date and time.
 
     Examples
@@ -4552,14 +4551,14 @@ def date_format(date: "AbstractColOrName", format: str) -> AbstractCol:
 
     Parameters
     ----------
-    date : :class:`~pytab.Col` or str
+    date : :class:`~osos.Col` or str
         input AbstractCol of values to format.
     format: str
         format to use to represent datetime values.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         string value representing formatted datetime.
 
     Examples
@@ -4584,12 +4583,12 @@ def year(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target date/timestamp AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         year part of the date/timestamp as integer.
 
     Examples
@@ -4614,12 +4613,12 @@ def quarter(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target date/timestamp AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         quarter of the date/timestamp as integer.
 
     Examples
@@ -4644,12 +4643,12 @@ def month(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target date/timestamp AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         month part of the date/timestamp as integer.
 
     Examples
@@ -4675,12 +4674,12 @@ def dayofweek(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target date/timestamp AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         day of the week for given date/timestamp as integer.
 
     Examples
@@ -4705,12 +4704,12 @@ def dayofmonth(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target date/timestamp AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         day of the month for given date/timestamp as integer.
 
     Examples
@@ -4735,12 +4734,12 @@ def dayofyear(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target date/timestamp AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         day of the year for given date/timestamp as integer.
 
     Examples
@@ -4765,12 +4764,12 @@ def hour(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target date/timestamp AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         hour part of the timestamp as integer.
 
     Examples
@@ -4796,12 +4795,12 @@ def minute(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target date/timestamp AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         minutes part of the timestamp as integer.
 
     Examples
@@ -4827,12 +4826,12 @@ def second(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target date/timestamp AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         `seconds` part of the timestamp as integer.
 
     Examples
@@ -4860,12 +4859,12 @@ def weekofyear(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target timestamp AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         `week` of the year for given date as integer.
 
     Examples
@@ -4890,16 +4889,16 @@ def make_date(year: "AbstractColOrName", month: "AbstractColOrName", day: "Abstr
 
     Parameters
     ----------
-    year : :class:`~pytab.Col` or str
+    year : :class:`~osos.Col` or str
         The year to build the date
-    month : :class:`~pytab.Col` or str
+    month : :class:`~osos.Col` or str
         The month to build the date
-    day : :class:`~pytab.Col` or str
+    day : :class:`~osos.Col` or str
         The day to build the date
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         a date built from given parts.
 
     Examples
@@ -4925,15 +4924,15 @@ def date_add(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) 
 
     Parameters
     ----------
-    start : :class:`~pytab.Col` or str
+    start : :class:`~osos.Col` or str
         date AbstractCol to work on.
-    days : :class:`~pytab.Col` or str or int
+    days : :class:`~osos.Col` or str or int
         how many days after the given date to calculate.
         Accepts negative value as well to calculate backwards in time.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         a date after/before given number of days.
 
     Examples
@@ -4964,15 +4963,15 @@ def date_sub(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) 
 
     Parameters
     ----------
-    start : :class:`~pytab.Col` or str
+    start : :class:`~osos.Col` or str
         date AbstractCol to work on.
-    days : :class:`~pytab.Col` or str or int
+    days : :class:`~osos.Col` or str or int
         how many days before the given date to calculate.
         Accepts negative value as well to calculate forward in time.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         a date before/after given number of days.
 
     Examples
@@ -5002,14 +5001,14 @@ def datediff(end: "AbstractColOrName", start: "AbstractColOrName") -> AbstractCo
 
     Parameters
     ----------
-    end : :class:`~pytab.Col` or str
+    end : :class:`~osos.Col` or str
         to date AbstractCol to work on.
-    start : :class:`~pytab.Col` or str
+    start : :class:`~osos.Col` or str
         from date AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         difference in days between two dates.
 
     Examples
@@ -5035,15 +5034,15 @@ def add_months(start: "AbstractColOrName", months: Union["AbstractColOrName", in
 
     Parameters
     ----------
-    start : :class:`~pytab.Col` or str
+    start : :class:`~osos.Col` or str
         date AbstractCol to work on.
-    months : :class:`~pytab.Col` or str or int
+    months : :class:`~osos.Col` or str or int
         how many months after the given date to calculate.
         Accepts negative value as well to calculate backwards.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         a date after/before given number of months.
 
     Examples
@@ -5077,16 +5076,16 @@ def months_between(date1: "AbstractColOrName", date2: "AbstractColOrName", round
 
     Parameters
     ----------
-    date1 : :class:`~pytab.Col` or str
+    date1 : :class:`~osos.Col` or str
         first date AbstractCol.
-    date2 : :class:`~pytab.Col` or str
+    date2 : :class:`~osos.Col` or str
         second date AbstractCol.
     roundOff : bool, optional
         whether to round (to 8 digits) the final value or not (default: True).
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         number of months between two dates.
 
     Examples
@@ -5105,7 +5104,7 @@ def months_between(date1: "AbstractColOrName", date2: "AbstractColOrName", round
 
 @try_remote_functions
 def to_date(col: "AbstractColOrName", format: Optional[str] = None) -> AbstractCol:
-    """Converts a :class:`~pytab.Col` into :class:`pyspark.sql.types.DateType`
+    """Converts a :class:`~osos.Col` into :class:`pyspark.sql.types.DateType`
     using the optionally specified format. Specify formats according to `datetime pattern`_.
     By default, it follows casting rules to :class:`pyspark.sql.types.DateType` if the format
     is omitted. Equivalent to ``col.cast("date")``.
@@ -5119,14 +5118,14 @@ def to_date(col: "AbstractColOrName", format: Optional[str] = None) -> AbstractC
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         input AbstractCol of values to convert.
     format: str, optional
         format to use to convert date values.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         date value as :class:`pyspark.sql.types.DateType` type.
 
     Examples
@@ -5158,7 +5157,7 @@ def to_timestamp(col: "AbstractColOrName", format: str) -> AbstractCol:
 
 @try_remote_functions
 def to_timestamp(col: "AbstractColOrName", format: Optional[str] = None) -> AbstractCol:
-    """Converts a :class:`~pytab.Col` into :class:`pyspark.sql.types.TimestampType`
+    """Converts a :class:`~osos.Col` into :class:`pyspark.sql.types.TimestampType`
     using the optionally specified format. Specify formats according to `datetime pattern`_.
     By default, it follows casting rules to :class:`pyspark.sql.types.TimestampType` if the format
     is omitted. Equivalent to ``col.cast("timestamp")``.
@@ -5172,14 +5171,14 @@ def to_timestamp(col: "AbstractColOrName", format: Optional[str] = None) -> Abst
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         AbstractCol values to convert.
     format: str, optional
         format to use to convert timestamp values.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         timestamp value as :class:`pyspark.sql.types.TimestampType` type.
 
     Examples
@@ -5211,7 +5210,7 @@ def trunc(date: "AbstractColOrName", format: str) -> AbstractCol:
 
     Parameters
     ----------
-    date : :class:`~pytab.Col` or str
+    date : :class:`~osos.Col` or str
         input AbstractCol of values to truncate.
     format : str
         'year', 'yyyy', 'yy' to truncate by year,
@@ -5220,7 +5219,7 @@ def trunc(date: "AbstractColOrName", format: str) -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         truncated date.
 
     Examples
@@ -5253,12 +5252,12 @@ def date_trunc(format: str, timestamp: "AbstractColOrName") -> AbstractCol:
         'day', 'dd' to truncate by day,
         Other options are:
         'microsecond', 'millisecond', 'second', 'minute', 'hour', 'week', 'quarter'
-    timestamp : :class:`~pytab.Col` or str
+    timestamp : :class:`~osos.Col` or str
         input AbstractCol of values to truncate.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         truncated timestamp.
 
     Examples
@@ -5286,7 +5285,7 @@ def next_day(date: "AbstractColOrName", dayOfWeek: str) -> AbstractCol:
 
     Parameters
     ----------
-    date : :class:`~pytab.Col` or str
+    date : :class:`~osos.Col` or str
         target AbstractCol to compute on.
     dayOfWeek : str
         day of the week, case-insensitive, accepts:
@@ -5294,7 +5293,7 @@ def next_day(date: "AbstractColOrName", dayOfWeek: str) -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol of computed results.
 
     Examples
@@ -5319,12 +5318,12 @@ def last_day(date: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    date : :class:`~pytab.Col` or str
+    date : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         last day of the month.
 
     Examples
@@ -5351,14 +5350,14 @@ def from_unixtime(timestamp: "AbstractColOrName", format: str = "yyyy-MM-dd HH:m
 
     Parameters
     ----------
-    timestamp : :class:`~pytab.Col` or str
+    timestamp : :class:`~osos.Col` or str
         AbstractCol of unix time values.
     format : str, optional
         format to use to convert to (default: yyyy-MM-dd HH:mm:ss)
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         formatted timestamp as string.
 
     Examples
@@ -5401,14 +5400,14 @@ def unix_timestamp(
 
     Parameters
     ----------
-    timestamp : :class:`~pytab.Col` or str, optional
+    timestamp : :class:`~osos.Col` or str, optional
         timestamps of string values.
     format : str, optional
         alternative format to use for converting (default: yyyy-MM-dd HH:mm:ss).
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         unix time as long integer.
 
     Examples
@@ -5448,9 +5447,9 @@ def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") 
 
     Parameters
     ----------
-    timestamp : :class:`~pytab.Col` or str
+    timestamp : :class:`~osos.Col` or str
         the AbstractCol that contains timestamps
-    tz : :class:`~pytab.Col` or str
+    tz : :class:`~osos.Col` or str
         A string detailing the time zone ID that the input should be adjusted to. It should
         be in the format of either region-based zone IDs or zone offsets. Region IDs must
         have the form 'area/city', such as 'America/Los_Angeles'. Zone offsets must be in
@@ -5459,11 +5458,11 @@ def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") 
         because they can be ambiguous.
 
         .. versionchanged:: 2.4
-           `tz` can take a :class:`~pytab.Col` containing timezone ID strings.
+           `tz` can take a :class:`~osos.Col` containing timezone ID strings.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         timestamp value represented in given timezone.
 
     Examples
@@ -5503,9 +5502,9 @@ def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") ->
 
     Parameters
     ----------
-    timestamp : :class:`~pytab.Col` or str
+    timestamp : :class:`~osos.Col` or str
         the AbstractCol that contains timestamps
-    tz : :class:`~pytab.Col` or str
+    tz : :class:`~osos.Col` or str
         A string detailing the time zone ID that the input should be adjusted to. It should
         be in the format of either region-based zone IDs or zone offsets. Region IDs must
         have the form 'area/city', such as 'America/Los_Angeles'. Zone offsets must be in
@@ -5514,11 +5513,11 @@ def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") ->
         because they can be ambiguous.
 
         .. versionchanged:: 2.4.0
-           `tz` can take a :class:`~pytab.Col` containing timezone ID strings.
+           `tz` can take a :class:`~osos.Col` containing timezone ID strings.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         timestamp value represented in UTC timezone.
 
     Examples
@@ -5548,12 +5547,12 @@ def timestamp_seconds(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         unix time values.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         converted timestamp value.
 
     Examples
@@ -5609,7 +5608,7 @@ def window(
 
     Parameters
     ----------
-    timeAbstractCol : :class:`~pytab.Col`
+    timeAbstractCol : :class:`~osos.Col`
         The AbstractCol or the expression to use as the timestamp for windowing by time.
         The time AbstractCol must be of TimestampType or TimestampNTZType.
     windowDuration : str
@@ -5632,7 +5631,7 @@ def window(
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -5649,7 +5648,7 @@ def window(
 
     def check_string_field(field, fieldName):  # type: ignore[no-untyped-def]
         if not field or type(field) is not str:
-            raise PyTabTypeError(
+            raise ososTypeError(
                 error_class="NOT_STR",
                 message_parameters={"arg_name": fieldName, "arg_type": type(field).__name__},
             )
@@ -5689,12 +5688,12 @@ def window_time(
 
     Parameters
     ----------
-    windowAbstractCol : :class:`~pytab.Col`
+    windowAbstractCol : :class:`~osos.Col`
         The window AbstractCol of a window aggregate records.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -5748,17 +5747,17 @@ def session_window(timeAbstractCol: "AbstractColOrName", gapDuration: Union[Abst
 
     Parameters
     ----------
-    timeAbstractCol : :class:`~pytab.Col` or str
+    timeAbstractCol : :class:`~osos.Col` or str
         The AbstractCol name or AbstractCol to use as the timestamp for windowing by time.
         The time AbstractCol must be of TimestampType or TimestampNTZType.
-    gapDuration : :class:`~pytab.Col` or str
+    gapDuration : :class:`~osos.Col` or str
         A Python string literal or AbstractCol specifying the timeout of the session. It could be
         static value, e.g. `10 minutes`, `1 second`, or an expression/UDF that specifies gap
         duration dynamically based on the input row.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -5776,7 +5775,7 @@ def session_window(timeAbstractCol: "AbstractColOrName", gapDuration: Union[Abst
 
     def check_field(field: Union[AbstractCol, str], fieldName: str) -> None:
         if field is None or not isinstance(field, (str, AbstractCol)):
-            raise PyTabTypeError(
+            raise ososTypeError(
                 error_class="NOT_AbstractCol_OR_STR",
                 message_parameters={"arg_name": fieldName, "arg_type": type(field).__name__},
             )
@@ -5802,12 +5801,12 @@ def crc32(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     .. versionadded:: 1.5.0
@@ -5832,12 +5831,12 @@ def md5(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -5860,12 +5859,12 @@ def sha1(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -5890,7 +5889,7 @@ def sha2(col: "AbstractColOrName", numBits: int) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to compute on.
     numBits : int
         the desired bit length of the result, which must have a
@@ -5898,7 +5897,7 @@ def sha2(col: "AbstractColOrName", numBits: int) -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -5927,12 +5926,12 @@ def hash(*cols: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    cols : :class:`~pytab.Col` or str
+    cols : :class:`~osos.Col` or str
         one or more AbstractCols to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         hash value as int AbstractCol.
 
     Examples
@@ -5973,12 +5972,12 @@ def xxhash64(*cols: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    cols : :class:`~pytab.Col` or str
+    cols : :class:`~osos.Col` or str
         one or more AbstractCols to compute on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         hash value as long AbstractCol.
 
     Examples
@@ -6020,14 +6019,14 @@ def assert_true(col: "AbstractColOrName", errMsg: Optional[Union[AbstractCol, st
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         AbstractCol name or AbstractCol that represents the input AbstractCol to test
-    errMsg : :class:`~pytab.Col` or str, optional
+    errMsg : :class:`~osos.Col` or str, optional
         A Python string literal or AbstractCol containing the error message
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         `null` if the input AbstractCol is `true` otherwise throws an error with specified message.
 
     Examples
@@ -6047,7 +6046,7 @@ def assert_true(col: "AbstractColOrName", errMsg: Optional[Union[AbstractCol, st
     if errMsg is None:
         raise NotImplementedError
     if not isinstance(errMsg, (str, AbstractCol)):
-        raise PyTabTypeError(
+        raise ososTypeError(
             error_class="NOT_AbstractCol_OR_STR",
             message_parameters={"arg_name": "errMsg", "arg_type": type(errMsg).__name__},
         )
@@ -6071,12 +6070,12 @@ def raise_error(errMsg: Union[AbstractCol, str]) -> AbstractCol:
 
     Parameters
     ----------
-    errMsg : :class:`~pytab.Col` or str
+    errMsg : :class:`~osos.Col` or str
         A Python string literal or AbstractCol containing the error message
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         throws an error with specified message.
 
     Examples
@@ -6088,7 +6087,7 @@ def raise_error(errMsg: Union[AbstractCol, str]) -> AbstractCol:
     ...
     """
     if not isinstance(errMsg, (str, AbstractCol)):
-        raise PyTabTypeError(
+        raise OsosTypeError(
             error_class="NOT_AbstractCol_OR_STR",
             message_parameters={"arg_name": "errMsg", "arg_type": type(errMsg).__name__},
         )
@@ -6115,12 +6114,12 @@ def upper(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         upper case values.
 
     Examples
@@ -6151,12 +6150,12 @@ def lower(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         lower case values.
 
     Examples
@@ -6187,12 +6186,12 @@ def ascii(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         numeric value.
 
     Examples
@@ -6223,12 +6222,12 @@ def base64(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         BASE64 encoding of string value.
 
     Examples
@@ -6259,12 +6258,12 @@ def unbase64(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         encoded string value.
 
     Examples
@@ -6297,12 +6296,12 @@ def ltrim(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         left trimmed values.
 
     Examples
@@ -6333,12 +6332,12 @@ def rtrim(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         right trimmed values.
 
     Examples
@@ -6369,12 +6368,12 @@ def trim(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         trimmed values from both sides.
 
     Examples
@@ -6408,12 +6407,12 @@ def concat_ws(sep: str, *cols: "AbstractColOrName") -> AbstractCol:
     ----------
     sep : str
         words separator.
-    cols : :class:`~pytab.Col` or str
+    cols : :class:`~osos.Col` or str
         list of AbstractCols to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         string of concatenated words.
 
     Examples
@@ -6439,14 +6438,14 @@ def decode(col: "AbstractColOrName", charset: str) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
     charset : str
         charset to use to decode to.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -6476,14 +6475,14 @@ def encode(col: "AbstractColOrName", charset: str) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
     charset : str
         charset to use to encode.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol for computed results.
 
     Examples
@@ -6513,14 +6512,14 @@ def format_number(col: "AbstractColOrName", d: int) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         the AbstractCol name of the numeric value to be formatted
     d : int
         the N decimal places
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol of formatted results.
 
     >>> spark.createDataFrame([(5,)], ['a']).select(format_number('a', 4).alias('v')).collect()
@@ -6544,12 +6543,12 @@ def format_string(format: str, *cols: "AbstractColOrName") -> AbstractCol:
     ----------
     format : str
         string that can contain embedded format tags and used as result AbstractCol's value
-    cols : :class:`~pytab.Col` or str
-        AbstractCol names or :class:`~pytab.Col`\\s to be used in formatting
+    cols : :class:`~osos.Col` or str
+        AbstractCol names or :class:`~osos.Col`\\s to be used in formatting
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         the AbstractCol of formatted results.
 
     Examples
@@ -6580,14 +6579,14 @@ def instr(str: "AbstractColOrName", substr: str) -> AbstractCol:
 
     Parameters
     ----------
-    str : :class:`~pytab.Col` or str
+    str : :class:`~osos.Col` or str
         target AbstractCol to work on.
     substr : str
         substring to look for.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         location of the first occurence of the substring as integer.
 
     Examples
@@ -6618,19 +6617,19 @@ def overlay(
 
     Parameters
     ----------
-    src : :class:`~pytab.Col` or str
+    src : :class:`~osos.Col` or str
         AbstractCol name or AbstractCol containing the string that will be replaced
-    replace : :class:`~pytab.Col` or str
+    replace : :class:`~osos.Col` or str
         AbstractCol name or AbstractCol containing the substitution string
-    pos : :class:`~pytab.Col` or str or int
+    pos : :class:`~osos.Col` or str or int
         AbstractCol name, AbstractCol, or int containing the starting position in src
-    len : :class:`~pytab.Col` or str or int, optional
+    len : :class:`~osos.Col` or str or int, optional
         AbstractCol name, AbstractCol, or int containing the number of bytes to replace in src
         string by 'replace' defaults to -1, which represents the length of the 'replace' string
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         string with replaced values.
 
     Examples
@@ -6644,12 +6643,12 @@ def overlay(
     [Row(overlayed='SPARK_COREL')]
     """
     if not isinstance(pos, (int, str, AbstractCol)):
-        raise PyTabTypeError(
+        raise ososTypeError(
             error_class="NOT_AbstractCol_OR_INT_OR_STR",
             message_parameters={"arg_name": "pos", "arg_type": type(pos).__name__},
         )
     if len is not None and not isinstance(len, (int, str, AbstractCol)):
-        raise PyTabTypeError(
+        raise ososTypeError(
             error_class="NOT_AbstractCol_OR_INT_OR_STR",
             message_parameters={"arg_name": "len", "arg_type": type(len).__name__},
         )
@@ -6678,16 +6677,16 @@ def sentences(
 
     Parameters
     ----------
-    string : :class:`~pytab.Col` or str
+    string : :class:`~osos.Col` or str
         a string to be split
-    language : :class:`~pytab.Col` or str, optional
+    language : :class:`~osos.Col` or str, optional
         a language of the locale
-    country : :class:`~pytab.Col` or str, optional
+    country : :class:`~osos.Col` or str, optional
         a country of the locale
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         arrays of split sentences.
 
     Examples
@@ -6734,7 +6733,7 @@ def substring(str: "AbstractColOrName", pos: int, len: int) -> AbstractCol:
 
     Parameters
     ----------
-    str : :class:`~pytab.Col` or str
+    str : :class:`~osos.Col` or str
         target AbstractCol to work on.
     pos : int
         starting position in str.
@@ -6743,7 +6742,7 @@ def substring(str: "AbstractColOrName", pos: int, len: int) -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         substring of given value.
 
     Examples
@@ -6771,7 +6770,7 @@ def substring_index(str: "AbstractColOrName", delim: str, count: int) -> Abstrac
 
     Parameters
     ----------
-    str : :class:`~pytab.Col` or str
+    str : :class:`~osos.Col` or str
         target AbstractCol to work on.
     delim : str
         delimiter of values.
@@ -6780,7 +6779,7 @@ def substring_index(str: "AbstractColOrName", delim: str, count: int) -> Abstrac
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         substring of given value.
 
     Examples
@@ -6806,14 +6805,14 @@ def levenshtein(left: "AbstractColOrName", right: "AbstractColOrName") -> Abstra
 
     Parameters
     ----------
-    left : :class:`~pytab.Col` or str
+    left : :class:`~osos.Col` or str
         first AbstractCol value.
-    right : :class:`~pytab.Col` or str
+    right : :class:`~osos.Col` or str
         second AbstractCol value.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         Levenshtein distance as integer value.
 
     Examples
@@ -6840,14 +6839,14 @@ def locate(substr: str, str: "AbstractColOrName", pos: int = 1) -> AbstractCol:
     ----------
     substr : str
         a string
-    str : :class:`~pytab.Col` or str
+    str : :class:`~osos.Col` or str
         a AbstractCol of :class:`pyspark.sql.types.StringType`
     pos : int, optional
         start position (zero based)
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         position of the substring.
 
     Notes
@@ -6877,7 +6876,7 @@ def lpad(col: "AbstractColOrName", len: int, pad: str) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
     len : int
         length of the final string.
@@ -6886,7 +6885,7 @@ def lpad(col: "AbstractColOrName", len: int, pad: str) -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         left padded result.
 
     Examples
@@ -6911,7 +6910,7 @@ def rpad(col: "AbstractColOrName", len: int, pad: str) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
     len : int
         length of the final string.
@@ -6920,7 +6919,7 @@ def rpad(col: "AbstractColOrName", len: int, pad: str) -> AbstractCol:
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         right padded result.
 
     Examples
@@ -6945,14 +6944,14 @@ def repeat(col: "AbstractColOrName", n: int) -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
     n : int
         number of times to repeat value.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         string with repeated values.
 
     Examples
@@ -6977,7 +6976,7 @@ def split(str: "AbstractColOrName", pattern: str, limit: int = -1) -> AbstractCo
 
     Parameters
     ----------
-    str : :class:`~pytab.Col` or str
+    str : :class:`~osos.Col` or str
         a string expression to split
     pattern : str
         a string representing a regular expression. The regex string should be
@@ -6996,7 +6995,7 @@ def split(str: "AbstractColOrName", pattern: str, limit: int = -1) -> AbstractCo
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         array of separated strings.
 
     Examples
@@ -7023,7 +7022,7 @@ def regexp_extract(str: "AbstractColOrName", pattern: str, idx: int) -> Abstract
 
     Parameters
     ----------
-    str : :class:`~pytab.Col` or str
+    str : :class:`~osos.Col` or str
         target AbstractCol to work on.
     pattern : str
         regex pattern to apply.
@@ -7032,7 +7031,7 @@ def regexp_extract(str: "AbstractColOrName", pattern: str, idx: int) -> Abstract
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         matched value specified by `idx` group id.
 
     Examples
@@ -7064,16 +7063,16 @@ def regexp_replace(
 
     Parameters
     ----------
-    string : :class:`~pytab.Col` or str
+    string : :class:`~osos.Col` or str
         AbstractCol name or AbstractCol containing the string value
-    pattern : :class:`~pytab.Col` or str
+    pattern : :class:`~osos.Col` or str
         AbstractCol object or str containing the regexp pattern
-    replacement : :class:`~pytab.Col` or str
+    replacement : :class:`~osos.Col` or str
         AbstractCol object or str containing the replacement
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         string with all substrings replaced.
 
     Examples
@@ -7107,12 +7106,12 @@ def initcap(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         string with all first letters are uppercase in each word.
 
     Examples
@@ -7136,12 +7135,12 @@ def soundex(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         SoundEx encoded string.
 
     Examples
@@ -7165,12 +7164,12 @@ def bin(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         binary representation of given value as string.
 
     Examples
@@ -7196,12 +7195,12 @@ def hex(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         hexadecimal representation of given value as string.
 
     Examples
@@ -7225,12 +7224,12 @@ def unhex(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         string representation of given hexadecimal value.
 
     Examples
@@ -7255,12 +7254,12 @@ def length(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         target AbstractCol to work on.
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         length of the value.
 
     Examples
@@ -7284,12 +7283,12 @@ def octet_length(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         Source AbstractCol or strings
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         Byte length of the col
 
     Examples
@@ -7315,12 +7314,12 @@ def bit_length(col: "AbstractColOrName") -> AbstractCol:
 
     Parameters
     ----------
-    col : :class:`~pytab.Col` or str
+    col : :class:`~osos.Col` or str
         Source AbstractCol or strings
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         Bit length of the col
 
     Examples
@@ -7348,7 +7347,7 @@ def translate(srcCol: "AbstractColOrName", matching: str, replace: str) -> Abstr
 
     Parameters
     ----------
-    srcCol : :class:`~pytab.Col` or str
+    srcCol : :class:`~osos.Col` or str
         Source AbstractCol or strings
     matching : str
         matching characters.
@@ -7358,7 +7357,7 @@ def translate(srcCol: "AbstractColOrName", matching: str, replace: str) -> Abstr
 
     Returns
     -------
-    :class:`~pytab.Col`
+    :class:`~osos.Col`
         replaced value.
 
     Examples

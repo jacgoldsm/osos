@@ -2,7 +2,9 @@ from pandas.api.indexers import BaseIndexer
 import pandas as pd
 import numpy as np
 from typing import Union
-from window import currentRow,unboundedFollowing,unboundedPreceding
+
+
+from .window import currentRow,unboundedFollowing,unboundedPreceding
 
 class SparkIndexer(BaseIndexer):
     
