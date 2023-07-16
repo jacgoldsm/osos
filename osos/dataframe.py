@@ -130,10 +130,13 @@ class DataFrame:
             if hasattr(expr, "_over"):
                 over = expr._over.reference if isinstance(expr._over, ForwardRef) else expr._over
                 assert isinstance(over, EmptyWindow) or over == 'EmptyWindow', "Cannot use window functions in aggregate method"
-            out.append(pd.Series(self._eval_recursive(expr)))
+            ser = pd.Series(self._eval_recursive(expr))
+            if ser.name is None:
+                ser.name = expr
+            out.append(ser)
         
 
-        newdf = DataFrame(pd.concat(out, axis=1).reset_index())
+        newdf = DataFrame(pd.concat(out, axis=0))
 
         return newdf
 
@@ -187,12 +190,25 @@ class DataFrame:
         elif 'outer' in how:
             how = 'outer'
 
-        out = pd.merge(self._data, other._data, how=how, on=by)
         # we have to be careful here as pandas will include records where
         # join columns are NaN in both the left and right datasets.
         # This will happen if *any* of the join columns are null
-        bad_records = out[by].isnull().any(axis=1)
-        return DataFrame(out[~bad_records].reindex())
+        if how == 'left':
+            out = pd.merge(self._data, other._data.dropna(subset=by), how=how, on=by)
+        elif how == 'right': 
+            out = pd.merge(self._data.dropna(subset=by), other._data,how=how,on=by)
+        elif how == 'inner':
+            out = pd.merge(self._data.dropna(subset=by), other._data.dropna(subset=by), how=how,on=by)
+        elif how == 'outer':
+            notnulls = pd.merge(self._data.dropna(subset=by), other._data.dropna(subset=by), how=how,on=by)
+            nulls_left = self._data[self._data[by].isnull().any(axis=1)]
+            nulls_right = other._data[other._data[by].isnull().any(axis=1)]
+            all_nulls = pd.concat([nulls_left,nulls_right],axis=0,ignore_index=True) # row bind nulls together
+            out = pd.concat([notnulls,all_nulls],axis=0,ignore_index=True) # row bind not null rows to null rows
+        return DataFrame(out)
+
+
+        
 
 
          

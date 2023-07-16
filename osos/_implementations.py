@@ -12,7 +12,7 @@ def get_rollspec(series: pd.Series,bottom: int, top: int,row_or_range='row',rang
     indexer = SparkIndexer(series,bottom,top,row_or_range,range_col).get_window_bounds()
     return indexer
 
-def _get_rolling_window(series, *args, **kwargs):
+def _get_rolling_window(series: pd.Series, *args, **kwargs):
     win = kwargs.pop("_over")
     df_len = series.size
     if isinstance(win,EmptyWindow):
@@ -44,9 +44,13 @@ def _get_rolling_window(series, *args, **kwargs):
 def sum_func(series: SeriesType, *args, **kwargs) -> pd.Series:
     if isinstance(kwargs['_over'], EmptyWindow):
         kwargs.pop("_over")
-        return series.sum(*args,**kwargs)
+        return pd.Series(series.sum(*args,**kwargs))
     roll = _get_rolling_window(series, *args, **kwargs)
-    return roll.sum().reset_index()[series.name].astype(series.dtype)
+    try:
+        return roll.sum().reset_index()[series.name].astype(series.dtype)
+    except pd.errors.IntCastingNaNError:
+        return roll.sum().reset_index()[series.name]
+
 
 
 
