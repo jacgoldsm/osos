@@ -1,5 +1,5 @@
 from numbers import Number
-from typing import Union,Iterable,TYPE_CHECKING
+from typing import Union, Iterable, TYPE_CHECKING
 import operator
 from copy import deepcopy
 import numpy as np
@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 
 NumOrCol = Union[Number, "AbstractColOrLit"]
 
-class Node:
 
+class Node:
     def __init__(self, name, args):
         self._name = name
         self._args = args
@@ -22,7 +22,7 @@ class Node:
 
     def __str__(root, markerStr="+- ", levelMarkers=None):
         levelMarkers = levelMarkers if levelMarkers is not None else []
-        emptyStr = " "*len(markerStr)
+        emptyStr = " " * len(markerStr)
         connectionStr = "|" + emptyStr[:-1]
         level = len(levelMarkers)
         mapper = lambda draw: connectionStr if draw else emptyStr
@@ -32,12 +32,11 @@ class Node:
         for i, child in enumerate(root._args):
             isLast = i == len(root._args) - 1
             out += Node.__str__(child, markerStr, [*levelMarkers, not isLast])
-        
+
         if hasattr(root, "_over"):
             out += "Over: " + str(root._over)
 
         return out
-
 
     def __add__(self, other: NumOrCol):
         return BinaryOp(operator.add, self, other)
@@ -88,15 +87,16 @@ class ColumnList(Node):
 class FuncOrOp(Node):
     pass
 
+
 class ForwardRef:
-    def __init__(self, reference: str, args: Union[list,None] = None):
+    def __init__(self, reference: str, args: Union[list, None] = None):
         self.reference = reference
         self.args = args if args is not None else []
 
 
 class Func(FuncOrOp):
     def __init__(self, name, *args, over=ForwardRef("EmptyWindow")):
-        
+
         self._name = name
         self._args = args
         self._over = over
@@ -105,31 +105,37 @@ class Func(FuncOrOp):
         return self.__class__(
             self._name,
             *self._args,
-            over = partition,
+            over=partition,
         )
 
 
 class FuncWithNoArgs(Func):
     pass
 
+
 class Op(FuncOrOp):
     pass
+
 
 class UnaryOp(Op):
     def __init__(self, name, arg):
         self._name = name
         self._args = (arg,)
 
+
 class BinaryOp(Op):
     def __init__(self, name, lvalue, rvalue):
         self._name = name
         self._rvalue = rvalue
         self._lvalue = lvalue
-        self._args = (lvalue, rvalue,)
+        self._args = (
+            lvalue,
+            rvalue,
+        )
         self._over = ForwardRef("EmptyWindow")
 
-class AbstractColOrLit(Node):
 
+class AbstractColOrLit(Node):
     def __init__(self, name):
         self._name = name
         self._args = ()
@@ -137,21 +143,27 @@ class AbstractColOrLit(Node):
     def __str__(self):
         return f"""<Column Name>: {self._name}"""
 
+
 class AbstractCol(AbstractColOrLit):
     pass
 
+
 class AbstractLit(AbstractColOrLit):
     pass
+
 
 class SimpleContainer(Node):
     def __bool__(self):
         return bool(self._args)
 
+
 class NameString(SimpleContainer):
     pass
 
+
 class ArbitraryFunction(SimpleContainer):
     pass
+
 
 class ArgList(SimpleContainer):
     pass
@@ -159,16 +171,6 @@ class ArgList(SimpleContainer):
 
 AbstractColOrName = Union[AbstractCol, str]
 
+
 def make_series_from_literal(value, length):
     return pd.Series(np.full(length, value))
-
-
-
-
-
-
-    
-
-
-
-

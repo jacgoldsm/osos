@@ -1,9 +1,10 @@
 from .column import (
-    AbstractCol, 
-    AbstractColOrName, 
-    AbstractLit, 
-    AbstractColOrLit, 
-    Func, ArbitraryFunction,
+    AbstractCol,
+    AbstractColOrName,
+    AbstractLit,
+    AbstractColOrLit,
+    Func,
+    ArbitraryFunction,
     ArgList,
 )
 from .exceptions import AnalysisException, OsosValueError, OsosTypeError
@@ -12,6 +13,7 @@ from .dataframe import DataFrame
 
 from typing import Any, Optional, Union, List, Tuple, overload, Callable
 from warnings import warn
+
 # all the public names in _implementations end in "_func"
 from ._implementations import *
 
@@ -19,10 +21,13 @@ from ._implementations import *
 def _to_seq(iterable, iter_type):
     return [iter_type(i) for i in iterable]
 
+
 def col(name: str):
     return AbstractCol(name)
 
+
 try_remote_functions = lambda callable: callable
+
 
 @try_remote_functions
 def lit(col: Any) -> AbstractCol:
@@ -68,6 +73,7 @@ def lit(col: Any) -> AbstractCol:
     +--------------+
     """
     return AbstractLit(col)
+
 
 def col(col: str) -> AbstractCol:
     """
@@ -150,7 +156,6 @@ def asc(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def desc(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -189,7 +194,6 @@ def desc(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def sqrt(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -223,7 +227,6 @@ def sqrt(col: "AbstractColOrName") -> AbstractCol:
     return Func(sqrt_func, col)
 
 
-
 @try_remote_functions
 def abs(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -255,7 +258,6 @@ def abs(col: "AbstractColOrName") -> AbstractCol:
     +-------+
     """
     return Func(abs_func, col)
-
 
 
 @try_remote_functions
@@ -296,7 +298,6 @@ def mode(col: "AbstractColOrName") -> AbstractCol:
     return Func(mode_func, col)
 
 
-
 @try_remote_functions
 def max(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -328,7 +329,6 @@ def max(col: "AbstractColOrName") -> AbstractCol:
     +-------+
     """
     return Func(max_func, col)
-
 
 
 @try_remote_functions
@@ -363,9 +363,8 @@ def min(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(min_func, col)
 
+    return Func(min_func, col)
 
 
 @try_remote_functions
@@ -406,9 +405,8 @@ def max_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(max_by_func, col, ord)
 
+    return Func(max_by_func, col, ord)
 
 
 @try_remote_functions
@@ -449,7 +447,7 @@ def min_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
+
     return Func(min_by_func, col, ord)
 
 
@@ -487,9 +485,8 @@ def count(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(count_func, col)
 
+    return Func(count_func, col)
 
 
 @try_remote_functions
@@ -524,9 +521,8 @@ def sum(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(sum_func, col)
 
+    return Func(sum_func, col)
 
 
 @try_remote_functions
@@ -561,9 +557,8 @@ def avg(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(avg_func, col)
 
+    return Func(avg_func, col)
 
 
 @try_remote_functions
@@ -599,9 +594,8 @@ def mean(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(avg_func, col)
 
+    return Func(avg_func, col)
 
 
 @try_remote_functions
@@ -641,9 +635,8 @@ def median(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(median_func, col)
 
+    return Func(median_func, col)
 
 
 @try_remote_functions
@@ -662,7 +655,7 @@ def sumDistinct(col: "AbstractColOrName") -> AbstractCol:
     warn("Deprecated in 3.2, use sum_distinct instead.", FutureWarning)
     if isinstance(col, str):
         col = AbstractCol(col)
-    
+
     return Func(sum_distinct_func, col)
 
 
@@ -698,9 +691,8 @@ def sum_distinct(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(sum_distict_func, col)
 
+    return Func(sum_distict_func, col)
 
 
 @try_remote_functions
@@ -738,9 +730,8 @@ def product(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(product_func, col)
 
+    return Func(product_func, col)
 
 
 @try_remote_functions
@@ -776,9 +767,8 @@ def acos(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(acos_func, col)
 
+    return Func(acos_func, col)
 
 
 @try_remote_functions
@@ -814,9 +804,8 @@ def acosh(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(acosh_func, col)
 
+    return Func(acosh_func, col)
 
 
 @try_remote_functions
@@ -852,9 +841,8 @@ def asin(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(asin_func, col)
 
+    return Func(asin_func, col)
 
 
 @try_remote_functions
@@ -889,9 +877,8 @@ def asinh(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(asinh_func, col)
 
+    return Func(asinh_func, col)
 
 
 @try_remote_functions
@@ -926,9 +913,8 @@ def atan(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(atan_func, col)
 
+    return Func(atan_func, col)
 
 
 @try_remote_functions
@@ -964,9 +950,8 @@ def atanh(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(atanh_func, col)
 
+    return Func(atanh_func, col)
 
 
 @try_remote_functions
@@ -1001,9 +986,8 @@ def cbrt(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(cbrt_func, col)
 
+    return Func(cbrt_func, col)
 
 
 @try_remote_functions
@@ -1038,9 +1022,8 @@ def ceil(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(ceil_func, col)
 
+    return Func(ceil_func, col)
 
 
 @try_remote_functions
@@ -1072,9 +1055,8 @@ def cos(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(cos_func, col)
 
+    return Func(cos_func, col)
 
 
 @try_remote_functions
@@ -1105,9 +1087,8 @@ def cosh(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(cosh_func, col)
 
+    return Func(cosh_func, col)
 
 
 @try_remote_functions
@@ -1139,9 +1120,8 @@ def cot(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(cot_func, col)
 
+    return Func(cot_func, col)
 
 
 @try_remote_functions
@@ -1173,9 +1153,8 @@ def csc(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(csc_func, col)
 
+    return Func(csc_func, col)
 
 
 @try_remote_functions
@@ -1210,9 +1189,8 @@ def exp(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(exp_func, col)
 
+    return Func(exp_func, col)
 
 
 @try_remote_functions
@@ -1243,9 +1221,8 @@ def expm1(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(expm1_func, col)
 
+    return Func(expm1_func, col)
 
 
 @try_remote_functions
@@ -1280,9 +1257,8 @@ def floor(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(floor_func, col)
 
+    return Func(floor_func, col)
 
 
 @try_remote_functions
@@ -1314,7 +1290,7 @@ def log(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
+
     return Func(log_func, col, np.e)
 
 
@@ -1350,9 +1326,8 @@ def log10(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(log_func, col, 10)
 
+    return Func(log_func, col, 10)
 
 
 @try_remote_functions
@@ -1389,9 +1364,8 @@ def log1p(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(log1p_func, col)
 
+    return Func(log1p_func, col)
 
 
 @try_remote_functions
@@ -1434,9 +1408,8 @@ def rint(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(rint_func, col)
 
+    return Func(rint_func, col)
 
 
 @try_remote_functions
@@ -1467,9 +1440,8 @@ def sec(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(sec_func, col)
 
+    return Func(sec_func, col)
 
 
 @try_remote_functions
@@ -1511,9 +1483,8 @@ def signum(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(signum_func, col)
 
+    return Func(signum_func, col)
 
 
 @try_remote_functions
@@ -1545,9 +1516,8 @@ def sin(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(sin_func, col)
 
+    return Func(sin_func, col)
 
 
 @try_remote_functions
@@ -1579,9 +1549,8 @@ def sinh(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(sinh_func, col)
 
+    return Func(sinh_func, col)
 
 
 @try_remote_functions
@@ -1613,9 +1582,8 @@ def tan(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(tan_func, col)
 
+    return Func(tan_func, col)
 
 
 @try_remote_functions
@@ -1648,9 +1616,8 @@ def tanh(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(tanh_func, col)
 
+    return Func(tanh_func, col)
 
 
 @try_remote_functions
@@ -1668,7 +1635,6 @@ def toDegrees(col: "AbstractColOrName") -> AbstractCol:
     return degrees_func(col)
 
 
-
 @try_remote_functions
 def toRadians(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -1682,7 +1648,6 @@ def toRadians(col: "AbstractColOrName") -> AbstractCol:
     """
     warn("Deprecated in 2.1, use radians instead.", FutureWarning)
     return radians_func(col)
-
 
 
 @try_remote_functions
@@ -1700,7 +1665,6 @@ def bitwiseNOT(col: "AbstractColOrName") -> AbstractCol:
     """
     warn("Deprecated in 3.2, use bitwise_not instead.", FutureWarning)
     return bitwise_not_func(col)
-
 
 
 @try_remote_functions
@@ -1741,9 +1705,8 @@ def bitwise_not(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(bitwise_not_func, col)
 
+    return Func(bitwise_not_func, col)
 
 
 @try_remote_functions
@@ -1784,9 +1747,8 @@ def asc_nulls_first(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(asc_func, col, nulls_first=True)
 
+    return Func(asc_func, col, nulls_first=True)
 
 
 @try_remote_functions
@@ -1827,9 +1789,8 @@ def asc_nulls_last(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(asc_func, col, nulls_first=False)
 
+    return Func(asc_func, col, nulls_first=False)
 
 
 @try_remote_functions
@@ -1870,9 +1831,8 @@ def desc_nulls_first(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(desc_func, col, nulls_first=True)
 
+    return Func(desc_func, col, nulls_first=True)
 
 
 @try_remote_functions
@@ -1913,9 +1873,8 @@ def desc_nulls_last(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(desc_func, col, nulls_first=False)
 
+    return Func(desc_func, col, nulls_first=False)
 
 
 @try_remote_functions
@@ -1946,9 +1905,8 @@ def stddev(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(stdev_func, col)
 
+    return Func(stdev_func, col)
 
 
 @try_remote_functions
@@ -1980,9 +1938,8 @@ def stddev_samp(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(stdev_samp_func, col)
 
+    return Func(stdev_samp_func, col)
 
 
 @try_remote_functions
@@ -2014,9 +1971,8 @@ def stddev_pop(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(stdev_func, col)
 
+    return Func(stdev_func, col)
 
 
 @try_remote_functions
@@ -2051,9 +2007,8 @@ def variance(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(variance_func, col)
 
+    return Func(variance_func, col)
 
 
 @try_remote_functions
@@ -2089,9 +2044,8 @@ def var_samp(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(var_samp_func, col)
 
+    return Func(var_samp_func, col)
 
 
 @try_remote_functions
@@ -2122,9 +2076,8 @@ def var_pop(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(variance_func, col)
 
+    return Func(variance_func, col)
 
 
 @try_remote_functions
@@ -2155,9 +2108,8 @@ def skewness(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(skewness_func, col)
 
+    return Func(skewness_func, col)
 
 
 @try_remote_functions
@@ -2192,9 +2144,8 @@ def kurtosis(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(kurtosis_func, col)
 
+    return Func(kurtosis_func, col)
 
 
 @try_remote_functions
@@ -2231,7 +2182,6 @@ def collect_list(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def collect_set(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -2266,7 +2216,6 @@ def collect_set(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def degrees(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -2297,9 +2246,8 @@ def degrees(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(degrees_func, col)
 
+    return Func(degrees_func, col)
 
 
 @try_remote_functions
@@ -2331,13 +2279,14 @@ def radians(col: "AbstractColOrName") -> AbstractCol:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
+
     return Func(radians_func, col)
 
 
-
 @try_remote_functions
-def atan2(col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]) -> AbstractCol:
+def atan2(
+    col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]
+) -> AbstractCol:
     """
     .. versionadded:: 1.4.0
 
@@ -2371,13 +2320,14 @@ def atan2(col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrNam
 
     if isinstance(col1, str):
         col = AbstractCol(col)
-    
+
     return Func(atan2_func, col1, col2)
 
 
-
 @try_remote_functions
-def hypot(col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]) -> AbstractCol:
+def hypot(
+    col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]
+) -> AbstractCol:
     """
     Computes ``sqrt(a^2 + b^2)`` without intermediate overflow or underflow.
 
@@ -2409,13 +2359,14 @@ def hypot(col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrNam
 
     if isinstance(col1, str):
         col = AbstractCol(col)
-    
+
     return Func(hypot_func, col1, col2)
 
 
-
 @try_remote_functions
-def pow(col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]) -> AbstractCol:
+def pow(
+    col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]
+) -> AbstractCol:
     """
     Returns the value of the first argument raised to the power of the second argument.
 
@@ -2447,13 +2398,15 @@ def pow(col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName"
 
     if isinstance(col1, str):
         col = AbstractCol(col)
-    
+
     return Func(pow_func, col1, col2)
 
 
-
 @try_remote_functions
-def pmod(dividend: Union["AbstractColOrName", float], divisor: Union["AbstractColOrName", float]) -> AbstractCol:
+def pmod(
+    dividend: Union["AbstractColOrName", float],
+    divisor: Union["AbstractColOrName", float],
+) -> AbstractCol:
     """
     Returns the positive value of dividend mod divisor.
 
@@ -2503,9 +2456,8 @@ def pmod(dividend: Union["AbstractColOrName", float], divisor: Union["AbstractCo
 
     if isinstance(col1, str):
         col = AbstractCol(col)
-    
-    return Func(pmod_func, col1, col2)
 
+    return Func(pmod_func, col1, col2)
 
 
 @try_remote_functions
@@ -2538,7 +2490,6 @@ def row_number() -> AbstractCol:
     +---+----------+
     """
     return row_number_func()
-
 
 
 @try_remote_functions
@@ -2584,7 +2535,6 @@ def dense_rank() -> AbstractCol:
     return dense_rank_func()
 
 
-
 @try_remote_functions
 def rank() -> AbstractCol:
     """
@@ -2628,7 +2578,6 @@ def rank() -> AbstractCol:
     return rank_func()
 
 
-
 @try_remote_functions
 def cume_dist() -> AbstractCol:
     """
@@ -2662,7 +2611,6 @@ def cume_dist() -> AbstractCol:
     +-----+---+
     """
     return cume_dist_func()
-
 
 
 @try_remote_functions
@@ -2700,9 +2648,10 @@ def percent_rank() -> AbstractCol:
     return percent_rank_func()
 
 
-
 @try_remote_functions
-def approxCountDistinct(col: "AbstractColOrName", rsd: Optional[float] = None) -> AbstractCol:
+def approxCountDistinct(
+    col: "AbstractColOrName", rsd: Optional[float] = None
+) -> AbstractCol:
     """
     .. versionadded:: 1.3.0
 
@@ -2716,9 +2665,10 @@ def approxCountDistinct(col: "AbstractColOrName", rsd: Optional[float] = None) -
     return approx_count_distinct_func(col, rsd)
 
 
-
 @try_remote_functions
-def approx_count_distinct(col: "AbstractColOrName", rsd: Optional[float] = None) -> AbstractCol:
+def approx_count_distinct(
+    col: "AbstractColOrName", rsd: Optional[float] = None
+) -> AbstractCol:
     """Aggregate function: returns a new :class:`~osos.Col` for approximate distinct count
     of AbstractCol `col`.
 
@@ -2754,9 +2704,8 @@ def approx_count_distinct(col: "AbstractColOrName", rsd: Optional[float] = None)
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    
-    return Func(approx_count_distinct_func, col, rsd or 0.05)
 
+    return Func(approx_count_distinct_func, col, rsd or 0.05)
 
 
 @try_remote_functions
@@ -2789,9 +2738,7 @@ def broadcast(df: DataFrame) -> DataFrame:
     +-----+---+
     """
 
-    
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -2846,9 +2793,8 @@ def coalesce(*cols: "AbstractColOrName") -> AbstractCol:
     for col in cols:
         if isinstance(col, str):
             col = AbstractCol(col)
-    
-    return Func(coalesce_func, cols)
 
+    return Func(coalesce_func, cols)
 
 
 @try_remote_functions
@@ -2884,7 +2830,6 @@ def corr(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def covar_pop(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
     """Returns a new :class:`~osos.Col` for the population covariance of ``col1`` and
@@ -2916,7 +2861,6 @@ def covar_pop(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractC
     [Row(c=0.0)]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -2952,7 +2896,6 @@ def covar_samp(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Abstract
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def countDistinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> AbstractCol:
     """Returns a new :class:`~osos.Col` for distinct count of ``col`` or ``cols``.
@@ -2966,7 +2909,6 @@ def countDistinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Abstr
         Supports Spark Connect.
     """
     return count_distinct(col, *cols)
-
 
 
 @try_remote_functions
@@ -3013,10 +2955,7 @@ def count_distinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Abst
     |                           4|
     +----------------------------+
     """
-    raise NotImplemented(
-        "count_distinct", AbstractCol(col), _to_seq(cols, AbstractCol)
-    )
-
+    raise NotImplemented("count_distinct", AbstractCol(col), _to_seq(cols, AbstractCol))
 
 
 @try_remote_functions
@@ -3073,7 +3012,6 @@ def first(col: "AbstractColOrName", ignorenulls: bool = False) -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def grouping(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -3108,7 +3046,6 @@ def grouping(col: "AbstractColOrName") -> AbstractCol:
     +-----+--------------+--------+
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -3159,7 +3096,6 @@ def grouping_id(*cols: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def input_file_name() -> AbstractCol:
     """
@@ -3184,7 +3120,6 @@ def input_file_name() -> AbstractCol:
     Row(input_file_name()='file:///...')
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -3220,7 +3155,6 @@ def isnan(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def isnull(col: "AbstractColOrName") -> AbstractCol:
     """An expression that returns true if the AbstractCol is null.
@@ -3252,7 +3186,6 @@ def isnull(col: "AbstractColOrName") -> AbstractCol:
     +----+----+-----+-----+
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -3309,7 +3242,6 @@ def last(col: "AbstractColOrName", ignorenulls: bool = False) -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def monotonically_increasing_id() -> AbstractCol:
     """A AbstractCol that generates monotonically increasing 64-bit integers.
@@ -3346,7 +3278,6 @@ def monotonically_increasing_id() -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def nanvl(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
     """Returns col1 if it is not NaN, or col2 if col1 is NaN.
@@ -3377,7 +3308,6 @@ def nanvl(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
     [Row(r1=1.0, r2=1.0), Row(r1=2.0, r2=2.0)]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -3434,7 +3364,7 @@ def percentile_approx(
      |-- key: long (nullable = true)
      |-- median: double (nullable = true)
     """
-    
+
     if isinstance(percentage, AbstractCol):
         # Already a AbstractCol
         percentage = AbstractCol(percentage)
@@ -3449,7 +3379,6 @@ def percentile_approx(
     )
 
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -3493,7 +3422,6 @@ def rand(seed: Optional[int] = None) -> AbstractCol:
         raise NotImplementedError
 
 
-
 @try_remote_functions
 def randn(seed: Optional[int] = None) -> AbstractCol:
     """Generates a AbstractCol with independent and identically distributed (i.i.d.) samples from
@@ -3535,7 +3463,6 @@ def randn(seed: Optional[int] = None) -> AbstractCol:
         raise NotImplementedError
 
 
-
 @try_remote_functions
 def round(col: "AbstractColOrName", scale: int = 0) -> AbstractCol:
     """
@@ -3567,7 +3494,6 @@ def round(col: "AbstractColOrName", scale: int = 0) -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def bround(col: "AbstractColOrName", scale: int = 0) -> AbstractCol:
     """
@@ -3597,7 +3523,6 @@ def bround(col: "AbstractColOrName", scale: int = 0) -> AbstractCol:
     [Row(r=2.0)]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -3645,7 +3570,6 @@ def shiftleft(col: "AbstractColOrName", numBits: int) -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def shiftRight(col: "AbstractColOrName", numBits: int) -> AbstractCol:
     """(Signed) shift the given value numBits right.
@@ -3689,7 +3613,6 @@ def shiftright(col: "AbstractColOrName", numBits: int) -> AbstractCol:
     [Row(r=21)]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -3738,7 +3661,6 @@ def shiftrightunsigned(col: "AbstractColOrName", numBits: int) -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def spark_partition_id() -> AbstractCol:
     """A AbstractCol for partition ID.
@@ -3764,7 +3686,6 @@ def spark_partition_id() -> AbstractCol:
     [Row(pid=0), Row(pid=0)]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -3800,20 +3721,24 @@ def expr(str: str) -> AbstractCol:
     raise NotImplementedError
 
 
-
 @overload
 def struct(*cols: "AbstractColOrName") -> AbstractCol:
     ...
 
 
 @overload
-def struct(__cols: Union[List["AbstractColOrName"], Tuple["AbstractColOrName", ...]]) -> AbstractCol:
+def struct(
+    __cols: Union[List["AbstractColOrName"], Tuple["AbstractColOrName", ...]]
+) -> AbstractCol:
     ...
 
 
 @try_remote_functions
 def struct(
-    *cols: Union["AbstractColOrName", Union[List["AbstractColOrName"], Tuple["AbstractColOrName", ...]]]
+    *cols: Union[
+        "AbstractColOrName",
+        Union[List["AbstractColOrName"], Tuple["AbstractColOrName", ...]],
+    ]
 ) -> AbstractCol:
     """Creates a new struct AbstractCol.
 
@@ -3843,7 +3768,6 @@ def struct(
     if len(cols) == 1 and isinstance(cols[0], (list, set)):
         cols = cols[0]  # type: ignore[assignment]
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -3881,7 +3805,6 @@ def greatest(*cols: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def least(*cols: "AbstractColOrName") -> AbstractCol:
     """
@@ -3915,7 +3838,6 @@ def least(*cols: "AbstractColOrName") -> AbstractCol:
             message_parameters={"func_name": "least", "num_cols": "2"},
         )
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -3966,12 +3888,14 @@ def when(condition: AbstractCol, value: Any) -> AbstractCol:
     if not isinstance(condition, AbstractCol):
         raise ososTypeError(
             error_class="NOT_AbstractCol",
-            message_parameters={"arg_name": "condition", "arg_type": type(condition).__name__},
+            message_parameters={
+                "arg_name": "condition",
+                "arg_type": type(condition).__name__,
+            },
         )
     v = value._jc if isinstance(value, AbstractCol) else value
 
     raise NotImplementedError
-
 
 
 @overload  # type: ignore[no-redef]
@@ -3985,7 +3909,9 @@ def log(arg1: float, arg2: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def log(arg1: Union["AbstractColOrName", float], arg2: Optional["AbstractColOrName"] = None) -> AbstractCol:
+def log(
+    arg1: Union["AbstractColOrName", float], arg2: Optional["AbstractColOrName"] = None
+) -> AbstractCol:
     """Returns the first argument-based logarithm of the second argument.
 
     If there is only one argument, then this takes the natural logarithm of the argument.
@@ -4036,7 +3962,6 @@ def log(arg1: Union["AbstractColOrName", float], arg2: Optional["AbstractColOrNa
         raise NotImplementedError
 
 
-
 @try_remote_functions
 def log2(col: "AbstractColOrName") -> AbstractCol:
     """Returns the base-2 logarithm of the argument.
@@ -4067,7 +3992,6 @@ def log2(col: "AbstractColOrName") -> AbstractCol:
     +----+
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -4103,7 +4027,6 @@ def conv(col: "AbstractColOrName", fromBase: int, toBase: int) -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def factorial(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -4133,12 +4056,13 @@ def factorial(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 # ---------------  Window functions ------------------------
 
 
 @try_remote_functions
-def lag(col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = None) -> AbstractCol:
+def lag(
+    col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = None
+) -> AbstractCol:
     """
     Window function: returns the value that is `offset` rows before the current row, and
     `default` if there is less than `offset` rows before the current row. For example,
@@ -4218,9 +4142,10 @@ def lag(col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = None
     raise NotImplementedError
 
 
-
 @try_remote_functions
-def lead(col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = None) -> AbstractCol:
+def lead(
+    col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = None
+) -> AbstractCol:
     """
     Window function: returns the value that is `offset` rows after the current row, and
     `default` if there is less than `offset` rows after the current row. For example,
@@ -4300,9 +4225,10 @@ def lead(col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = Non
     raise NotImplementedError
 
 
-
 @try_remote_functions
-def nth_value(col: "AbstractColOrName", offset: int, ignoreNulls: Optional[bool] = False) -> AbstractCol:
+def nth_value(
+    col: "AbstractColOrName", offset: int, ignoreNulls: Optional[bool] = False
+) -> AbstractCol:
     """
     Window function: returns the value that is the `offset`\\th row of the window frame
     (counting from 1), and `null` if the size of window frame is less than `offset` rows.
@@ -4375,7 +4301,6 @@ def nth_value(col: "AbstractColOrName", offset: int, ignoreNulls: Optional[bool]
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def ntile(n: int) -> AbstractCol:
     """
@@ -4434,7 +4359,6 @@ def ntile(n: int) -> AbstractCol:
     raise NotImplementedError
 
 
-
 # ---------------------- Date/Timestamp functions ------------------------------
 
 
@@ -4467,7 +4391,6 @@ def current_date() -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def current_timestamp() -> AbstractCol:
     """
@@ -4495,7 +4418,6 @@ def current_timestamp() -> AbstractCol:
     +-----------------------+
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -4526,7 +4448,6 @@ def localtimestamp() -> AbstractCol:
     +-----------------------+
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -4570,7 +4491,6 @@ def date_format(date: "AbstractColOrName", format: str) -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def year(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -4598,7 +4518,6 @@ def year(col: "AbstractColOrName") -> AbstractCol:
     [Row(year=2015)]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -4630,7 +4549,6 @@ def quarter(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def month(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -4658,7 +4576,6 @@ def month(col: "AbstractColOrName") -> AbstractCol:
     [Row(month=4)]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -4691,7 +4608,6 @@ def dayofweek(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def dayofmonth(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -4721,7 +4637,6 @@ def dayofmonth(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def dayofyear(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -4749,7 +4664,6 @@ def dayofyear(col: "AbstractColOrName") -> AbstractCol:
     [Row(day=98)]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -4782,7 +4696,6 @@ def hour(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def minute(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -4813,7 +4726,6 @@ def minute(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def second(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -4842,7 +4754,6 @@ def second(col: "AbstractColOrName") -> AbstractCol:
     [Row(second=15)]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -4876,9 +4787,10 @@ def weekofyear(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
-def make_date(year: "AbstractColOrName", month: "AbstractColOrName", day: "AbstractColOrName") -> AbstractCol:
+def make_date(
+    year: "AbstractColOrName", month: "AbstractColOrName", day: "AbstractColOrName"
+) -> AbstractCol:
     """
     Returns a AbstractCol with a date built from the year, month and day AbstractCols.
 
@@ -4910,9 +4822,10 @@ def make_date(year: "AbstractColOrName", month: "AbstractColOrName", day: "Abstr
     raise NotImplementedError
 
 
-
 @try_remote_functions
-def date_add(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) -> AbstractCol:
+def date_add(
+    start: "AbstractColOrName", days: Union["AbstractColOrName", int]
+) -> AbstractCol:
     """
     Returns the date that is `days` days after `start`. If `days` is a negative value
     then these amount of days will be deducted from `start`.
@@ -4949,9 +4862,10 @@ def date_add(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) 
     raise NotImplementedError
 
 
-
 @try_remote_functions
-def date_sub(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) -> AbstractCol:
+def date_sub(
+    start: "AbstractColOrName", days: Union["AbstractColOrName", int]
+) -> AbstractCol:
     """
     Returns the date that is `days` days before `start`. If `days` is a negative value
     then these amount of days will be added to `start`.
@@ -4988,7 +4902,6 @@ def date_sub(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) 
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def datediff(end: "AbstractColOrName", start: "AbstractColOrName") -> AbstractCol:
     """
@@ -5020,9 +4933,10 @@ def datediff(end: "AbstractColOrName", start: "AbstractColOrName") -> AbstractCo
     raise NotImplementedError
 
 
-
 @try_remote_functions
-def add_months(start: "AbstractColOrName", months: Union["AbstractColOrName", int]) -> AbstractCol:
+def add_months(
+    start: "AbstractColOrName", months: Union["AbstractColOrName", int]
+) -> AbstractCol:
     """
     Returns the date that is `months` months after `start`. If `months` is a negative value
     then these amount of months will be deducted from the `start`.
@@ -5059,9 +4973,10 @@ def add_months(start: "AbstractColOrName", months: Union["AbstractColOrName", in
     raise NotImplementedError
 
 
-
 @try_remote_functions
-def months_between(date1: "AbstractColOrName", date2: "AbstractColOrName", roundOff: bool = True) -> AbstractCol:
+def months_between(
+    date1: "AbstractColOrName", date2: "AbstractColOrName", roundOff: bool = True
+) -> AbstractCol:
     """
     Returns number of months between dates date1 and date2.
     If date1 is later than date2, then the result is positive.
@@ -5099,7 +5014,6 @@ def months_between(date1: "AbstractColOrName", date2: "AbstractColOrName", round
     raise NotImplemented(
         "months_between", AbstractCol(date1), AbstractCol(date2), roundOff
     )
-
 
 
 @try_remote_functions
@@ -5142,7 +5056,6 @@ def to_date(col: "AbstractColOrName", format: Optional[str] = None) -> AbstractC
         raise NotImplementedError
     else:
         raise NotImplementedError
-
 
 
 @overload
@@ -5197,7 +5110,6 @@ def to_timestamp(col: "AbstractColOrName", format: Optional[str] = None) -> Abst
         raise NotImplementedError
 
 
-
 @try_remote_functions
 def trunc(date: "AbstractColOrName", format: str) -> AbstractCol:
     """
@@ -5231,7 +5143,6 @@ def trunc(date: "AbstractColOrName", format: str) -> AbstractCol:
     [Row(month=datetime.date(1997, 2, 1))]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -5271,7 +5182,6 @@ def date_trunc(format: str, timestamp: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def next_day(date: "AbstractColOrName", dayOfWeek: str) -> AbstractCol:
     """
@@ -5305,7 +5215,6 @@ def next_day(date: "AbstractColOrName", dayOfWeek: str) -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def last_day(date: "AbstractColOrName") -> AbstractCol:
     """
@@ -5335,9 +5244,10 @@ def last_day(date: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
-def from_unixtime(timestamp: "AbstractColOrName", format: str = "yyyy-MM-dd HH:mm:ss") -> AbstractCol:
+def from_unixtime(
+    timestamp: "AbstractColOrName", format: str = "yyyy-MM-dd HH:mm:ss"
+) -> AbstractCol:
     """
     Converts the number of seconds from unix epoch (1970-01-01 00:00:00 UTC) to a string
     representing the timestamp of that moment in the current system time zone in the given
@@ -5369,7 +5279,6 @@ def from_unixtime(timestamp: "AbstractColOrName", format: str = "yyyy-MM-dd HH:m
     >>> spark.conf.unset("spark.sql.session.timeZone")
     """
     raise NotImplementedError
-
 
 
 @overload
@@ -5423,9 +5332,10 @@ def unix_timestamp(
     raise NotImplementedError
 
 
-
 @try_remote_functions
-def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") -> AbstractCol:
+def from_utc_timestamp(
+    timestamp: "AbstractColOrName", tz: "AbstractColOrName"
+) -> AbstractCol:
     """
     This is a common function for databases supporting TIMESTAMP WITHOUT TIMEZONE. This function
     takes a timestamp which is timezone-agnostic, and interprets it as a timestamp in UTC, and
@@ -5478,9 +5388,10 @@ def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") 
     raise NotImplementedError
 
 
-
 @try_remote_functions
-def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") -> AbstractCol:
+def to_utc_timestamp(
+    timestamp: "AbstractColOrName", tz: "AbstractColOrName"
+) -> AbstractCol:
     """
     This is a common function for databases supporting TIMESTAMP WITHOUT TIMEZONE. This function
     takes a timestamp which is timezone-agnostic, and interprets it as a timestamp in the given
@@ -5533,7 +5444,6 @@ def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") ->
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def timestamp_seconds(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -5573,7 +5483,6 @@ def timestamp_seconds(col: "AbstractColOrName") -> AbstractCol:
     """
 
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -5650,7 +5559,10 @@ def window(
         if not field or type(field) is not str:
             raise ososTypeError(
                 error_class="NOT_STR",
-                message_parameters={"arg_name": fieldName, "arg_type": type(field).__name__},
+                message_parameters={
+                    "arg_name": fieldName,
+                    "arg_type": type(field).__name__,
+                },
             )
 
     time_col = AbstractCol(timeAbstractCol)
@@ -5667,7 +5579,6 @@ def window(
         raise NotImplementedError
     else:
         raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -5720,9 +5631,10 @@ def window_time(
     raise NotImplementedError
 
 
-
 @try_remote_functions
-def session_window(timeAbstractCol: "AbstractColOrName", gapDuration: Union[AbstractCol, str]) -> AbstractCol:
+def session_window(
+    timeAbstractCol: "AbstractColOrName", gapDuration: Union[AbstractCol, str]
+) -> AbstractCol:
     """
     Generates session window given a timestamp specifying AbstractCol.
     Session window is one of dynamic windows, which means the length of window is varying
@@ -5777,14 +5689,18 @@ def session_window(timeAbstractCol: "AbstractColOrName", gapDuration: Union[Abst
         if field is None or not isinstance(field, (str, AbstractCol)):
             raise ososTypeError(
                 error_class="NOT_AbstractCol_OR_STR",
-                message_parameters={"arg_name": fieldName, "arg_type": type(field).__name__},
+                message_parameters={
+                    "arg_name": fieldName,
+                    "arg_type": type(field).__name__,
+                },
             )
 
     time_col = AbstractCol(timeAbstractCol)
     check_field(gapDuration, "gapDuration")
-    gap_duration = gapDuration if isinstance(gapDuration, str) else AbstractCol(gapDuration)
+    gap_duration = (
+        gapDuration if isinstance(gapDuration, str) else AbstractCol(gapDuration)
+    )
     raise NotImplementedError
-
 
 
 # ---------------------------- misc functions ----------------------------------
@@ -5819,7 +5735,6 @@ def crc32(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def md5(col: "AbstractColOrName") -> AbstractCol:
     """Calculates the MD5 digest and returns the value as a 32 character hex string.
@@ -5847,7 +5762,6 @@ def md5(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def sha1(col: "AbstractColOrName") -> AbstractCol:
     """Returns the hex string result of SHA-1.
@@ -5873,7 +5787,6 @@ def sha1(col: "AbstractColOrName") -> AbstractCol:
     [Row(hash='3c01bdbb26f358bab27f267924aa2c9a03fcfdb8')]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -5912,7 +5825,6 @@ def sha2(col: "AbstractColOrName", numBits: int) -> AbstractCol:
     +-----+----------------------------------------------------------------+
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -5957,7 +5869,6 @@ def hash(*cols: "AbstractColOrName") -> AbstractCol:
     +---------+
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -6005,9 +5916,10 @@ def xxhash64(*cols: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
-def assert_true(col: "AbstractColOrName", errMsg: Optional[Union[AbstractCol, str]] = None) -> AbstractCol:
+def assert_true(
+    col: "AbstractColOrName", errMsg: Optional[Union[AbstractCol, str]] = None
+) -> AbstractCol:
     """
     Returns `null` if the input AbstractCol is `true`; throws an exception
     with the provided error message otherwise.
@@ -6048,14 +5960,18 @@ def assert_true(col: "AbstractColOrName", errMsg: Optional[Union[AbstractCol, st
     if not isinstance(errMsg, (str, AbstractCol)):
         raise ososTypeError(
             error_class="NOT_AbstractCol_OR_STR",
-            message_parameters={"arg_name": "errMsg", "arg_type": type(errMsg).__name__},
+            message_parameters={
+                "arg_name": "errMsg",
+                "arg_type": type(errMsg).__name__,
+            },
         )
 
     errMsg = (
-        _create_AbstractCol_from_literal(errMsg) if isinstance(errMsg, str) else AbstractCol(errMsg)
+        _create_AbstractCol_from_literal(errMsg)
+        if isinstance(errMsg, str)
+        else AbstractCol(errMsg)
     )
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -6089,14 +6005,14 @@ def raise_error(errMsg: Union[AbstractCol, str]) -> AbstractCol:
     if not isinstance(errMsg, (str, AbstractCol)):
         raise OsosTypeError(
             error_class="NOT_AbstractCol_OR_STR",
-            message_parameters={"arg_name": "errMsg", "arg_type": type(errMsg).__name__},
+            message_parameters={
+                "arg_name": "errMsg",
+                "arg_type": type(errMsg).__name__,
+            },
         )
 
-    errMsg = (
-        AbstractLit(errMsg) if isinstance(errMsg, str) else AbstractCol(errMsg)
-    )
+    errMsg = AbstractLit(errMsg) if isinstance(errMsg, str) else AbstractCol(errMsg)
     raise NotImplementedError
-
 
 
 # ---------------------- String/Binary functions ------------------------------
@@ -6137,7 +6053,6 @@ def upper(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def lower(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -6171,7 +6086,6 @@ def lower(col: "AbstractColOrName") -> AbstractCol:
     +------------+
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -6209,7 +6123,6 @@ def ascii(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def base64(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -6243,7 +6156,6 @@ def base64(col: "AbstractColOrName") -> AbstractCol:
     +----------------+
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -6283,7 +6195,6 @@ def unbase64(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def ltrim(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -6317,7 +6228,6 @@ def ltrim(col: "AbstractColOrName") -> AbstractCol:
     +-------+------+
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -6355,7 +6265,6 @@ def rtrim(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def trim(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -6391,7 +6300,6 @@ def trim(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def concat_ws(sep: str, *cols: "AbstractColOrName") -> AbstractCol:
     """
@@ -6422,7 +6330,6 @@ def concat_ws(sep: str, *cols: "AbstractColOrName") -> AbstractCol:
     [Row(s='abcd-123')]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -6461,7 +6368,6 @@ def decode(col: "AbstractColOrName", charset: str) -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def encode(col: "AbstractColOrName", charset: str) -> AbstractCol:
     """
@@ -6498,7 +6404,6 @@ def encode(col: "AbstractColOrName", charset: str) -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def format_number(col: "AbstractColOrName", d: int) -> AbstractCol:
     """
@@ -6526,7 +6431,6 @@ def format_number(col: "AbstractColOrName", d: int) -> AbstractCol:
     [Row(v='5.0000')]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -6558,7 +6462,6 @@ def format_string(format: str, *cols: "AbstractColOrName") -> AbstractCol:
     [Row(v='5 hello')]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -6596,7 +6499,6 @@ def instr(str: "AbstractColOrName", substr: str) -> AbstractCol:
     [Row(s=2)]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -6659,7 +6561,6 @@ def overlay(
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def sentences(
     string: "AbstractColOrName",
@@ -6714,7 +6615,6 @@ def sentences(
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def substring(str: "AbstractColOrName", pos: int, len: int) -> AbstractCol:
     """
@@ -6752,7 +6652,6 @@ def substring(str: "AbstractColOrName", pos: int, len: int) -> AbstractCol:
     [Row(s='ab')]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -6793,7 +6692,6 @@ def substring_index(str: "AbstractColOrName", delim: str, count: int) -> Abstrac
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def levenshtein(left: "AbstractColOrName", right: "AbstractColOrName") -> AbstractCol:
     """Computes the Levenshtein distance of the two given strings.
@@ -6822,7 +6720,6 @@ def levenshtein(left: "AbstractColOrName", right: "AbstractColOrName") -> Abstra
     [Row(d=3)]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -6863,7 +6760,6 @@ def locate(substr: str, str: "AbstractColOrName", pos: int = 1) -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def lpad(col: "AbstractColOrName", len: int, pad: str) -> AbstractCol:
     """
@@ -6895,7 +6791,6 @@ def lpad(col: "AbstractColOrName", len: int, pad: str) -> AbstractCol:
     [Row(s='##abcd')]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -6931,7 +6826,6 @@ def rpad(col: "AbstractColOrName", len: int, pad: str) -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def repeat(col: "AbstractColOrName", n: int) -> AbstractCol:
     """
@@ -6961,7 +6855,6 @@ def repeat(col: "AbstractColOrName", n: int) -> AbstractCol:
     [Row(s='ababab')]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -7009,7 +6902,6 @@ def split(str: "AbstractColOrName", pattern: str, limit: int = -1) -> AbstractCo
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def regexp_extract(str: "AbstractColOrName", pattern: str, idx: int) -> AbstractCol:
     r"""Extract a specific group matched by a Java regex, from the specified string AbstractCol.
@@ -7049,10 +6941,11 @@ def regexp_extract(str: "AbstractColOrName", pattern: str, idx: int) -> Abstract
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def regexp_replace(
-    string: "AbstractColOrName", pattern: Union[str, AbstractCol], replacement: Union[str, AbstractCol]
+    string: "AbstractColOrName",
+    pattern: Union[str, AbstractCol],
+    replacement: Union[str, AbstractCol],
 ) -> AbstractCol:
     r"""Replace all substrings of the specified string value that match regexp with replacement.
 
@@ -7094,7 +6987,6 @@ def regexp_replace(
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def initcap(col: "AbstractColOrName") -> AbstractCol:
     """Translate the first letter of each word to upper case in the sentence.
@@ -7120,7 +7012,6 @@ def initcap(col: "AbstractColOrName") -> AbstractCol:
     [Row(v='Ab Cd')]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -7152,7 +7043,6 @@ def soundex(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def bin(col: "AbstractColOrName") -> AbstractCol:
     """Returns the string representation of the binary value of the given AbstractCol.
@@ -7179,7 +7069,6 @@ def bin(col: "AbstractColOrName") -> AbstractCol:
     [Row(c='10'), Row(c='101')]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -7211,7 +7100,6 @@ def hex(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def unhex(col: "AbstractColOrName") -> AbstractCol:
     """Inverse of hex. Interprets each pair of characters as a hexadecimal number
@@ -7238,7 +7126,6 @@ def unhex(col: "AbstractColOrName") -> AbstractCol:
     [Row(unhex(a)=bytearray(b'ABC'))]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -7268,7 +7155,6 @@ def length(col: "AbstractColOrName") -> AbstractCol:
     [Row(length=4)]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -7301,7 +7187,6 @@ def octet_length(col: "AbstractColOrName") -> AbstractCol:
     raise NotImplementedError
 
 
-
 @try_remote_functions
 def bit_length(col: "AbstractColOrName") -> AbstractCol:
     """
@@ -7330,7 +7215,6 @@ def bit_length(col: "AbstractColOrName") -> AbstractCol:
         [Row(bit_length(cat)=24), Row(bit_length(cat)=32)]
     """
     raise NotImplementedError
-
 
 
 @try_remote_functions
@@ -7379,7 +7263,8 @@ def udf(f: Callable) -> Callable:
         var = args[0]
         args = args[1:]
         ser = AbstractCol(var)
-        wrapped = ArbitraryFunction(f,())
-        arglist = ArgList({'args':args, 'kwargs':kwargs}, ())
-        return Func(udf_func,ser,wrapped, arglist)
+        wrapped = ArbitraryFunction(f, ())
+        arglist = ArgList({"args": args, "kwargs": kwargs}, ())
+        return Func(udf_func, ser, wrapped, arglist)
+
     return inner

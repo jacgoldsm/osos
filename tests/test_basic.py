@@ -41,6 +41,7 @@ l = three.join(four, 'col', 'outer')
 m = three.join(four, 'col', 'right')
 n = one.withColumn("moo", times_two('baz'))
 o = five.withColumn("boo", F.sum("var").over(Window.partitionBy("col")))
+#p = five.withColumn("boo", F.sum("var").over(Window.partitionBy("col").orderBy("var")))
 
 ap = one._data.assign(boo=one._data['foo'] + one._data['baz'])
 bp = one._data.assign(boo=one._data['foo'] * one._data['baz'])
@@ -62,9 +63,11 @@ mp = three._data.dropna(subset='col').merge(four._data, on=['col'], how='right')
 np_ = one._data.assign(moo=one._data['baz'] * 2)
 # this is incredibly annoying to do in Pandas. Motivation for Osos!
 calc=np.array(five._data.groupby("col").rolling(100,min_periods=0,center=True).sum()['var'].astype(int))
-op = five._data
+op = five._data.copy()
 op['boo'] = calc
-
+calc=np.array(five._data.groupby("col").rolling(100,min_periods=0,center=False).sum()['var'].astype(int))
+pp = five._data.copy()
+pp['boo'] = calc
 
 
 
@@ -93,6 +96,8 @@ def test_all():
     assert compares_equal(m,mp)
     assert compares_equal(n,np_)
     assert compares_equal(o,op)
+   # assert compares_equal(p,pp)
+
 
     
     
