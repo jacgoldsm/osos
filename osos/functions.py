@@ -6,6 +6,7 @@ from .column import (
     Func,
     ArbitraryFunction,
     ArgList,
+    AbstractIndex,
 )
 from .exceptions import AnalysisException, OsosValueError, OsosTypeError
 from .dataframe import DataFrame
@@ -2489,7 +2490,7 @@ def row_number() -> AbstractCol:
     |  0|         3|
     +---+----------+
     """
-    return row_number_func()
+    return Func(row_number_func, AbstractIndex())
 
 
 @try_remote_functions

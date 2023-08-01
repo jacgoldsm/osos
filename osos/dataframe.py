@@ -6,6 +6,7 @@ from .column import (
     ArbitraryFunction,
     SimpleContainer,
     FuncWithNoArgs,
+    AbstractIndex,
 )
 
 from copy import deepcopy, copy
@@ -54,7 +55,7 @@ class DataFrame:
             if isinstance(node, ForwardRef):
                 node = forward_dict[node.reference](node.args)
             if isinstance(
-                node, (AbstractColOrLit, SimpleContainer, EmptyWindow, FuncWithNoArgs)
+                node, (AbstractColOrLit, SimpleContainer, EmptyWindow, FuncWithNoArgs,AbstractIndex,)
             ):
                 res = self._resolve_leaf(node)
             else:
@@ -105,7 +106,7 @@ class DataFrame:
             assert (
                 boolean_mask.dtype == np.bool8
             ), "`filter` expressions must return boolean results"
-            newdf = newdf._data.iloc[boolean_mask]
+            newdf = newdf._data.loc[boolean_mask]
 
         return DataFrame(newdf)
 
@@ -231,10 +232,12 @@ class DataFrame:
             return self._data[node._name]
         elif isinstance(node, AbstractLit):
             return make_series_from_literal(
-                scalar_data=node._name, length=len(self._data.index)
+                value=node._name, length=len(self._data.index)
             )
         elif isinstance(node, SimpleContainer):
             return node._name
+        elif isinstance(node, AbstractIndex):
+            return self._data.index
         else:
             return node
 

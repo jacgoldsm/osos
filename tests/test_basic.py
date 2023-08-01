@@ -42,6 +42,7 @@ m = three.join(four, 'col', 'right')
 n = one.withColumn("moo", times_two('baz'))
 o = five.withColumn("boo", F.sum("var").over(Window.partitionBy("col")))
 #p = five.withColumn("boo", F.sum("var").over(Window.partitionBy("col").orderBy("var")))
+q = one.filter(F.col("tup") == "foo")
 
 ap = one._data.assign(boo=one._data['foo'] + one._data['baz'])
 bp = one._data.assign(boo=one._data['foo'] * one._data['baz'])
@@ -68,6 +69,7 @@ op['boo'] = calc
 calc=np.array(five._data.groupby("col").rolling(100,min_periods=0,center=False).sum()['var'].astype(int))
 pp = five._data.copy()
 pp['boo'] = calc
+qp = one._data[one._data['tup'] == "foo"]
 
 
 
@@ -97,6 +99,7 @@ def test_all():
     assert compares_equal(n,np_)
     assert compares_equal(o,op)
    # assert compares_equal(p,pp)
+    assert compares_equal(q,qp)
 
 
     

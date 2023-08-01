@@ -37,6 +37,7 @@ def window_getter_func(*args):
     return ConcreteWindowSpec(*args)
 
 
+
 class WindowSpec(Node):
     def __init__(
         self,
@@ -55,8 +56,8 @@ class WindowSpec(Node):
 
         self._partition_by = ColumnList(partition_by)
         self._order_by = ColumnList(order_by)
-        self._rows_between = SimpleContainer("rows_spec", args=rows_between)
-        self._range_between = SimpleContainer("range_spec", args=range_between)
+        self._rows_between = SimpleContainer(name=rows_between,args=(),)
+        self._range_between = SimpleContainer(name=range_between,args=(),)
         self._args = [
             self._partition_by,
             self._order_by,
@@ -111,13 +112,12 @@ class WindowSpec(Node):
         if self._range_between._args:
             raise AnalysisException("Cannot define both range spec and rows spec")
         spec = SimpleContainer(
-            "rows_spec",
-            args=(
+            name=(
                 (
                     start,
                     end,
                 ),
-            ),
+            ),args=(),
         )
         self._rows_between = spec
         self._args[2] = spec
@@ -130,13 +130,12 @@ class WindowSpec(Node):
         if self._rows_between._args:
             raise AnalysisException("Cannot define both range spec and rows spec")
         spec = SimpleContainer(
-            "range_spec",
-            args=(
+            name=(
                 (
                     start,
                     end,
                 ),
-            ),
+            ),args=(),
         )
         self._rows_between = spec
         self._args[3] = spec
@@ -157,7 +156,7 @@ class ConcreteWindowSpec:
         self.partition_by: list["ColumnType"] = partition_by
         self.order_by: list["ColumnType"] = order_by
         self.rows_between: "SimpleContainer" = rows_between
-        self.range_between: "SimpleContainer" = range_between
+        self.range_between: "SimpleContainer" = range_between    
 
 
 class EmptyWindow(WindowSpec):

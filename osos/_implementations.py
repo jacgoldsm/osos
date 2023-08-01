@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from pandas.core.groupby.generic import SeriesGroupBy
+from pandas.core.window.rolling import Rolling as RollingWindow
 from typing import Union, Callable, Iterable, Any
 
 from .window import EmptyWindow, ConcreteWindowSpec
@@ -19,7 +20,7 @@ def get_rollspec(
     return indexer
 
 
-def _get_rolling_window(series: pd.Series, *args, **kwargs):
+def _get_rolling_window(series: pd.Series, *args, **kwargs) -> RollingWindow:
     win: ConcreteWindowSpec = kwargs.pop("_over")
     df_len = series.size
     if isinstance(win, EmptyWindow):
@@ -283,8 +284,12 @@ def pmod_func():
     pass
 
 
-def row_number_func():
-    pass
+def row_number_func(*args, **kwargs):
+    if isinstance(kwargs['_over'], EmptyWindow):
+        raise Exception("row_number() is only a Window function") from None
+    series
+    rollspec = get_rollspec(*args, **kwargs)
+
 
 
 def dense_rank_func():
