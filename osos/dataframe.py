@@ -55,7 +55,14 @@ class DataFrame:
             if isinstance(node, ForwardRef):
                 node = forward_dict[node.reference](node.args)
             if isinstance(
-                node, (AbstractColOrLit, SimpleContainer, EmptyWindow, FuncWithNoArgs,AbstractIndex,)
+                node,
+                (
+                    AbstractColOrLit,
+                    SimpleContainer,
+                    EmptyWindow,
+                    FuncWithNoArgs,
+                    AbstractIndex,
+                ),
             ):
                 res = self._resolve_leaf(node)
             else:

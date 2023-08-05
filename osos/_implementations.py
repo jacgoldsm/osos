@@ -38,8 +38,15 @@ def _get_rolling_window(series: pd.Series, *args, **kwargs) -> RollingWindow:
         and not win.rows_between
         and not win.range_between
     ):
-        indices = np.argsort(win.order_by)
-        roll = roll.sort_values(indices)  # this is wrong
+        roll = roll.groupby(win.partition_by, group_keys=False)
+        indices = np.argsort(win.order_by)[0]
+        roll.index = pd.Series(indices)
+        roll = (
+            # we have to regroup because `apply` ungroups the GroupedData
+            roll.apply(lambda x: x.sort_index())
+            .groupby(win.partition_by)
+            .rolling(window=df_len, center=False, min_periods=1)
+        )
     # if win.rows_between is not None:
     #     assert win.order_by is not None, "rowsBetween requires an order specification"
     #     bottom,top = win.rows_between
@@ -285,11 +292,9 @@ def pmod_func():
 
 
 def row_number_func(*args, **kwargs):
-    if isinstance(kwargs['_over'], EmptyWindow):
+    if isinstance(kwargs["_over"], EmptyWindow):
         raise Exception("row_number() is only a Window function") from None
-    series
     rollspec = get_rollspec(*args, **kwargs)
-
 
 
 def dense_rank_func():

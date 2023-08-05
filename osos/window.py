@@ -37,7 +37,6 @@ def window_getter_func(*args):
     return ConcreteWindowSpec(*args)
 
 
-
 class WindowSpec(Node):
     def __init__(
         self,
@@ -56,8 +55,14 @@ class WindowSpec(Node):
 
         self._partition_by = ColumnList(partition_by)
         self._order_by = ColumnList(order_by)
-        self._rows_between = SimpleContainer(name=rows_between,args=(),)
-        self._range_between = SimpleContainer(name=range_between,args=(),)
+        self._rows_between = SimpleContainer(
+            name=rows_between,
+            args=(),
+        )
+        self._range_between = SimpleContainer(
+            name=range_between,
+            args=(),
+        )
         self._args = [
             self._partition_by,
             self._order_by,
@@ -117,7 +122,8 @@ class WindowSpec(Node):
                     start,
                     end,
                 ),
-            ),args=(),
+            ),
+            args=(),
         )
         self._rows_between = spec
         self._args[2] = spec
@@ -135,7 +141,8 @@ class WindowSpec(Node):
                     start,
                     end,
                 ),
-            ),args=(),
+            ),
+            args=(),
         )
         self._rows_between = spec
         self._args[3] = spec
@@ -156,7 +163,7 @@ class ConcreteWindowSpec:
         self.partition_by: list["ColumnType"] = partition_by
         self.order_by: list["ColumnType"] = order_by
         self.rows_between: "SimpleContainer" = rows_between
-        self.range_between: "SimpleContainer" = range_between    
+        self.range_between: "SimpleContainer" = range_between
 
 
 class EmptyWindow(WindowSpec):

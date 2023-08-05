@@ -7,6 +7,7 @@ from .column import (
     ArbitraryFunction,
     ArgList,
     AbstractIndex,
+    Func,
 )
 from .exceptions import AnalysisException, OsosValueError, OsosTypeError
 from .dataframe import DataFrame
@@ -31,7 +32,7 @@ try_remote_functions = lambda callable: callable
 
 
 @try_remote_functions
-def lit(col: Any) -> AbstractCol:
+def lit(col: Any) -> Func:
     """
     Creates a :class:`~osos.Col` of literal value.
 
@@ -76,7 +77,7 @@ def lit(col: Any) -> AbstractCol:
     return AbstractLit(col)
 
 
-def col(col: str) -> AbstractCol:
+def col(col: str) -> Func:
     """
     Returns a :class:`~osos.Col` based on the given AbstractCol name.
 
@@ -105,7 +106,7 @@ def col(col: str) -> AbstractCol:
     return AbstractCol(col)
 
 
-def asc(col: "AbstractColOrName") -> AbstractCol:
+def asc(col: "AbstractColOrName") -> Func:
     """
     Returns a sort expression based on the ascending order of the given AbstractCol name.
 
@@ -158,7 +159,7 @@ def asc(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def desc(col: "AbstractColOrName") -> AbstractCol:
+def desc(col: "AbstractColOrName") -> Func:
     """
     Returns a sort expression based on the descending order of the given AbstractCol name.
 
@@ -196,7 +197,7 @@ def desc(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def sqrt(col: "AbstractColOrName") -> AbstractCol:
+def sqrt(col: "AbstractColOrName") -> Func:
     """
     Computes the square root of the specified float value.
 
@@ -229,7 +230,7 @@ def sqrt(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def abs(col: "AbstractColOrName") -> AbstractCol:
+def abs(col: "AbstractColOrName") -> Func:
     """
     Computes the absolute value.
 
@@ -262,7 +263,7 @@ def abs(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def mode(col: "AbstractColOrName") -> AbstractCol:
+def mode(col: "AbstractColOrName") -> Func:
     """
     Returns the most frequent value in a group.
 
@@ -300,7 +301,7 @@ def mode(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def max(col: "AbstractColOrName") -> AbstractCol:
+def max(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the maximum value of the expression in a group.
 
@@ -333,7 +334,7 @@ def max(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def min(col: "AbstractColOrName") -> AbstractCol:
+def min(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the minimum value of the expression in a group.
 
@@ -369,7 +370,7 @@ def min(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def max_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> AbstractCol:
+def max_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> Func:
     """
     Returns the value associated with the maximum value of ord.
 
@@ -411,7 +412,7 @@ def max_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def min_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> AbstractCol:
+def min_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> Func:
     """
     Returns the value associated with the minimum value of ord.
 
@@ -453,7 +454,7 @@ def min_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def count(col: "AbstractColOrName") -> AbstractCol:
+def count(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the number of items in a group.
 
@@ -491,7 +492,7 @@ def count(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def sum(col: "AbstractColOrName") -> AbstractCol:
+def sum(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the sum of all values in the expression.
 
@@ -527,7 +528,7 @@ def sum(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def avg(col: "AbstractColOrName") -> AbstractCol:
+def avg(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the average of the values in a group.
 
@@ -563,7 +564,7 @@ def avg(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def mean(col: "AbstractColOrName") -> AbstractCol:
+def mean(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the average of the values in a group.
     An alias of :func:`avg`.
@@ -600,7 +601,7 @@ def mean(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def median(col: "AbstractColOrName") -> AbstractCol:
+def median(col: "AbstractColOrName") -> Func:
     """
     Returns the median of the values in a group.
 
@@ -641,7 +642,7 @@ def median(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def sumDistinct(col: "AbstractColOrName") -> AbstractCol:
+def sumDistinct(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the sum of distinct values in the expression.
 
@@ -661,7 +662,7 @@ def sumDistinct(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def sum_distinct(col: "AbstractColOrName") -> AbstractCol:
+def sum_distinct(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the sum of distinct values in the expression.
 
@@ -697,7 +698,7 @@ def sum_distinct(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def product(col: "AbstractColOrName") -> AbstractCol:
+def product(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the product of the values in a group.
 
@@ -736,7 +737,7 @@ def product(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def acos(col: "AbstractColOrName") -> AbstractCol:
+def acos(col: "AbstractColOrName") -> Func:
     """
     Computes inverse cosine of the input AbstractCol.
 
@@ -773,7 +774,7 @@ def acos(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def acosh(col: "AbstractColOrName") -> AbstractCol:
+def acosh(col: "AbstractColOrName") -> Func:
     """
     Computes inverse hyperbolic cosine of the input AbstractCol.
 
@@ -810,7 +811,7 @@ def acosh(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def asin(col: "AbstractColOrName") -> AbstractCol:
+def asin(col: "AbstractColOrName") -> Func:
     """
     Computes inverse sine of the input AbstractCol.
 
@@ -847,7 +848,7 @@ def asin(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def asinh(col: "AbstractColOrName") -> AbstractCol:
+def asinh(col: "AbstractColOrName") -> Func:
     """
     Computes inverse hyperbolic sine of the input AbstractCol.
 
@@ -883,7 +884,7 @@ def asinh(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def atan(col: "AbstractColOrName") -> AbstractCol:
+def atan(col: "AbstractColOrName") -> Func:
     """
     Compute inverse tangent of the input AbstractCol.
 
@@ -919,7 +920,7 @@ def atan(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def atanh(col: "AbstractColOrName") -> AbstractCol:
+def atanh(col: "AbstractColOrName") -> Func:
     """
     Computes inverse hyperbolic tangent of the input AbstractCol.
 
@@ -956,7 +957,7 @@ def atanh(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def cbrt(col: "AbstractColOrName") -> AbstractCol:
+def cbrt(col: "AbstractColOrName") -> Func:
     """
     Computes the cube-root of the given value.
 
@@ -992,7 +993,7 @@ def cbrt(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def ceil(col: "AbstractColOrName") -> AbstractCol:
+def ceil(col: "AbstractColOrName") -> Func:
     """
     Computes the ceiling of the given value.
 
@@ -1028,7 +1029,7 @@ def ceil(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def cos(col: "AbstractColOrName") -> AbstractCol:
+def cos(col: "AbstractColOrName") -> Func:
     """
     Computes cosine of the input AbstractCol.
 
@@ -1061,7 +1062,7 @@ def cos(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def cosh(col: "AbstractColOrName") -> AbstractCol:
+def cosh(col: "AbstractColOrName") -> Func:
     """
     Computes hyperbolic cosine of the input AbstractCol.
 
@@ -1093,7 +1094,7 @@ def cosh(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def cot(col: "AbstractColOrName") -> AbstractCol:
+def cot(col: "AbstractColOrName") -> Func:
     """
     Computes cotangent of the input AbstractCol.
 
@@ -1126,7 +1127,7 @@ def cot(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def csc(col: "AbstractColOrName") -> AbstractCol:
+def csc(col: "AbstractColOrName") -> Func:
     """
     Computes cosecant of the input AbstractCol.
 
@@ -1159,7 +1160,7 @@ def csc(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def exp(col: "AbstractColOrName") -> AbstractCol:
+def exp(col: "AbstractColOrName") -> Func:
     """
     Computes the exponential of the given value.
 
@@ -1195,7 +1196,7 @@ def exp(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def expm1(col: "AbstractColOrName") -> AbstractCol:
+def expm1(col: "AbstractColOrName") -> Func:
     """
     Computes the exponential of the given value minus one.
 
@@ -1227,7 +1228,7 @@ def expm1(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def floor(col: "AbstractColOrName") -> AbstractCol:
+def floor(col: "AbstractColOrName") -> Func:
     """
     Computes the floor of the given value.
 
@@ -1263,7 +1264,7 @@ def floor(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def log(col: "AbstractColOrName") -> AbstractCol:
+def log(col: "AbstractColOrName") -> Func:
     """
     Computes the natural logarithm of the given value.
 
@@ -1296,7 +1297,7 @@ def log(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def log10(col: "AbstractColOrName") -> AbstractCol:
+def log10(col: "AbstractColOrName") -> Func:
     """
     Computes the logarithm of the given value in Base 10.
 
@@ -1332,7 +1333,7 @@ def log10(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def log1p(col: "AbstractColOrName") -> AbstractCol:
+def log1p(col: "AbstractColOrName") -> Func:
     """
     Computes the natural logarithm of the "given value plus one".
 
@@ -1370,7 +1371,7 @@ def log1p(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def rint(col: "AbstractColOrName") -> AbstractCol:
+def rint(col: "AbstractColOrName") -> Func:
     """
     Returns the double value that is closest in value to the argument and
     is equal to a mathematical integer.
@@ -1414,7 +1415,7 @@ def rint(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def sec(col: "AbstractColOrName") -> AbstractCol:
+def sec(col: "AbstractColOrName") -> Func:
     """
     Computes secant of the input AbstractCol.
 
@@ -1446,7 +1447,7 @@ def sec(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def signum(col: "AbstractColOrName") -> AbstractCol:
+def signum(col: "AbstractColOrName") -> Func:
     """
     Computes the signum of the given value.
 
@@ -1489,7 +1490,7 @@ def signum(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def sin(col: "AbstractColOrName") -> AbstractCol:
+def sin(col: "AbstractColOrName") -> Func:
     """
     Computes sine of the input AbstractCol.
 
@@ -1522,7 +1523,7 @@ def sin(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def sinh(col: "AbstractColOrName") -> AbstractCol:
+def sinh(col: "AbstractColOrName") -> Func:
     """
     Computes hyperbolic sine of the input AbstractCol.
 
@@ -1555,7 +1556,7 @@ def sinh(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def tan(col: "AbstractColOrName") -> AbstractCol:
+def tan(col: "AbstractColOrName") -> Func:
     """
     Computes tangent of the input AbstractCol.
 
@@ -1588,7 +1589,7 @@ def tan(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def tanh(col: "AbstractColOrName") -> AbstractCol:
+def tanh(col: "AbstractColOrName") -> Func:
     """
     Computes hyperbolic tangent of the input AbstractCol.
 
@@ -1622,7 +1623,7 @@ def tanh(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def toDegrees(col: "AbstractColOrName") -> AbstractCol:
+def toDegrees(col: "AbstractColOrName") -> Func:
     """
     .. versionadded:: 1.4.0
 
@@ -1637,7 +1638,7 @@ def toDegrees(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def toRadians(col: "AbstractColOrName") -> AbstractCol:
+def toRadians(col: "AbstractColOrName") -> Func:
     """
     .. versionadded:: 1.4.0
 
@@ -1652,7 +1653,7 @@ def toRadians(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def bitwiseNOT(col: "AbstractColOrName") -> AbstractCol:
+def bitwiseNOT(col: "AbstractColOrName") -> Func:
     """
     Computes bitwise not.
 
@@ -1669,7 +1670,7 @@ def bitwiseNOT(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def bitwise_not(col: "AbstractColOrName") -> AbstractCol:
+def bitwise_not(col: "AbstractColOrName") -> Func:
     """
     Computes bitwise not.
 
@@ -1711,7 +1712,7 @@ def bitwise_not(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def asc_nulls_first(col: "AbstractColOrName") -> AbstractCol:
+def asc_nulls_first(col: "AbstractColOrName") -> Func:
     """
     Returns a sort expression based on the ascending order of the given
     AbstractCol name, and null values return before non-null values.
@@ -1753,7 +1754,7 @@ def asc_nulls_first(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def asc_nulls_last(col: "AbstractColOrName") -> AbstractCol:
+def asc_nulls_last(col: "AbstractColOrName") -> Func:
     """
     Returns a sort expression based on the ascending order of the given
     AbstractCol name, and null values appear after non-null values.
@@ -1795,7 +1796,7 @@ def asc_nulls_last(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def desc_nulls_first(col: "AbstractColOrName") -> AbstractCol:
+def desc_nulls_first(col: "AbstractColOrName") -> Func:
     """
     Returns a sort expression based on the descending order of the given
     AbstractCol name, and null values appear before non-null values.
@@ -1837,7 +1838,7 @@ def desc_nulls_first(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def desc_nulls_last(col: "AbstractColOrName") -> AbstractCol:
+def desc_nulls_last(col: "AbstractColOrName") -> Func:
     """
     Returns a sort expression based on the descending order of the given
     AbstractCol name, and null values appear after non-null values.
@@ -1879,7 +1880,7 @@ def desc_nulls_last(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def stddev(col: "AbstractColOrName") -> AbstractCol:
+def stddev(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: alias for stddev_samp.
 
@@ -1911,7 +1912,7 @@ def stddev(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def stddev_samp(col: "AbstractColOrName") -> AbstractCol:
+def stddev_samp(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the unbiased sample standard deviation of
     the expression in a group.
@@ -1944,7 +1945,7 @@ def stddev_samp(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def stddev_pop(col: "AbstractColOrName") -> AbstractCol:
+def stddev_pop(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns population standard deviation of
     the expression in a group.
@@ -1977,7 +1978,7 @@ def stddev_pop(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def variance(col: "AbstractColOrName") -> AbstractCol:
+def variance(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: alias for var_samp
 
@@ -2013,7 +2014,7 @@ def variance(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def var_samp(col: "AbstractColOrName") -> AbstractCol:
+def var_samp(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the unbiased sample variance of
     the values in a group.
@@ -2050,7 +2051,7 @@ def var_samp(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def var_pop(col: "AbstractColOrName") -> AbstractCol:
+def var_pop(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the population variance of the values in a group.
 
@@ -2082,7 +2083,7 @@ def var_pop(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def skewness(col: "AbstractColOrName") -> AbstractCol:
+def skewness(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the skewness of the values in a group.
 
@@ -2114,7 +2115,7 @@ def skewness(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def kurtosis(col: "AbstractColOrName") -> AbstractCol:
+def kurtosis(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the kurtosis of the values in a group.
 
@@ -2150,7 +2151,7 @@ def kurtosis(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def collect_list(col: "AbstractColOrName") -> AbstractCol:
+def collect_list(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns a list of objects with duplicates.
 
@@ -2184,7 +2185,7 @@ def collect_list(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def collect_set(col: "AbstractColOrName") -> AbstractCol:
+def collect_set(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns a set of objects with duplicate elements eliminated.
 
@@ -2218,7 +2219,7 @@ def collect_set(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def degrees(col: "AbstractColOrName") -> AbstractCol:
+def degrees(col: "AbstractColOrName") -> Func:
     """
     Converts an angle measured in radians to an approximately equivalent angle
     measured in degrees.
@@ -2252,7 +2253,7 @@ def degrees(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def radians(col: "AbstractColOrName") -> AbstractCol:
+def radians(col: "AbstractColOrName") -> Func:
     """
     Converts an angle measured in degrees to an approximately equivalent angle
     measured in radians.
@@ -2287,7 +2288,7 @@ def radians(col: "AbstractColOrName") -> AbstractCol:
 @try_remote_functions
 def atan2(
     col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]
-) -> AbstractCol:
+) -> Func:
     """
     .. versionadded:: 1.4.0
 
@@ -2328,7 +2329,7 @@ def atan2(
 @try_remote_functions
 def hypot(
     col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]
-) -> AbstractCol:
+) -> Func:
     """
     Computes ``sqrt(a^2 + b^2)`` without intermediate overflow or underflow.
 
@@ -2367,7 +2368,7 @@ def hypot(
 @try_remote_functions
 def pow(
     col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]
-) -> AbstractCol:
+) -> Func:
     """
     Returns the value of the first argument raised to the power of the second argument.
 
@@ -2407,7 +2408,7 @@ def pow(
 def pmod(
     dividend: Union["AbstractColOrName", float],
     divisor: Union["AbstractColOrName", float],
-) -> AbstractCol:
+) -> Func:
     """
     Returns the positive value of dividend mod divisor.
 
@@ -2462,7 +2463,7 @@ def pmod(
 
 
 @try_remote_functions
-def row_number() -> AbstractCol:
+def row_number() -> Func:
     """
     Window function: returns a sequential number starting at 1 within a window partition.
 
@@ -2494,7 +2495,7 @@ def row_number() -> AbstractCol:
 
 
 @try_remote_functions
-def dense_rank() -> AbstractCol:
+def dense_rank() -> Func:
     """
     Window function: returns the rank of rows within a window partition, without any gaps.
 
@@ -2537,7 +2538,7 @@ def dense_rank() -> AbstractCol:
 
 
 @try_remote_functions
-def rank() -> AbstractCol:
+def rank() -> Func:
     """
     Window function: returns the rank of rows within a window partition.
 
@@ -2580,7 +2581,7 @@ def rank() -> AbstractCol:
 
 
 @try_remote_functions
-def cume_dist() -> AbstractCol:
+def cume_dist() -> Func:
     """
     Window function: returns the cumulative distribution of values within a window partition,
     i.e. the fraction of rows that are below the current row.
@@ -2615,7 +2616,7 @@ def cume_dist() -> AbstractCol:
 
 
 @try_remote_functions
-def percent_rank() -> AbstractCol:
+def percent_rank() -> Func:
     """
     Window function: returns the relative rank (i.e. percentile) of rows within a window partition.
 
@@ -2650,9 +2651,7 @@ def percent_rank() -> AbstractCol:
 
 
 @try_remote_functions
-def approxCountDistinct(
-    col: "AbstractColOrName", rsd: Optional[float] = None
-) -> AbstractCol:
+def approxCountDistinct(col: "AbstractColOrName", rsd: Optional[float] = None) -> Func:
     """
     .. versionadded:: 1.3.0
 
@@ -2669,7 +2668,7 @@ def approxCountDistinct(
 @try_remote_functions
 def approx_count_distinct(
     col: "AbstractColOrName", rsd: Optional[float] = None
-) -> AbstractCol:
+) -> Func:
     """Aggregate function: returns a new :class:`~osos.Col` for approximate distinct count
     of AbstractCol `col`.
 
@@ -2743,7 +2742,7 @@ def broadcast(df: DataFrame) -> DataFrame:
 
 
 @try_remote_functions
-def coalesce(*cols: "AbstractColOrName") -> AbstractCol:
+def coalesce(*cols: "AbstractColOrName") -> Func:
     """Returns the first AbstractCol that is not null.
 
     .. versionadded:: 1.4.0
@@ -2799,7 +2798,7 @@ def coalesce(*cols: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def corr(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
+def corr(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     """Returns a new :class:`~osos.Col` for the Pearson Correlation Coefficient for
     ``col1`` and ``col2``.
 
@@ -2832,7 +2831,7 @@ def corr(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def covar_pop(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
+def covar_pop(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     """Returns a new :class:`~osos.Col` for the population covariance of ``col1`` and
     ``col2``.
 
@@ -2865,7 +2864,7 @@ def covar_pop(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractC
 
 
 @try_remote_functions
-def covar_samp(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
+def covar_samp(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     """Returns a new :class:`~osos.Col` for the sample covariance of ``col1`` and
     ``col2``.
 
@@ -2898,7 +2897,7 @@ def covar_samp(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Abstract
 
 
 @try_remote_functions
-def countDistinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> AbstractCol:
+def countDistinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Func:
     """Returns a new :class:`~osos.Col` for distinct count of ``col`` or ``cols``.
 
     An alias of :func:`count_distinct`, and it is encouraged to use :func:`count_distinct`
@@ -2913,7 +2912,7 @@ def countDistinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Abstr
 
 
 @try_remote_functions
-def count_distinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> AbstractCol:
+def count_distinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Func:
     """Returns a new :class:`AbstractCol` for distinct count of ``col`` or ``cols``.
 
     .. versionadded:: 3.2.0
@@ -2960,7 +2959,7 @@ def count_distinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Abst
 
 
 @try_remote_functions
-def first(col: "AbstractColOrName", ignorenulls: bool = False) -> AbstractCol:
+def first(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
     """Aggregate function: returns the first value in a group.
 
     The function by default returns the first values it sees. It will return the first non-null
@@ -3014,7 +3013,7 @@ def first(col: "AbstractColOrName", ignorenulls: bool = False) -> AbstractCol:
 
 
 @try_remote_functions
-def grouping(col: "AbstractColOrName") -> AbstractCol:
+def grouping(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: indicates whether a specified AbstractCol in a GROUP BY list is aggregated
     or not, returns 1 for aggregated or 0 for not aggregated in the result set.
@@ -3050,7 +3049,7 @@ def grouping(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def grouping_id(*cols: "AbstractColOrName") -> AbstractCol:
+def grouping_id(*cols: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the level of grouping, equals to
 
@@ -3098,7 +3097,7 @@ def grouping_id(*cols: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def input_file_name() -> AbstractCol:
+def input_file_name() -> Func:
     """
     Creates a string AbstractCol for the file name of the current Spark task.
 
@@ -3124,7 +3123,7 @@ def input_file_name() -> AbstractCol:
 
 
 @try_remote_functions
-def isnan(col: "AbstractColOrName") -> AbstractCol:
+def isnan(col: "AbstractColOrName") -> Func:
     """An expression that returns true if the AbstractCol is NaN.
 
     .. versionadded:: 1.6.0
@@ -3157,7 +3156,7 @@ def isnan(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def isnull(col: "AbstractColOrName") -> AbstractCol:
+def isnull(col: "AbstractColOrName") -> Func:
     """An expression that returns true if the AbstractCol is null.
 
     .. versionadded:: 1.6.0
@@ -3190,7 +3189,7 @@ def isnull(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def last(col: "AbstractColOrName", ignorenulls: bool = False) -> AbstractCol:
+def last(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
     """Aggregate function: returns the last value in a group.
 
     The function by default returns the last values it sees. It will return the last non-null
@@ -3244,7 +3243,7 @@ def last(col: "AbstractColOrName", ignorenulls: bool = False) -> AbstractCol:
 
 
 @try_remote_functions
-def monotonically_increasing_id() -> AbstractCol:
+def monotonically_increasing_id() -> Func:
     """A AbstractCol that generates monotonically increasing 64-bit integers.
 
     The generated ID is guaranteed to be monotonically increasing and unique, but not consecutive.
@@ -3280,7 +3279,7 @@ def monotonically_increasing_id() -> AbstractCol:
 
 
 @try_remote_functions
-def nanvl(col1: "AbstractColOrName", col2: "AbstractColOrName") -> AbstractCol:
+def nanvl(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     """Returns col1 if it is not NaN, or col2 if col1 is NaN.
 
     Both inputs should be floating point AbstractCols (:class:`DoubleType` or :class:`FloatType`).
@@ -3316,7 +3315,7 @@ def percentile_approx(
     col: "AbstractColOrName",
     percentage: Union[AbstractCol, float, List[float], Tuple[float]],
     accuracy: Union[AbstractCol, float] = 10000,
-) -> AbstractCol:
+) -> Func:
     """Returns the approximate `percentile` of the numeric AbstractCol `col` which is the smallest value
     in the ordered `col` values (sorted from least to greatest) such that no more than `percentage`
     of `col` values is less than the value or equal to that value.
@@ -3383,7 +3382,7 @@ def percentile_approx(
 
 
 @try_remote_functions
-def rand(seed: Optional[int] = None) -> AbstractCol:
+def rand(seed: Optional[int] = None) -> Func:
     """Generates a random AbstractCol with independent and identically distributed (i.i.d.) samples
     uniformly distributed in [0.0, 1.0).
 
@@ -3424,7 +3423,7 @@ def rand(seed: Optional[int] = None) -> AbstractCol:
 
 
 @try_remote_functions
-def randn(seed: Optional[int] = None) -> AbstractCol:
+def randn(seed: Optional[int] = None) -> Func:
     """Generates a AbstractCol with independent and identically distributed (i.i.d.) samples from
     the standard normal distribution.
 
@@ -3465,7 +3464,7 @@ def randn(seed: Optional[int] = None) -> AbstractCol:
 
 
 @try_remote_functions
-def round(col: "AbstractColOrName", scale: int = 0) -> AbstractCol:
+def round(col: "AbstractColOrName", scale: int = 0) -> Func:
     """
     Round the given value to `scale` decimal places using HALF_UP rounding mode if `scale` >= 0
     or at integral part when `scale` < 0.
@@ -3496,7 +3495,7 @@ def round(col: "AbstractColOrName", scale: int = 0) -> AbstractCol:
 
 
 @try_remote_functions
-def bround(col: "AbstractColOrName", scale: int = 0) -> AbstractCol:
+def bround(col: "AbstractColOrName", scale: int = 0) -> Func:
     """
     Round the given value to `scale` decimal places using HALF_EVEN rounding mode if `scale` >= 0
     or at integral part when `scale` < 0.
@@ -3527,7 +3526,7 @@ def bround(col: "AbstractColOrName", scale: int = 0) -> AbstractCol:
 
 
 @try_remote_functions
-def shiftLeft(col: "AbstractColOrName", numBits: int) -> AbstractCol:
+def shiftLeft(col: "AbstractColOrName", numBits: int) -> Func:
     """Shift the given value numBits left.
 
     .. versionadded:: 1.5.0
@@ -3543,7 +3542,7 @@ def shiftLeft(col: "AbstractColOrName", numBits: int) -> AbstractCol:
 
 
 @try_remote_functions
-def shiftleft(col: "AbstractColOrName", numBits: int) -> AbstractCol:
+def shiftleft(col: "AbstractColOrName", numBits: int) -> Func:
     """Shift the given value numBits left.
 
     .. versionadded:: 3.2.0
@@ -3572,7 +3571,7 @@ def shiftleft(col: "AbstractColOrName", numBits: int) -> AbstractCol:
 
 
 @try_remote_functions
-def shiftRight(col: "AbstractColOrName", numBits: int) -> AbstractCol:
+def shiftRight(col: "AbstractColOrName", numBits: int) -> Func:
     """(Signed) shift the given value numBits right.
 
     .. versionadded:: 1.5.0
@@ -3588,7 +3587,7 @@ def shiftRight(col: "AbstractColOrName", numBits: int) -> AbstractCol:
 
 
 @try_remote_functions
-def shiftright(col: "AbstractColOrName", numBits: int) -> AbstractCol:
+def shiftright(col: "AbstractColOrName", numBits: int) -> Func:
     """(Signed) shift the given value numBits right.
 
     .. versionadded:: 3.2.0
@@ -3617,7 +3616,7 @@ def shiftright(col: "AbstractColOrName", numBits: int) -> AbstractCol:
 
 
 @try_remote_functions
-def shiftRightUnsigned(col: "AbstractColOrName", numBits: int) -> AbstractCol:
+def shiftRightUnsigned(col: "AbstractColOrName", numBits: int) -> Func:
     """Unsigned shift the given value numBits right.
 
     .. versionadded:: 1.5.0
@@ -3633,7 +3632,7 @@ def shiftRightUnsigned(col: "AbstractColOrName", numBits: int) -> AbstractCol:
 
 
 @try_remote_functions
-def shiftrightunsigned(col: "AbstractColOrName", numBits: int) -> AbstractCol:
+def shiftrightunsigned(col: "AbstractColOrName", numBits: int) -> Func:
     """Unsigned shift the given value numBits right.
 
     .. versionadded:: 3.2.0
@@ -3663,7 +3662,7 @@ def shiftrightunsigned(col: "AbstractColOrName", numBits: int) -> AbstractCol:
 
 
 @try_remote_functions
-def spark_partition_id() -> AbstractCol:
+def spark_partition_id() -> Func:
     """A AbstractCol for partition ID.
 
     .. versionadded:: 1.6.0
@@ -3690,7 +3689,7 @@ def spark_partition_id() -> AbstractCol:
 
 
 @try_remote_functions
-def expr(str: str) -> AbstractCol:
+def expr(str: str) -> Func:
     """Parses the expression string into the AbstractCol that it represents
 
     .. versionadded:: 1.5.0
@@ -3723,14 +3722,14 @@ def expr(str: str) -> AbstractCol:
 
 
 @overload
-def struct(*cols: "AbstractColOrName") -> AbstractCol:
+def struct(*cols: "AbstractColOrName") -> Func:
     ...
 
 
 @overload
 def struct(
     __cols: Union[List["AbstractColOrName"], Tuple["AbstractColOrName", ...]]
-) -> AbstractCol:
+) -> Func:
     ...
 
 
@@ -3740,7 +3739,7 @@ def struct(
         "AbstractColOrName",
         Union[List["AbstractColOrName"], Tuple["AbstractColOrName", ...]],
     ]
-) -> AbstractCol:
+) -> Func:
     """Creates a new struct AbstractCol.
 
     .. versionadded:: 1.4.0
@@ -3772,7 +3771,7 @@ def struct(
 
 
 @try_remote_functions
-def greatest(*cols: "AbstractColOrName") -> AbstractCol:
+def greatest(*cols: "AbstractColOrName") -> Func:
     """
     Returns the greatest value of the list of AbstractCol names, skipping null values.
     This function takes at least 2 parameters. It will return null if all parameters are null.
@@ -3807,7 +3806,7 @@ def greatest(*cols: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def least(*cols: "AbstractColOrName") -> AbstractCol:
+def least(*cols: "AbstractColOrName") -> Func:
     """
     Returns the least value of the list of AbstractCol names, skipping null values.
     This function takes at least 2 parameters. It will return null if all parameters are null.
@@ -3842,7 +3841,7 @@ def least(*cols: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def when(condition: AbstractCol, value: Any) -> AbstractCol:
+def when(condition: AbstractCol, value: Any) -> Func:
     """Evaluates a list of conditions and returns one of multiple possible result expressions.
     If :func:`osos.Col.otherwise` is not invoked, None is returned for unmatched
     conditions.
@@ -3900,19 +3899,19 @@ def when(condition: AbstractCol, value: Any) -> AbstractCol:
 
 
 @overload  # type: ignore[no-redef]
-def log(arg1: "AbstractColOrName") -> AbstractCol:
+def log(arg1: "AbstractColOrName") -> Func:
     ...
 
 
 @overload
-def log(arg1: float, arg2: "AbstractColOrName") -> AbstractCol:
+def log(arg1: float, arg2: "AbstractColOrName") -> Func:
     ...
 
 
 @try_remote_functions
 def log(
     arg1: Union["AbstractColOrName", float], arg2: Optional["AbstractColOrName"] = None
-) -> AbstractCol:
+) -> Func:
     """Returns the first argument-based logarithm of the second argument.
 
     If there is only one argument, then this takes the natural logarithm of the argument.
@@ -3964,7 +3963,7 @@ def log(
 
 
 @try_remote_functions
-def log2(col: "AbstractColOrName") -> AbstractCol:
+def log2(col: "AbstractColOrName") -> Func:
     """Returns the base-2 logarithm of the argument.
 
     .. versionadded:: 1.5.0
@@ -3996,7 +3995,7 @@ def log2(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def conv(col: "AbstractColOrName", fromBase: int, toBase: int) -> AbstractCol:
+def conv(col: "AbstractColOrName", fromBase: int, toBase: int) -> Func:
     """
     Convert a number in a string AbstractCol from one base to another.
 
@@ -4029,7 +4028,7 @@ def conv(col: "AbstractColOrName", fromBase: int, toBase: int) -> AbstractCol:
 
 
 @try_remote_functions
-def factorial(col: "AbstractColOrName") -> AbstractCol:
+def factorial(col: "AbstractColOrName") -> Func:
     """
     Computes the factorial of the given value.
 
@@ -4063,7 +4062,7 @@ def factorial(col: "AbstractColOrName") -> AbstractCol:
 @try_remote_functions
 def lag(
     col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = None
-) -> AbstractCol:
+) -> Func:
     """
     Window function: returns the value that is `offset` rows before the current row, and
     `default` if there is less than `offset` rows before the current row. For example,
@@ -4146,7 +4145,7 @@ def lag(
 @try_remote_functions
 def lead(
     col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = None
-) -> AbstractCol:
+) -> Func:
     """
     Window function: returns the value that is `offset` rows after the current row, and
     `default` if there is less than `offset` rows after the current row. For example,
@@ -4229,7 +4228,7 @@ def lead(
 @try_remote_functions
 def nth_value(
     col: "AbstractColOrName", offset: int, ignoreNulls: Optional[bool] = False
-) -> AbstractCol:
+) -> Func:
     """
     Window function: returns the value that is the `offset`\\th row of the window frame
     (counting from 1), and `null` if the size of window frame is less than `offset` rows.
@@ -4303,7 +4302,7 @@ def nth_value(
 
 
 @try_remote_functions
-def ntile(n: int) -> AbstractCol:
+def ntile(n: int) -> Func:
     """
     Window function: returns the ntile group id (from 1 to `n` inclusive)
     in an ordered window partition. For example, if `n` is 4, the first
@@ -4364,7 +4363,7 @@ def ntile(n: int) -> AbstractCol:
 
 
 @try_remote_functions
-def current_date() -> AbstractCol:
+def current_date() -> Func:
     """
     Returns the current date at the start of query evaluation as a :class:`DateType` AbstractCol.
     All calls of current_date within the same query return the same value.
@@ -4393,7 +4392,7 @@ def current_date() -> AbstractCol:
 
 
 @try_remote_functions
-def current_timestamp() -> AbstractCol:
+def current_timestamp() -> Func:
     """
     Returns the current timestamp at the start of query evaluation as a :class:`TimestampType`
     AbstractCol. All calls of current_timestamp within the same query return the same value.
@@ -4422,7 +4421,7 @@ def current_timestamp() -> AbstractCol:
 
 
 @try_remote_functions
-def localtimestamp() -> AbstractCol:
+def localtimestamp() -> Func:
     """
     Returns the current timestamp without time zone at the start of query evaluation
     as a timestamp without time zone AbstractCol. All calls of localtimestamp within the
@@ -4452,7 +4451,7 @@ def localtimestamp() -> AbstractCol:
 
 
 @try_remote_functions
-def date_format(date: "AbstractColOrName", format: str) -> AbstractCol:
+def date_format(date: "AbstractColOrName", format: str) -> Func:
     """
     Converts a date/timestamp/string to a value of string in the format specified by the date
     format given by the second argument.
@@ -4493,7 +4492,7 @@ def date_format(date: "AbstractColOrName", format: str) -> AbstractCol:
 
 
 @try_remote_functions
-def year(col: "AbstractColOrName") -> AbstractCol:
+def year(col: "AbstractColOrName") -> Func:
     """
     Extract the year of a given date/timestamp as integer.
 
@@ -4522,7 +4521,7 @@ def year(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def quarter(col: "AbstractColOrName") -> AbstractCol:
+def quarter(col: "AbstractColOrName") -> Func:
     """
     Extract the quarter of a given date/timestamp as integer.
 
@@ -4551,7 +4550,7 @@ def quarter(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def month(col: "AbstractColOrName") -> AbstractCol:
+def month(col: "AbstractColOrName") -> Func:
     """
     Extract the month of a given date/timestamp as integer.
 
@@ -4580,7 +4579,7 @@ def month(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def dayofweek(col: "AbstractColOrName") -> AbstractCol:
+def dayofweek(col: "AbstractColOrName") -> Func:
     """
     Extract the day of the week of a given date/timestamp as integer.
     Ranges from 1 for a Sunday through to 7 for a Saturday
@@ -4610,7 +4609,7 @@ def dayofweek(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def dayofmonth(col: "AbstractColOrName") -> AbstractCol:
+def dayofmonth(col: "AbstractColOrName") -> Func:
     """
     Extract the day of the month of a given date/timestamp as integer.
 
@@ -4639,7 +4638,7 @@ def dayofmonth(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def dayofyear(col: "AbstractColOrName") -> AbstractCol:
+def dayofyear(col: "AbstractColOrName") -> Func:
     """
     Extract the day of the year of a given date/timestamp as integer.
 
@@ -4668,7 +4667,7 @@ def dayofyear(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def hour(col: "AbstractColOrName") -> AbstractCol:
+def hour(col: "AbstractColOrName") -> Func:
     """
     Extract the hours of a given timestamp as integer.
 
@@ -4698,7 +4697,7 @@ def hour(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def minute(col: "AbstractColOrName") -> AbstractCol:
+def minute(col: "AbstractColOrName") -> Func:
     """
     Extract the minutes of a given timestamp as integer.
 
@@ -4728,7 +4727,7 @@ def minute(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def second(col: "AbstractColOrName") -> AbstractCol:
+def second(col: "AbstractColOrName") -> Func:
     """
     Extract the seconds of a given date as integer.
 
@@ -4758,7 +4757,7 @@ def second(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def weekofyear(col: "AbstractColOrName") -> AbstractCol:
+def weekofyear(col: "AbstractColOrName") -> Func:
     """
     Extract the week number of a given date as integer.
     A week is considered to start on a Monday and week 1 is the first week with more than 3 days,
@@ -4791,7 +4790,7 @@ def weekofyear(col: "AbstractColOrName") -> AbstractCol:
 @try_remote_functions
 def make_date(
     year: "AbstractColOrName", month: "AbstractColOrName", day: "AbstractColOrName"
-) -> AbstractCol:
+) -> Func:
     """
     Returns a AbstractCol with a date built from the year, month and day AbstractCols.
 
@@ -4824,9 +4823,7 @@ def make_date(
 
 
 @try_remote_functions
-def date_add(
-    start: "AbstractColOrName", days: Union["AbstractColOrName", int]
-) -> AbstractCol:
+def date_add(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) -> Func:
     """
     Returns the date that is `days` days after `start`. If `days` is a negative value
     then these amount of days will be deducted from `start`.
@@ -4864,9 +4861,7 @@ def date_add(
 
 
 @try_remote_functions
-def date_sub(
-    start: "AbstractColOrName", days: Union["AbstractColOrName", int]
-) -> AbstractCol:
+def date_sub(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) -> Func:
     """
     Returns the date that is `days` days before `start`. If `days` is a negative value
     then these amount of days will be added to `start`.
@@ -4904,7 +4899,7 @@ def date_sub(
 
 
 @try_remote_functions
-def datediff(end: "AbstractColOrName", start: "AbstractColOrName") -> AbstractCol:
+def datediff(end: "AbstractColOrName", start: "AbstractColOrName") -> Func:
     """
     Returns the number of days from `start` to `end`.
 
@@ -4937,7 +4932,7 @@ def datediff(end: "AbstractColOrName", start: "AbstractColOrName") -> AbstractCo
 @try_remote_functions
 def add_months(
     start: "AbstractColOrName", months: Union["AbstractColOrName", int]
-) -> AbstractCol:
+) -> Func:
     """
     Returns the date that is `months` months after `start`. If `months` is a negative value
     then these amount of months will be deducted from the `start`.
@@ -4977,7 +4972,7 @@ def add_months(
 @try_remote_functions
 def months_between(
     date1: "AbstractColOrName", date2: "AbstractColOrName", roundOff: bool = True
-) -> AbstractCol:
+) -> Func:
     """
     Returns number of months between dates date1 and date2.
     If date1 is later than date2, then the result is positive.
@@ -5018,7 +5013,7 @@ def months_between(
 
 
 @try_remote_functions
-def to_date(col: "AbstractColOrName", format: Optional[str] = None) -> AbstractCol:
+def to_date(col: "AbstractColOrName", format: Optional[str] = None) -> Func:
     """Converts a :class:`~osos.Col` into :class:`pyspark.sql.types.DateType`
     using the optionally specified format. Specify formats according to `datetime pattern`_.
     By default, it follows casting rules to :class:`pyspark.sql.types.DateType` if the format
@@ -5060,17 +5055,17 @@ def to_date(col: "AbstractColOrName", format: Optional[str] = None) -> AbstractC
 
 
 @overload
-def to_timestamp(col: "AbstractColOrName") -> AbstractCol:
+def to_timestamp(col: "AbstractColOrName") -> Func:
     ...
 
 
 @overload
-def to_timestamp(col: "AbstractColOrName", format: str) -> AbstractCol:
+def to_timestamp(col: "AbstractColOrName", format: str) -> Func:
     ...
 
 
 @try_remote_functions
-def to_timestamp(col: "AbstractColOrName", format: Optional[str] = None) -> AbstractCol:
+def to_timestamp(col: "AbstractColOrName", format: Optional[str] = None) -> Func:
     """Converts a :class:`~osos.Col` into :class:`pyspark.sql.types.TimestampType`
     using the optionally specified format. Specify formats according to `datetime pattern`_.
     By default, it follows casting rules to :class:`pyspark.sql.types.TimestampType` if the format
@@ -5112,7 +5107,7 @@ def to_timestamp(col: "AbstractColOrName", format: Optional[str] = None) -> Abst
 
 
 @try_remote_functions
-def trunc(date: "AbstractColOrName", format: str) -> AbstractCol:
+def trunc(date: "AbstractColOrName", format: str) -> Func:
     """
     Returns date truncated to the unit specified by the format.
 
@@ -5147,7 +5142,7 @@ def trunc(date: "AbstractColOrName", format: str) -> AbstractCol:
 
 
 @try_remote_functions
-def date_trunc(format: str, timestamp: "AbstractColOrName") -> AbstractCol:
+def date_trunc(format: str, timestamp: "AbstractColOrName") -> Func:
     """
     Returns timestamp truncated to the unit specified by the format.
 
@@ -5184,7 +5179,7 @@ def date_trunc(format: str, timestamp: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def next_day(date: "AbstractColOrName", dayOfWeek: str) -> AbstractCol:
+def next_day(date: "AbstractColOrName", dayOfWeek: str) -> Func:
     """
     Returns the first date which is later than the value of the date AbstractCol
     based on second `week day` argument.
@@ -5217,7 +5212,7 @@ def next_day(date: "AbstractColOrName", dayOfWeek: str) -> AbstractCol:
 
 
 @try_remote_functions
-def last_day(date: "AbstractColOrName") -> AbstractCol:
+def last_day(date: "AbstractColOrName") -> Func:
     """
     Returns the last day of the month which the given date belongs to.
 
@@ -5248,7 +5243,7 @@ def last_day(date: "AbstractColOrName") -> AbstractCol:
 @try_remote_functions
 def from_unixtime(
     timestamp: "AbstractColOrName", format: str = "yyyy-MM-dd HH:mm:ss"
-) -> AbstractCol:
+) -> Func:
     """
     Converts the number of seconds from unix epoch (1970-01-01 00:00:00 UTC) to a string
     representing the timestamp of that moment in the current system time zone in the given
@@ -5283,19 +5278,19 @@ def from_unixtime(
 
 
 @overload
-def unix_timestamp(timestamp: "AbstractColOrName", format: str = ...) -> AbstractCol:
+def unix_timestamp(timestamp: "AbstractColOrName", format: str = ...) -> Func:
     ...
 
 
 @overload
-def unix_timestamp() -> AbstractCol:
+def unix_timestamp() -> Func:
     ...
 
 
 @try_remote_functions
 def unix_timestamp(
     timestamp: Optional["AbstractColOrName"] = None, format: str = "yyyy-MM-dd HH:mm:ss"
-) -> AbstractCol:
+) -> Func:
     """
     Convert time string with given pattern ('yyyy-MM-dd HH:mm:ss', by default)
     to Unix time stamp (in seconds), using the default timezone and the default
@@ -5334,9 +5329,7 @@ def unix_timestamp(
 
 
 @try_remote_functions
-def from_utc_timestamp(
-    timestamp: "AbstractColOrName", tz: "AbstractColOrName"
-) -> AbstractCol:
+def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") -> Func:
     """
     This is a common function for databases supporting TIMESTAMP WITHOUT TIMEZONE. This function
     takes a timestamp which is timezone-agnostic, and interprets it as a timestamp in UTC, and
@@ -5390,9 +5383,7 @@ def from_utc_timestamp(
 
 
 @try_remote_functions
-def to_utc_timestamp(
-    timestamp: "AbstractColOrName", tz: "AbstractColOrName"
-) -> AbstractCol:
+def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") -> Func:
     """
     This is a common function for databases supporting TIMESTAMP WITHOUT TIMEZONE. This function
     takes a timestamp which is timezone-agnostic, and interprets it as a timestamp in the given
@@ -5446,7 +5437,7 @@ def to_utc_timestamp(
 
 
 @try_remote_functions
-def timestamp_seconds(col: "AbstractColOrName") -> AbstractCol:
+def timestamp_seconds(col: "AbstractColOrName") -> Func:
     """
     Converts the number of seconds from the Unix epoch (1970-01-01T00:00:00Z)
     to a timestamp.
@@ -5492,7 +5483,7 @@ def window(
     windowDuration: str,
     slideDuration: Optional[str] = None,
     startTime: Optional[str] = None,
-) -> AbstractCol:
+) -> Func:
     """Bucketize rows into one or more time windows given a timestamp specifying AbstractCol. Window
     starts are inclusive but the window ends are exclusive, e.g. 12:05 will be in the window
     [12:05,12:10) but not in [12:00,12:05). Windows can support microsecond precision. Windows in
@@ -5585,7 +5576,7 @@ def window(
 @try_remote_functions
 def window_time(
     windowAbstractCol: "AbstractColOrName",
-) -> AbstractCol:
+) -> Func:
     """Computes the event time from a window AbstractCol. The AbstractCol window values are produced
     by window aggregating operators and are of type `STRUCT<start: TIMESTAMP, end: TIMESTAMP>`
     where start is inclusive and end is exclusive. The event time of records produced by window
@@ -5635,7 +5626,7 @@ def window_time(
 @try_remote_functions
 def session_window(
     timeAbstractCol: "AbstractColOrName", gapDuration: Union[AbstractCol, str]
-) -> AbstractCol:
+) -> Func:
     """
     Generates session window given a timestamp specifying AbstractCol.
     Session window is one of dynamic windows, which means the length of window is varying
@@ -5708,7 +5699,7 @@ def session_window(
 
 
 @try_remote_functions
-def crc32(col: "AbstractColOrName") -> AbstractCol:
+def crc32(col: "AbstractColOrName") -> Func:
     """
     Calculates the cyclic redundancy check value  (CRC32) of a binary AbstractCol and
     returns the value as a bigint.
@@ -5737,7 +5728,7 @@ def crc32(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def md5(col: "AbstractColOrName") -> AbstractCol:
+def md5(col: "AbstractColOrName") -> Func:
     """Calculates the MD5 digest and returns the value as a 32 character hex string.
 
     .. versionadded:: 1.5.0
@@ -5764,7 +5755,7 @@ def md5(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def sha1(col: "AbstractColOrName") -> AbstractCol:
+def sha1(col: "AbstractColOrName") -> Func:
     """Returns the hex string result of SHA-1.
 
     .. versionadded:: 1.5.0
@@ -5791,7 +5782,7 @@ def sha1(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def sha2(col: "AbstractColOrName", numBits: int) -> AbstractCol:
+def sha2(col: "AbstractColOrName", numBits: int) -> Func:
     """Returns the hex string result of SHA-2 family of hash functions (SHA-224, SHA-256, SHA-384,
     and SHA-512). The numBits indicates the desired bit length of the result, which must have a
     value of 224, 256, 384, 512, or 0 (which is equivalent to 256).
@@ -5829,7 +5820,7 @@ def sha2(col: "AbstractColOrName", numBits: int) -> AbstractCol:
 
 
 @try_remote_functions
-def hash(*cols: "AbstractColOrName") -> AbstractCol:
+def hash(*cols: "AbstractColOrName") -> Func:
     """Calculates the hash code of given AbstractCols, and returns the result as an int AbstractCol.
 
     .. versionadded:: 2.0.0
@@ -5873,7 +5864,7 @@ def hash(*cols: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def xxhash64(*cols: "AbstractColOrName") -> AbstractCol:
+def xxhash64(*cols: "AbstractColOrName") -> Func:
     """Calculates the hash code of given AbstractCols using the 64-bit variant of the xxHash algorithm,
     and returns the result as a long AbstractCol. The hash computation uses an initial seed of 42.
 
@@ -5920,7 +5911,7 @@ def xxhash64(*cols: "AbstractColOrName") -> AbstractCol:
 @try_remote_functions
 def assert_true(
     col: "AbstractColOrName", errMsg: Optional[Union[AbstractCol, str]] = None
-) -> AbstractCol:
+) -> Func:
     """
     Returns `null` if the input AbstractCol is `true`; throws an exception
     with the provided error message otherwise.
@@ -5976,7 +5967,7 @@ def assert_true(
 
 
 @try_remote_functions
-def raise_error(errMsg: Union[AbstractCol, str]) -> AbstractCol:
+def raise_error(errMsg: Union[AbstractCol, str]) -> Func:
     """
     Throws an exception with the provided error message.
 
@@ -6020,7 +6011,7 @@ def raise_error(errMsg: Union[AbstractCol, str]) -> AbstractCol:
 
 
 @try_remote_functions
-def upper(col: "AbstractColOrName") -> AbstractCol:
+def upper(col: "AbstractColOrName") -> Func:
     """
     Converts a string expression to upper case.
 
@@ -6055,7 +6046,7 @@ def upper(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def lower(col: "AbstractColOrName") -> AbstractCol:
+def lower(col: "AbstractColOrName") -> Func:
     """
     Converts a string expression to lower case.
 
@@ -6090,7 +6081,7 @@ def lower(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def ascii(col: "AbstractColOrName") -> AbstractCol:
+def ascii(col: "AbstractColOrName") -> Func:
     """
     Computes the numeric value of the first character of the string AbstractCol.
 
@@ -6125,7 +6116,7 @@ def ascii(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def base64(col: "AbstractColOrName") -> AbstractCol:
+def base64(col: "AbstractColOrName") -> Func:
     """
     Computes the BASE64 encoding of a binary AbstractCol and returns it as a string AbstractCol.
 
@@ -6160,7 +6151,7 @@ def base64(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def unbase64(col: "AbstractColOrName") -> AbstractCol:
+def unbase64(col: "AbstractColOrName") -> Func:
     """
     Decodes a BASE64 encoded string AbstractCol and returns it as a binary AbstractCol.
 
@@ -6197,7 +6188,7 @@ def unbase64(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def ltrim(col: "AbstractColOrName") -> AbstractCol:
+def ltrim(col: "AbstractColOrName") -> Func:
     """
     Trim the spaces from left end for the specified string value.
 
@@ -6232,7 +6223,7 @@ def ltrim(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def rtrim(col: "AbstractColOrName") -> AbstractCol:
+def rtrim(col: "AbstractColOrName") -> Func:
     """
     Trim the spaces from right end for the specified string value.
 
@@ -6267,7 +6258,7 @@ def rtrim(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def trim(col: "AbstractColOrName") -> AbstractCol:
+def trim(col: "AbstractColOrName") -> Func:
     """
     Trim the spaces from both ends for the specified string AbstractCol.
 
@@ -6302,7 +6293,7 @@ def trim(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def concat_ws(sep: str, *cols: "AbstractColOrName") -> AbstractCol:
+def concat_ws(sep: str, *cols: "AbstractColOrName") -> Func:
     """
     Concatenates multiple input string AbstractCols together into a single string AbstractCol,
     using the given separator.
@@ -6334,7 +6325,7 @@ def concat_ws(sep: str, *cols: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def decode(col: "AbstractColOrName", charset: str) -> AbstractCol:
+def decode(col: "AbstractColOrName", charset: str) -> Func:
     """
     Computes the first argument into a string from a binary using the provided character set
     (one of 'US-ASCII', 'ISO-8859-1', 'UTF-8', 'UTF-16BE', 'UTF-16LE', 'UTF-16').
@@ -6370,7 +6361,7 @@ def decode(col: "AbstractColOrName", charset: str) -> AbstractCol:
 
 
 @try_remote_functions
-def encode(col: "AbstractColOrName", charset: str) -> AbstractCol:
+def encode(col: "AbstractColOrName", charset: str) -> Func:
     """
     Computes the first argument into a binary from a string using the provided character set
     (one of 'US-ASCII', 'ISO-8859-1', 'UTF-8', 'UTF-16BE', 'UTF-16LE', 'UTF-16').
@@ -6406,7 +6397,7 @@ def encode(col: "AbstractColOrName", charset: str) -> AbstractCol:
 
 
 @try_remote_functions
-def format_number(col: "AbstractColOrName", d: int) -> AbstractCol:
+def format_number(col: "AbstractColOrName", d: int) -> Func:
     """
     Formats the number X to a format like '#,--#,--#.--', rounded to d decimal places
     with HALF_EVEN round mode, and returns the result as a string.
@@ -6435,7 +6426,7 @@ def format_number(col: "AbstractColOrName", d: int) -> AbstractCol:
 
 
 @try_remote_functions
-def format_string(format: str, *cols: "AbstractColOrName") -> AbstractCol:
+def format_string(format: str, *cols: "AbstractColOrName") -> Func:
     """
     Formats the arguments in printf-style and returns the result as a string AbstractCol.
 
@@ -6466,7 +6457,7 @@ def format_string(format: str, *cols: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def instr(str: "AbstractColOrName", substr: str) -> AbstractCol:
+def instr(str: "AbstractColOrName", substr: str) -> Func:
     """
     Locate the position of the first occurrence of substr AbstractCol in the given string.
     Returns null if either of the arguments are null.
@@ -6508,7 +6499,7 @@ def overlay(
     replace: "AbstractColOrName",
     pos: Union["AbstractColOrName", int],
     len: Union["AbstractColOrName", int] = -1,
-) -> AbstractCol:
+) -> Func:
     """
     Overlay the specified portion of `src` with `replace`,
     starting from byte position `pos` of `src` and proceeding for `len` bytes.
@@ -6567,7 +6558,7 @@ def sentences(
     string: "AbstractColOrName",
     language: Optional["AbstractColOrName"] = None,
     country: Optional["AbstractColOrName"] = None,
-) -> AbstractCol:
+) -> Func:
     """
     Splits a string into arrays of sentences, where each sentence is an array of words.
     The 'language' and 'country' arguments are optional, and if omitted, the default locale is used.
@@ -6617,7 +6608,7 @@ def sentences(
 
 
 @try_remote_functions
-def substring(str: "AbstractColOrName", pos: int, len: int) -> AbstractCol:
+def substring(str: "AbstractColOrName", pos: int, len: int) -> Func:
     """
     Substring starts at `pos` and is of length `len` when str is String type or
     returns the slice of byte array that starts at `pos` in byte and is of length `len`
@@ -6656,7 +6647,7 @@ def substring(str: "AbstractColOrName", pos: int, len: int) -> AbstractCol:
 
 
 @try_remote_functions
-def substring_index(str: "AbstractColOrName", delim: str, count: int) -> AbstractCol:
+def substring_index(str: "AbstractColOrName", delim: str, count: int) -> Func:
     """
     Returns the substring from string str before count occurrences of the delimiter delim.
     If count is positive, everything the left of the final delimiter (counting from left) is
@@ -6694,7 +6685,7 @@ def substring_index(str: "AbstractColOrName", delim: str, count: int) -> Abstrac
 
 
 @try_remote_functions
-def levenshtein(left: "AbstractColOrName", right: "AbstractColOrName") -> AbstractCol:
+def levenshtein(left: "AbstractColOrName", right: "AbstractColOrName") -> Func:
     """Computes the Levenshtein distance of the two given strings.
 
     .. versionadded:: 1.5.0
@@ -6724,7 +6715,7 @@ def levenshtein(left: "AbstractColOrName", right: "AbstractColOrName") -> Abstra
 
 
 @try_remote_functions
-def locate(substr: str, str: "AbstractColOrName", pos: int = 1) -> AbstractCol:
+def locate(substr: str, str: "AbstractColOrName", pos: int = 1) -> Func:
     """
     Locate the position of the first occurrence of substr in a string AbstractCol, after position pos.
 
@@ -6762,7 +6753,7 @@ def locate(substr: str, str: "AbstractColOrName", pos: int = 1) -> AbstractCol:
 
 
 @try_remote_functions
-def lpad(col: "AbstractColOrName", len: int, pad: str) -> AbstractCol:
+def lpad(col: "AbstractColOrName", len: int, pad: str) -> Func:
     """
     Left-pad the string AbstractCol to width `len` with `pad`.
 
@@ -6795,7 +6786,7 @@ def lpad(col: "AbstractColOrName", len: int, pad: str) -> AbstractCol:
 
 
 @try_remote_functions
-def rpad(col: "AbstractColOrName", len: int, pad: str) -> AbstractCol:
+def rpad(col: "AbstractColOrName", len: int, pad: str) -> Func:
     """
     Right-pad the string AbstractCol to width `len` with `pad`.
 
@@ -6828,7 +6819,7 @@ def rpad(col: "AbstractColOrName", len: int, pad: str) -> AbstractCol:
 
 
 @try_remote_functions
-def repeat(col: "AbstractColOrName", n: int) -> AbstractCol:
+def repeat(col: "AbstractColOrName", n: int) -> Func:
     """
     Repeats a string AbstractCol n times, and returns it as a new string AbstractCol.
 
@@ -6859,7 +6850,7 @@ def repeat(col: "AbstractColOrName", n: int) -> AbstractCol:
 
 
 @try_remote_functions
-def split(str: "AbstractColOrName", pattern: str, limit: int = -1) -> AbstractCol:
+def split(str: "AbstractColOrName", pattern: str, limit: int = -1) -> Func:
     """
     Splits str around matches of the given pattern.
 
@@ -6904,7 +6895,7 @@ def split(str: "AbstractColOrName", pattern: str, limit: int = -1) -> AbstractCo
 
 
 @try_remote_functions
-def regexp_extract(str: "AbstractColOrName", pattern: str, idx: int) -> AbstractCol:
+def regexp_extract(str: "AbstractColOrName", pattern: str, idx: int) -> Func:
     r"""Extract a specific group matched by a Java regex, from the specified string AbstractCol.
     If the regex did not match, or the specified group did not match, an empty string is returned.
 
@@ -6947,7 +6938,7 @@ def regexp_replace(
     string: "AbstractColOrName",
     pattern: Union[str, AbstractCol],
     replacement: Union[str, AbstractCol],
-) -> AbstractCol:
+) -> Func:
     r"""Replace all substrings of the specified string value that match regexp with replacement.
 
     .. versionadded:: 1.5.0
@@ -6989,7 +6980,7 @@ def regexp_replace(
 
 
 @try_remote_functions
-def initcap(col: "AbstractColOrName") -> AbstractCol:
+def initcap(col: "AbstractColOrName") -> Func:
     """Translate the first letter of each word to upper case in the sentence.
 
     .. versionadded:: 1.5.0
@@ -7016,7 +7007,7 @@ def initcap(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def soundex(col: "AbstractColOrName") -> AbstractCol:
+def soundex(col: "AbstractColOrName") -> Func:
     """
     Returns the SoundEx encoding for a string
 
@@ -7045,7 +7036,7 @@ def soundex(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def bin(col: "AbstractColOrName") -> AbstractCol:
+def bin(col: "AbstractColOrName") -> Func:
     """Returns the string representation of the binary value of the given AbstractCol.
 
     .. versionadded:: 1.5.0
@@ -7073,7 +7064,7 @@ def bin(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def hex(col: "AbstractColOrName") -> AbstractCol:
+def hex(col: "AbstractColOrName") -> Func:
     """Computes hex value of the given AbstractCol, which could be :class:`pyspark.sql.types.StringType`,
     :class:`pyspark.sql.types.BinaryType`, :class:`pyspark.sql.types.IntegerType` or
     :class:`pyspark.sql.types.LongType`.
@@ -7102,7 +7093,7 @@ def hex(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def unhex(col: "AbstractColOrName") -> AbstractCol:
+def unhex(col: "AbstractColOrName") -> Func:
     """Inverse of hex. Interprets each pair of characters as a hexadecimal number
     and converts to the byte representation of number.
 
@@ -7130,7 +7121,7 @@ def unhex(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def length(col: "AbstractColOrName") -> AbstractCol:
+def length(col: "AbstractColOrName") -> Func:
     """Computes the character length of string data or number of bytes of binary data.
     The length of character data includes the trailing spaces. The length of binary data
     includes binary zeros.
@@ -7159,7 +7150,7 @@ def length(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def octet_length(col: "AbstractColOrName") -> AbstractCol:
+def octet_length(col: "AbstractColOrName") -> Func:
     """
     Calculates the byte length for the specified string AbstractCol.
 
@@ -7189,7 +7180,7 @@ def octet_length(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def bit_length(col: "AbstractColOrName") -> AbstractCol:
+def bit_length(col: "AbstractColOrName") -> Func:
     """
     Calculates the bit length for the specified string AbstractCol.
 
@@ -7219,7 +7210,7 @@ def bit_length(col: "AbstractColOrName") -> AbstractCol:
 
 
 @try_remote_functions
-def translate(srcCol: "AbstractColOrName", matching: str, replace: str) -> AbstractCol:
+def translate(srcCol: "AbstractColOrName", matching: str, replace: str) -> Func:
     """A function translate any character in the `srcCol` by a character in `matching`.
     The characters in `replace` is corresponding to the characters in `matching`.
     Translation will happen whenever any character in the string is matching with the character

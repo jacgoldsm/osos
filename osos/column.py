@@ -39,25 +39,25 @@ class Node:
         return out
 
     def __add__(self, other: NumOrCol):
-        other = AbstractLit(other) if not isinstance(other,Node) else other
+        other = AbstractLit(other) if not isinstance(other, Node) else other
         return BinaryOp(operator.add, self, other)
 
     __radd__ = __add__
 
     def __mul__(self, other: NumOrCol):
-        other = AbstractLit(other) if not isinstance(other,Node) else other
+        other = AbstractLit(other) if not isinstance(other, Node) else other
         return BinaryOp(operator.mul, self, other)
 
     __rmul__ = __mul__
 
     def __truediv__(self, other: NumOrCol):
-        other = AbstractLit(other) if not isinstance(other,Node) else other
+        other = AbstractLit(other) if not isinstance(other, Node) else other
         return BinaryOp(operator.truediv, self, other)
 
     __rtruediv__ = __truediv__
 
     def __sub__(self, other: NumOrCol):
-        other = AbstractLit(other) if not isinstance(other,Node) else other
+        other = AbstractLit(other) if not isinstance(other, Node) else other
         return BinaryOp(operator.sub, self, other)
 
     __rsub__ = __sub__
@@ -66,27 +66,27 @@ class Node:
         return UnaryOp(operator.__inv__, self)
 
     def __and__(self, other):
-        other = AbstractLit(other) if not isinstance(other,Node) else other
+        other = AbstractLit(other) if not isinstance(other, Node) else other
         return BinaryOp(operator.__and__, self, other)
 
     def __or__(self, other):
-        other = AbstractLit(other) if not isinstance(other,Node) else other
+        other = AbstractLit(other) if not isinstance(other, Node) else other
         return BinaryOp(operator.__or__, self, other)
 
-    def __eq__(self,other):
-        other = AbstractLit(other) if not isinstance(other,Node) else other
+    def __eq__(self, other):
+        other = AbstractLit(other) if not isinstance(other, Node) else other
         return BinaryOp(operator.__eq__, self, other)
 
     def __gt__(self, other):
-        other = AbstractLit(other) if not isinstance(other,Node) else other
+        other = AbstractLit(other) if not isinstance(other, Node) else other
         return BinaryOp(operator.__gt__, self, other)
 
     def __lt__(self, other):
-        other = AbstractLit(other) if not isinstance(other,Node) else other
+        other = AbstractLit(other) if not isinstance(other, Node) else other
         return BinaryOp(operator.__lt__, self, other)
 
     def __ne__(self, other):
-        other = AbstractLit(other) if not isinstance(other,Node) else other
+        other = AbstractLit(other) if not isinstance(other, Node) else other
         return BinaryOp(operator.__ne__, self, other)
 
     def alias(self, newname):
@@ -172,6 +172,7 @@ class AbstractCol(AbstractColOrLit):
 
 class AbstractLit(AbstractColOrLit):
     pass
+
 
 class AbstractIndex(Node):
     def __init__(self):
