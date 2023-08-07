@@ -16,13 +16,14 @@ data = {
 
 one = DataFrame.fromDict(data)
 two = one.select("foo", F.col("baz"))
-
 three = DataFrame({"col": [np.nan, "foo", "bar", "baz"], "val": [1, 2, 3, 4]})
 four = DataFrame({"col": [np.nan, "foo", "zoo", "baz"], "var": [5, 6, 7, 8]})
 five = DataFrame({"col": ["foo", "foo", "zoo", "zoo"], "var": [5, 6, 7, 8]})
 six = five._data.copy()
-six['var'] = six['var'].sort_values(ascending=False)
+six["var"] = six["var"].sort_values(ascending=False)
 six = DataFrame(six)
+seven = DataFrame.fromDict(data)
+seven._data["eggs"] = pd.Series([1, 1, 2, 2, 3, 3, 4, 4, 5, 5])
 
 
 times_two = F.udf(lambda x: x * 2)
@@ -43,8 +44,17 @@ m = three.join(four, "col", "right")
 n = one.withColumn("moo", times_two("baz"))
 o = five.withColumn("boo", F.sum("var").over(Window.partitionBy("col")))
 p = six.withColumn("boo", F.sum("var").over(Window.partitionBy("col").orderBy("var")))
-print(p)
 q = one.filter(F.col("tup") == "foo")
+r = one.withColumn("rn", F.row_number().over(Window.partitionBy("tup").orderBy("baz")))
+s = seven.withColumn(
+    "rn", F.row_number().over(Window.partitionBy("tup", "eggs").orderBy("baz"))
+)
+t = seven.withColumn(
+    "rn", F.row_number().over(Window.partitionBy("tup").orderBy("eggs", "baz"))
+)
+print(s)
+print(t)
+
 
 ap = one._data.assign(boo=one._data["foo"] + one._data["baz"])
 bp = one._data.assign(boo=one._data["foo"] * one._data["baz"])
@@ -86,13 +96,18 @@ calc = np.array(
 pp = five._data.copy()
 pp["boo"] = calc
 qp = one._data[one._data["tup"] == "foo"]
+rp = one._data.assign(
+    **{"rn": list(reversed(range(1, 6))) + list(reversed(range(1, 6)))}
+)
+sp = seven._data.assign(**{"rn": [2, 1, 2, 1, 1, 1, 2, 1, 2, 1]})
+tp = seven._data.assign(**{"rn": [2, 1, 4, 3, 5, 1, 3, 2, 5, 4]})
 
 
 def compares_equal(osos_dataframe: DataFrame, pandas_dataframe: pd.DataFrame) -> bool:
     return osos_dataframe.toPandas().equals(pandas_dataframe)
 
 
-def test_all():
+def test_methods():
     assert compares_equal(a, ap)
     assert compares_equal(b, bp)
     assert compares_equal(c, cp)
@@ -110,3 +125,9 @@ def test_all():
     assert compares_equal(o, op)
     assert compares_equal(p, pp)
     assert compares_equal(q, qp)
+
+
+def test_functions():
+    assert compares_equal(r, rp)
+    assert compares_equal(s, sp)
+    assert compares_equal(t, tp)

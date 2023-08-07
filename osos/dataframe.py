@@ -244,7 +244,7 @@ class DataFrame:
         elif isinstance(node, SimpleContainer):
             return node._name
         elif isinstance(node, AbstractIndex):
-            return self._data.index
+            return pd.Series(self._data.index)
         else:
             return node
 

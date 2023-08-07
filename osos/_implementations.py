@@ -9,6 +9,10 @@ from .indexer import SparkIndexer
 from .exceptions import AnalysisException
 
 SeriesType = Union[pd.Series, SeriesGroupBy]
+MaybeRollingWindow = Union[
+    SeriesGroupBy,
+    RollingWindow,
+]
 
 
 def get_rollspec(
@@ -20,8 +24,9 @@ def get_rollspec(
     return indexer
 
 
-def _get_rolling_window(series: pd.Series, *args, **kwargs) -> RollingWindow:
+def _get_rolling_window(series: pd.Series, *args, **kwargs) -> MaybeRollingWindow:
     win: ConcreteWindowSpec = kwargs.pop("_over")
+    convert_to_rolling_sans_order = kwargs.pop("_convert_to_rolling", True)
     df_len = series.size
     if isinstance(win, EmptyWindow):
         return series.rolling(window=df_len, center=True, min_periods=1)
@@ -29,24 +34,41 @@ def _get_rolling_window(series: pd.Series, *args, **kwargs) -> RollingWindow:
     if win.partition_by and not win.order_by:
         if win.rows_between or win.range_between:
             raise AnalysisException("Must specify order for row range")
-        return series.groupby(win.partition_by).rolling(
-            window=df_len, center=True, min_periods=1
-        )
+        out = series.groupby(win.partition_by, group_keys=False)
+        if convert_to_rolling_sans_order:
+            out = out.rolling(window=df_len, center=True, min_periods=1)
+        return out
     elif (
         win.partition_by
         and win.order_by
         and not win.rows_between
         and not win.range_between
     ):
-        roll = roll.groupby(win.partition_by, group_keys=False)
-        indices = np.argsort(win.order_by)[0]
-        roll.index = pd.Series(indices)
-        roll = (
-            # we have to regroup because `apply` ungroups the GroupedData
-            roll.apply(lambda x: x.sort_index())
-            .groupby(win.partition_by)
-            .rolling(window=df_len, center=False, min_periods=1)
+        # add all the partition and order columns to a new dataframe, along with
+        # the original series. We then return the original series once it's sorted,
+        # along with it's nonsorted index if that's requested from the caller.
+        ser_name = roll.name
+        ob, pb = 0, 0
+        rolldf = pd.DataFrame({ser_name: roll})
+        for i, order_col in enumerate(win.order_by):
+            rolldf[f"__order__{i}"] = order_col
+            ob += 1
+
+        for i, partition_col in enumerate(win.partition_by):
+            rolldf[f"__partition__{i}"] = partition_col
+            pb += 1
+
+        rolldf[ser_name] = series
+
+        # don't reset index here, we might need it later
+        rolldf = rolldf.sort_values([f"__order__{i}" for i in range(ob)]).groupby(
+            [f"__partition__{i}" for i in range(pb)], group_keys=False
         )
+
+        if convert_to_rolling_sans_order:
+            roll = rolldf[ser_name].rolling(window=df_len, center=False, min_periods=1)
+        else:
+            roll = rolldf[ser_name]
     # if win.rows_between is not None:
     #     assert win.order_by is not None, "rowsBetween requires an order specification"
     #     bottom,top = win.rows_between
@@ -291,10 +313,15 @@ def pmod_func():
     pass
 
 
-def row_number_func(*args, **kwargs):
+def row_number_func(idx, *args, **kwargs):
     if isinstance(kwargs["_over"], EmptyWindow):
         raise Exception("row_number() is only a Window function") from None
-    rollspec = get_rollspec(*args, **kwargs)
+    if not kwargs["_over"].order_by:
+        raise AnalysisException("row_number() requires ordered window")
+    kwargs["_convert_to_rolling"] = False
+    rollspec = _get_rolling_window(idx, *args, **kwargs)
+    _rn = rollspec.cumcount() + 1
+    return _rn.sort_index()
 
 
 def dense_rank_func():
