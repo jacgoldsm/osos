@@ -19,14 +19,19 @@ iris_pd = pd.read_csv('https://raw.githubusercontent.com/mwaskom/seaborn-data/ma
 iris = DataFrame(iris_pd)
 # manipulate it just like Pyspark
 agg = (
-  iris
-    .withColumn("sepal_area", F.col("sepal_length") * F.col("sepal_width"))
+    iris.withColumn("sepal_area", F.col("sepal_length") * F.col("sepal_width"))
     .filter(F.col("sepal_length") > 4.9)
-    .withColumn("total_area_by_species", F.sum("sepal_area").over(Window.partitionBy("species")))
+    .withColumn(
+        "total_area_by_species", F.sum("sepal_area").over(Window.partitionBy("species"))
+    )
     .withColumn("species", F.lower("species"))
     .groupBy("species")
-    .agg(F.avg("sepal_length").alias("avg_sepal_length"), F.avg("sepal_area").alias("avg_sepal_area"))
+    .agg(
+        F.avg("sepal_length").alias("avg_sepal_length"),
+        F.avg("sepal_area").alias("avg_sepal_area"),
+    )
 )
+
 
 print(iris)
 
@@ -36,12 +41,23 @@ The same process in Pandas looks a lot worse (to me):
 
 ```python
 iris_pd = iris_pd.copy()
-iris_pd['sepal_area'] = iris_pd['sepal_length'] * iris_pd['sepal_width']
-iris_pd = iris_pd[iris_pd['sepal_length'] > 4.9]
-iris_pd['total_area_by_species'] = iris_pd.groupby("species")['sepal_area'].transform(np.sum)
-iris_pd['species'] = iris_pd['species'].str.lower()
-iris_pd = iris_pd.groupby("species").agg(np.average).reset_index()[["species", "sepal_length", "sepal_area"]]
-iris_pd = iris_pd.rename(columns={"sepal_length":"avg_sepal_length", "sepal_area":"avg_sepal_area"})
+iris_pd["sepal_area"] = iris_pd["sepal_length"] * iris_pd["sepal_width"]
+iris_pd = iris_pd[iris_pd["sepal_length"] > 4.9]
+iris_pd["total_area_by_species"] = np.array(
+    iris_pd.groupby("species")
+    .rolling(1000, center=True, min_periods=1)
+    .sum()["sepal_area"]
+    .astype(np.float64)
+)
+iris_pd["species"] = iris_pd["species"].str.lower()
+iris_pd = (
+    iris_pd.groupby("species")
+    .agg(lambda x: x.mean())
+    .reset_index()[["species", "sepal_length", "sepal_area"]]
+)
+iris_pd = iris_pd.rename(
+    columns={"sepal_length": "avg_sepal_length", "sepal_area": "avg_sepal_area"}
+)
 
 print(iris_pd)
 ```
