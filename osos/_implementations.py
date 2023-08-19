@@ -28,6 +28,7 @@ def _get_rolling_window(series: pd.Series, *args, **kwargs) -> MaybeRollingWindo
     win: ConcreteWindowSpec = kwargs.pop("_over")
     convert_to_rolling_sans_order = kwargs.pop("_convert_to_rolling", True)
     df_len = series.size
+
     if isinstance(win, EmptyWindow):
         return series.rolling(window=df_len, center=True, min_periods=1)
     roll = series.copy()
@@ -109,12 +110,12 @@ def udf_func(
     return series.apply(udf, args=args, **kwargs)
 
 
-def sqrt_func():
-    pass
+def sqrt_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.sqrt(series))
 
 
-def abs_func():
-    pass
+def abs_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.abs(series))
 
 
 def mode_func():
@@ -141,135 +142,143 @@ def count_func():
     pass
 
 
-def avg_func():
+def lower_func(series: pd.Series, *args, **kwargs):
+    return series.str.lower()
+
+
+def avg_func(series: pd.Series, *args, **kwargs):
+    if isinstance(kwargs["_over"], EmptyWindow):
+        kwargs.pop("_over")
+        return pd.Series(series.mean(*args, **kwargs))
+    roll = _get_rolling_window(series, *args, **kwargs)
+    return roll.mean().reset_index()[series.name]
+
+
+def median_func(series: pd.Series, *args, **kwargs):
     pass
 
 
-def median_func():
+def sum_distinct_func(series: pd.Series, *args, **kwargs):
     pass
 
 
-def sum_distinct_func():
+def product_func(series: pd.Series, *args, **kwargs):
     pass
 
 
-def product_func():
+def acos_func(series: pd.Series, *args, **kwargs):
     pass
 
 
-def acos_func():
+def acosh_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.arccosh(series))
+
+
+def asin_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.arcsin(series))
+
+
+def asinh_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.arcsinh(series))
+
+
+def atan_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.arctan(series))
+
+
+def atanh_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.arctanh(series))
+
+
+def cbrt_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.cbrt(series))
+
+
+def ceil_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.ceil(series))
+
+
+def cos_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.cos(series))
+
+
+def cosh_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.cosh(series))
+
+
+def cot_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(1 / np.tan(series))
+
+
+def csc_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(1 / np.sin(series))
+
+
+def exp_func(series: pd.Series, *args, **kwargs):
     pass
 
 
-def acosh_func():
+def expm1_func(series: pd.Series, *args, **kwargs):
     pass
 
 
-def asin_func():
+def floor_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.floor(series))
+
+
+def log_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.log(series))
+
+
+def log1p_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.log1p(series))
+
+
+def rint_func(series: pd.Series, *args, **kwargs):
     pass
 
 
-def asinh_func():
+def sec_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.cos(series))
+
+
+def signum_func(series: pd.Series, *args, **kwargs):
     pass
 
 
-def atan_func():
+def sin_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.sin(series))
+
+
+def sinh_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.sinh(series))
+
+
+def tan_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.tan(series))
+
+
+def tanh_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.tanh(series))
+
+
+def degrees_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.degrees(series))
+
+
+def radians_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.deg2rad(series))
+
+
+def bitwise_not_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.bitwise_not(series))
+
+
+def asc_func(series: pd.Series, *args, **kwargs):
     pass
 
 
-def atanh_func():
-    pass
-
-
-def cbrt_func():
-    pass
-
-
-def ceil_func():
-    pass
-
-
-def cos_func():
-    pass
-
-
-def cosh_func():
-    pass
-
-
-def cot_func():
-    pass
-
-
-def csc_func():
-    pass
-
-
-def exp_func():
-    pass
-
-
-def expm1_func():
-    pass
-
-
-def floor_func():
-    pass
-
-
-def log_func():
-    pass
-
-
-def log1p_func():
-    pass
-
-
-def rint_func():
-    pass
-
-
-def sec_func():
-    pass
-
-
-def signum_func():
-    pass
-
-
-def sin_func():
-    pass
-
-
-def sinh_func():
-    pass
-
-
-def tan_func():
-    pass
-
-
-def tanh_func():
-    pass
-
-
-def degrees_func():
-    pass
-
-
-def radians_func():
-    pass
-
-
-def bitwise_not_func():
-    pass
-
-
-def asc_func():
-    pass
-
-
-def desc_func():
+def desc_func(series: pd.Series, *args, **kwargs):
     pass
 
 
@@ -301,8 +310,8 @@ def atan2_func():
     pass
 
 
-def hypot_func():
-    pass
+def hypot_func(series: pd.Series, *args, **kwargs):
+    return pd.Series(np.hypot(series))
 
 
 def pow_func():

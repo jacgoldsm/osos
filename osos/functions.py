@@ -226,6 +226,8 @@ def sqrt(col: "AbstractColOrName") -> Func:
     |    2.0|
     +-------+
     """
+    if isinstance(col, str):
+        col = AbstractCol(col)
     return Func(sqrt_func, col)
 
 
@@ -259,6 +261,8 @@ def abs(col: "AbstractColOrName") -> Func:
     |      1|
     +-------+
     """
+    if isinstance(col, str):
+        col = AbstractCol(col)
     return Func(abs_func, col)
 
 
@@ -6077,7 +6081,10 @@ def lower(col: "AbstractColOrName") -> Func:
     |  pandas api|
     +------------+
     """
-    raise NotImplementedError
+    if isinstance(col, str):
+        col = AbstractCol(col)
+
+    return Func(lower_func, col)
 
 
 @try_remote_functions

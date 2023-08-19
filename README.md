@@ -7,6 +7,7 @@ If, like me, you hate the Pandas API and prefer Pyspark, this is the project for
 ## Getting Started
 ```python
 import pandas as pd
+import numpy as np
 import osos.functions as F
 from osos.dataframe import DataFrame
 from osos.window import Window
@@ -19,15 +20,28 @@ iris = DataFrame(iris_pd)
 # manipulate it just like Pyspark
 agg = (
   iris
-    .withColumn("Sepal.Area", F.col("Sepal.Length") * F.col("Sepal.Width"))
-    .filter(F.col("Sepal.Length") > 4.9)
-    .orderBy("Sepal.Area")
-    .withColumn("total_area_by_species", F.sum("Sepal.Area").over(Window.partitionBy("Species")))
+    .withColumn("sepal_area", F.col("sepal_length") * F.col("sepal_width"))
+    .filter(F.col("sepal_length") > 4.9)
+    .withColumn("total_area_by_species", F.sum("sepal_area").over(Window.partitionBy("species")))
     .withColumn("species", F.lower("species"))
     .groupBy("species")
-    .agg(F.avg("Sepal.Length").alias("avg_sepal_length"), F.avg("Sepal.Area").alias("avg_sepal_area"))
+    .agg(F.avg("sepal_length").alias("avg_sepal_length"), F.avg("sepal_area").alias("avg_sepal_area"))
 )
 
 print(iris)
 
+```
+
+The same process in Pandas looks a lot worse (to me):
+
+```python
+iris_pd = iris_pd.copy()
+iris_pd['sepal_area'] = iris_pd['sepal_length'] * iris_pd['sepal_width']
+iris_pd = iris_pd[iris_pd['sepal_length'] > 4.9]
+iris_pd['total_area_by_species'] = iris_pd.groupby("species")['sepal_area'].transform(np.sum)
+iris_pd['species'] = iris_pd['species'].str.lower()
+iris_pd = iris_pd.groupby("species").agg(np.average).reset_index()[["species", "sepal_length", "sepal_area"]]
+iris_pd = iris_pd.rename(columns={"sepal_length":"avg_sepal_length", "sepal_area":"avg_sepal_area"})
+
+print(iris_pd)
 ```

@@ -7,6 +7,8 @@ from osos.functions import col
 import numpy as np
 import pandas as pd
 
+from pandas.testing import assert_frame_equal
+
 
 data = {
     "foo": list(range(10)),
@@ -52,8 +54,7 @@ s = seven.withColumn(
 t = seven.withColumn(
     "rn", F.row_number().over(Window.partitionBy("tup").orderBy("eggs", "baz"))
 )
-print(s)
-print(t)
+u = one.withColumn("foosqrt", F.sqrt("foo"))
 
 
 ap = one._data.assign(boo=one._data["foo"] + one._data["baz"])
@@ -63,7 +64,7 @@ dp = one._data.assign(boo=one._data["foo"] - one._data["baz"])
 ep = one._data.assign(boo=~one._data["foo"])
 fp = pd.DataFrame(one._data.agg({"baz": sum})).T
 gp = one._data[["foo"]].rename({"foo": "moo"}, axis="columns")
-hp = one._data.groupby("tup").agg({"baz": sum})
+hp = one._data.groupby("tup").agg({"baz": sum}).reset_index()
 ip = one._data.rename({"foo": "jk"}, axis="columns")
 jp = three._data.dropna(subset="col").merge(
     four._data.dropna(subset="col"), on=["col"], how="inner"
@@ -101,10 +102,15 @@ rp = one._data.assign(
 )
 sp = seven._data.assign(**{"rn": [2, 1, 2, 1, 1, 1, 2, 1, 2, 1]})
 tp = seven._data.assign(**{"rn": [2, 1, 4, 3, 5, 1, 3, 2, 5, 4]})
+up = one._data.assign(**{"foosqrt": np.sqrt(one._data.foo)})
 
 
 def compares_equal(osos_dataframe: DataFrame, pandas_dataframe: pd.DataFrame) -> bool:
-    return osos_dataframe.toPandas().equals(pandas_dataframe)
+    try:
+        assert_frame_equal(osos_dataframe.toPandas(), pandas_dataframe)
+        return True
+    except AssertionError:
+        return False
 
 
 def test_methods():
@@ -131,3 +137,48 @@ def test_functions():
     assert compares_equal(r, rp)
     assert compares_equal(s, sp)
     assert compares_equal(t, tp)
+    assert compares_equal(u, up)
+
+
+iris_pd = pd.read_csv(
+    "https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv"
+)
+# Make an osos DataFrame
+iris = DataFrame(iris_pd)
+# manipulate it just like Pyspark
+iris_pd = iris_pd.copy()
+agg = (
+    iris.withColumn("sepal_area", F.col("sepal_length") * F.col("sepal_width"))
+    .filter(F.col("sepal_length") > 4.9)
+    .withColumn(
+        "total_area_by_species", F.sum("sepal_area").over(Window.partitionBy("species"))
+    )
+    .withColumn("species", F.lower("species"))
+    .groupBy("species")
+    .agg(
+        F.avg("sepal_length").alias("avg_sepal_length"),
+        F.avg("sepal_area").alias("avg_sepal_area"),
+    )
+)
+
+iris_pd["sepal_area"] = iris_pd["sepal_length"] * iris_pd["sepal_width"]
+iris_pd = iris_pd[iris_pd["sepal_length"] > 4.9]
+iris_pd["total_area_by_species"] = np.array(
+    iris_pd.groupby("species")
+    .rolling(1000, center=True, min_periods=1)
+    .sum()["sepal_area"]
+    .astype(np.float64)
+)
+iris_pd["species"] = iris_pd["species"].str.lower()
+iris_pd = (
+    iris_pd.groupby("species")
+    .agg(lambda x: x.mean())
+    .reset_index()[["species", "sepal_length", "sepal_area"]]
+)
+iris_pd = iris_pd.rename(
+    columns={"sepal_length": "avg_sepal_length", "sepal_area": "avg_sepal_area"}
+)
+
+
+def test_iris():
+    assert compares_equal(agg, iris_pd)

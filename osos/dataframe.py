@@ -30,6 +30,10 @@ class DataFrame:
     def __init__(self, data=None):
         self._data = pd.DataFrame(data)
 
+    @property
+    def true_index(self):
+        return np.arange(len(self._data.index))
+
     @staticmethod
     def fromDict(d) -> "DataFrame":
         return DataFrame(d)
@@ -37,8 +41,8 @@ class DataFrame:
     def toPandas(self) -> pd.DataFrame:
         return pd.DataFrame(self._data)
 
-    def __str__(self):
-        return self._data.to_string(index=False)
+    def __str__(self, index=False):
+        return self._data.to_string(index=index)
 
     __repr__ = __str__
 
@@ -83,8 +87,8 @@ class DataFrame:
 
         col = self._eval_recursive(expr)
         kwargs = {name: col}
-        df = self._data.assign(**kwargs)
-        return DataFrame(df)
+        df = DataFrame(self._data.assign(**kwargs))
+        return df
 
     def withColumnRenamed(self, oldname: str, newname: str) -> "DataFrame":
         df = DataFrame.fromPandas(self._data.rename({oldname: newname}, axis="columns"))
@@ -100,11 +104,12 @@ class DataFrame:
 
             cols.append(self._eval_recursive(expr))
         newdf = DataFrame(pd.concat(cols, axis=1))
+
         return newdf
 
     def filter(self, *exprs: Node) -> "DataFrame":
         flat_exprs = flatten_cols(exprs)
-        newdf = DataFrame(pd.DataFrame(self._data))
+        newdf = DataFrame(self._data.copy())
 
         for expr in flat_exprs:
             if isinstance(expr, str):
@@ -113,9 +118,10 @@ class DataFrame:
             assert (
                 boolean_mask.dtype == np.bool8
             ), "`filter` expressions must return boolean results"
-            newdf = newdf._data.loc[boolean_mask]
+            newdf = DataFrame(newdf._data.loc[boolean_mask])
+            newdf._data.index = np.arange(len(newdf._data.index))
 
-        return DataFrame(newdf)
+        return newdf
 
     def groupBy(self, *exprs: Node) -> "GroupedData":
         flat_exprs = flatten_cols(exprs)
@@ -127,12 +133,14 @@ class DataFrame:
             assert isinstance(expr, AbstractCol)
             cols.append(self._eval_recursive(expr))
         df = self
-        return GroupedData(df._data.groupby(cols))
+
+        return GroupedData(df._data.groupby(cols), cols=cols)
 
     def agg(self, *exprs: Node) -> "DataFrame":
 
         exprs = flatten_cols(exprs)
         out = []
+
         for expr in exprs:
             if hasattr(expr, "_over"):
                 over = (
@@ -148,9 +156,12 @@ class DataFrame:
                 ser.name = expr
             out.append(ser)
 
-        newdf = DataFrame(pd.concat(out, axis=0))
+        newdf = pd.concat(out, axis=1)
+        newdf.index = np.arange(len(newdf.index))
+        if isinstance(self, GroupedData):
+            newdf = pd.concat([self._uniques, newdf], axis=1)
 
-        return newdf
+        return DataFrame(newdf)
 
     def union(self, other: "DataFrame") -> "DataFrame":
         return DataFrame(pd.concat([self._data, other._data]).reindex())
@@ -252,6 +263,20 @@ class DataFrame:
 class GroupedData(DataFrame):
     def __init__(self, data=None, cols=None):
         self._data = data if data is not None else pd.DataFrame().groupby([])
+        # we want to see what the grouper columns will look like after they're agged.
+        # is this the best way to do that?
+        cols = cols if cols is not None else []
+        all_cols = {col.name: col for col in cols}
+        all_cols.update({"__index__": np.nan})
+        uniques = (
+            pd.DataFrame(all_cols)
+            .groupby(cols)
+            .agg({"__index__": id})
+            .drop("__index__", axis=1)
+            .reset_index()
+        )
+        uniques.index = np.arange(len(uniques.index))
+        self._uniques = uniques
 
     @property
     def groups(self):
