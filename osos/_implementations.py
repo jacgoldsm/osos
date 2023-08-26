@@ -118,7 +118,7 @@ def abs_func(series: pd.Series, *args, **kwargs):
     return pd.Series(np.abs(series))
 
 
-def mode_func():
+def mode_func(series: pd.Series, *args, **kwargs):
     pass
 
 
@@ -157,7 +157,14 @@ def avg_func(series: pd.Series, *args, **kwargs):
 
 
 def median_func(series: pd.Series, *args, **kwargs):
-    pass
+    if isinstance(kwargs["_over"], EmptyWindow):
+        kwargs.pop("_over")
+        return pd.Series(series.median(*args, **kwargs))
+    roll = _get_rolling_window(series, *args, **kwargs)
+    try:
+        return roll.median().reset_index()[series.name].astype(series.dtype)
+    except pd.errors.IntCastingNaNError:
+        return roll.median().reset_index()[series.name]
 
 
 def sum_distinct_func(series: pd.Series, *args, **kwargs):
