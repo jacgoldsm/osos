@@ -3837,7 +3837,7 @@ def least(*cols: "AbstractColOrName") -> Func:
     [Row(least=1)]
     """
     if len(cols) < 2:
-        raise ososValueError(
+        raise OsosValueError(
             error_class="WRONG_NUM_AbstractColS",
             message_parameters={"func_name": "least", "num_cols": "2"},
         )
@@ -3890,7 +3890,7 @@ def when(condition: AbstractCol, value: Any) -> Func:
     """
     # Explicitly not using AbstractColOrName type here to make reading condition less opaque
     if not isinstance(condition, AbstractCol):
-        raise ososTypeError(
+        raise OsosTypeError(
             error_class="NOT_AbstractCol",
             message_parameters={
                 "arg_name": "condition",
@@ -5553,7 +5553,7 @@ def window(
 
     def check_string_field(field, fieldName):  # type: ignore[no-untyped-def]
         if not field or type(field) is not str:
-            raise ososTypeError(
+            raise OsosTypeError(
                 error_class="NOT_STR",
                 message_parameters={
                     "arg_name": fieldName,
@@ -5683,7 +5683,7 @@ def session_window(
 
     def check_field(field: Union[AbstractCol, str], fieldName: str) -> None:
         if field is None or not isinstance(field, (str, AbstractCol)):
-            raise ososTypeError(
+            raise OsosTypeError(
                 error_class="NOT_AbstractCol_OR_STR",
                 message_parameters={
                     "arg_name": fieldName,
@@ -5954,7 +5954,7 @@ def assert_true(
     if errMsg is None:
         raise NotImplementedError
     if not isinstance(errMsg, (str, AbstractCol)):
-        raise ososTypeError(
+        raise OsosTypeError(
             error_class="NOT_AbstractCol_OR_STR",
             message_parameters={
                 "arg_name": "errMsg",
@@ -6547,12 +6547,12 @@ def overlay(
     [Row(overlayed='SPARK_COREL')]
     """
     if not isinstance(pos, (int, str, AbstractCol)):
-        raise ososTypeError(
+        raise OsosTypeError(
             error_class="NOT_AbstractCol_OR_INT_OR_STR",
             message_parameters={"arg_name": "pos", "arg_type": type(pos).__name__},
         )
     if len is not None and not isinstance(len, (int, str, AbstractCol)):
-        raise ososTypeError(
+        raise OsosTypeError(
             error_class="NOT_AbstractCol_OR_INT_OR_STR",
             message_parameters={"arg_name": "len", "arg_type": type(len).__name__},
         )

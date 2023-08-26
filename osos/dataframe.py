@@ -11,16 +11,17 @@ from .column import (
 
 from copy import deepcopy, copy
 import numpy as np
-from typing import Iterable, Union
+from typing import Iterable, Union, Optional,cast
 import pandas as pd
 
 
-from .column import make_series_from_literal, NameString, ForwardRef, Func, FuncOrOp
+from .column import make_series_from_literal, ForwardRef, Func
 from ._implementations import SeriesType
-from .utils import flatten_cols
-from .window import WindowSpec, ConcreteWindowSpec, EmptyWindow
+from .utils import flatten_and_process
+from .window import EmptyWindow
 from ._forwardrefs import forward_dict
 
+NodeOrStr = Union[Node,str]
 
 class DataFrame:
     @staticmethod
@@ -29,6 +30,22 @@ class DataFrame:
 
     def __init__(self, data=None):
         self._data = pd.DataFrame(data)
+
+    def __getitem__(self, item):
+        if isinstance(item, str):
+            return AbstractCol(item)
+        elif isinstance(item, Node):
+            return self.filter(item)
+        elif isinstance(item, (list, tuple)):
+            return self.select(*item)
+        elif isinstance(item, int):
+            return AbstractCol(self._data.iloc[:,item].name)
+
+    def __getattr__(self, attr):
+        if attr not in self._data.columns:
+            raise Exception("Attribute not found")
+        return AbstractCol(attr)
+
 
     @property
     def true_index(self):
@@ -46,7 +63,7 @@ class DataFrame:
 
     __repr__ = __str__
 
-    def _eval_recursive(self, expr: Union[Node, ForwardRef]) -> SeriesType:
+    def _eval_recursive(self, expr: Union[Node, ForwardRef]) -> pd.Series:
         """
         Takes in an expression tree and recursively evaluates it. The recursive case is
         if the node is a function or operator that applies to one or more Series.
@@ -68,7 +85,7 @@ class DataFrame:
                     AbstractIndex,
                 ),
             ):
-                res = self._resolve_leaf(node)
+                res: pd.Series = self._resolve_leaf(node)
             else:
                 # a window is a node whose head is a function that returns a lightweight
                 # class whose attributes are partition, order, rows between, and range between.
@@ -79,9 +96,9 @@ class DataFrame:
                         _over=self._eval_recursive(node._over)
                     )
                 else:
-                    res = node._name(*list(self._eval_recursive(n) for n in node._args))
+                    res: pd.Series = node._name(*list(self._eval_recursive(n) for n in node._args))
 
-        return res
+        return res # type: ignore
 
     def withColumn(self, name: str, expr: Node) -> "DataFrame":
 
@@ -94,34 +111,31 @@ class DataFrame:
         df = DataFrame.fromPandas(self._data.rename({oldname: newname}, axis="columns"))
         return df
 
-    def select(self, *exprs: Node) -> "DataFrame":
-        flat_exprs = flatten_cols(exprs)
+    def select(self, *exprs: NodeOrStr) -> "DataFrame":
+        flat_exprs = flatten_and_process(exprs)
 
         cols = []
         for expr in flat_exprs:
-            if isinstance(expr, str):
-                expr = AbstractCol(expr)
-
             cols.append(self._eval_recursive(expr))
+
         newdf = DataFrame(pd.concat(cols, axis=1))
 
         return newdf
 
-    def filter(self, *exprs: Node) -> "DataFrame":
-        flat_exprs = flatten_cols(exprs)
+    def filter(self, *exprs: NodeOrStr) -> "DataFrame":
+        flat_exprs = flatten_and_process(exprs)
         newdf = DataFrame(self._data.copy())
 
         for expr in flat_exprs:
-            if isinstance(expr, str):
-                expr = AbstractCol(expr)
             boolean_mask: pd.Series = self._eval_recursive(expr)
             assert (
                 boolean_mask.dtype == np.bool8
             ), "`filter` expressions must return boolean results"
             newdf = DataFrame(newdf._data.loc[boolean_mask])
-            newdf._data.index = np.arange(len(newdf._data.index))
+            newdf._data.index = np.arange(len(newdf._data.index)) #type: ignore
 
         return newdf
+
 
     def show(self, n: int = 0, vertical: bool = False, truncate: Union[bool, int] = False):
         if n == 0: 
@@ -135,25 +149,23 @@ class DataFrame:
                 l = 20
             print(self._data.applymap(lambda x: str(x)[:l]).head(n=n).to_string(index=False))
 
-    def groupBy(self, *exprs: Node) -> "GroupedData":
-        flat_exprs = flatten_cols(exprs)
+    def groupBy(self, *exprs: NodeOrStr) -> "GroupedData":
+        flat_exprs = flatten_and_process(exprs)
 
         cols = []
         for expr in flat_exprs:
-            if isinstance(expr, str):
-                expr = AbstractCol(expr)
             assert isinstance(expr, AbstractCol)
             cols.append(self._eval_recursive(expr))
         df = self
 
         return GroupedData(df._data.groupby(cols), cols=cols)
 
-    def agg(self, *exprs: Node) -> "DataFrame":
+    def agg(self, *exprs: NodeOrStr) -> "DataFrame":
 
-        exprs = flatten_cols(exprs)
+        flat_exprs = flatten_and_process(exprs)
         out = []
 
-        for expr in exprs:
+        for expr in flat_exprs:
             if hasattr(expr, "_over"):
                 over = (
                     expr._over.reference
@@ -169,7 +181,7 @@ class DataFrame:
             out.append(ser)
 
         newdf = pd.concat(out, axis=1)
-        newdf.index = np.arange(len(newdf.index))
+        newdf.index = np.arange(len(newdf.index)) # type: ignore
         if isinstance(self, GroupedData):
             newdf = pd.concat([self._uniques, newdf], axis=1)
 
@@ -181,7 +193,7 @@ class DataFrame:
     def unionAll(self, other: "DataFrame") -> "DataFrame":
         return self.union(other).dropDuplicates()
 
-    def dropDuplicates(self, subset: list[str]) -> "DataFrame":
+    def dropDuplicates(self, subset: Optional[list[str]] = None) -> "DataFrame":
         return DataFrame(
             self._data.drop_duplicates(subset, ignore_index=True).reindex()
         )
@@ -255,9 +267,11 @@ class DataFrame:
             out = pd.concat(
                 [notnulls, all_nulls], axis=0, ignore_index=True
             )  # row bind not null rows to null rows
+        else:
+            raise Exception("Unknown join type")
         return DataFrame(out)
 
-    def _resolve_leaf(self, node: Node) -> Node:
+    def _resolve_leaf(self, node: NodeOrStr) -> Union[pd.Series,Node]:
         if isinstance(node, AbstractCol):
             return self._data[node._name]
         elif isinstance(node, AbstractLit):
@@ -287,7 +301,7 @@ class GroupedData(DataFrame):
             .drop("__index__", axis=1)
             .reset_index()
         )
-        uniques.index = np.arange(len(uniques.index))
+        uniques.index = np.arange(len(uniques.index)) #type: ignore
         self._uniques = uniques
 
     @property

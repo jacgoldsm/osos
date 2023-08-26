@@ -5,7 +5,6 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 
-from .utils import rename_series
 
 if TYPE_CHECKING:
     from .window import WindowSpec, EmptyWindow
@@ -13,6 +12,8 @@ if TYPE_CHECKING:
 
 NumOrCol = Union[Number, "AbstractColOrLit"]
 
+def rename_series(series, newname: str, _over=None) -> pd.Series:
+    return series.rename(newname)
 
 class Node:
     def __init__(self, name, args):
