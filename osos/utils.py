@@ -1,13 +1,15 @@
 import itertools
-from typing import Iterable, Union
+from typing import Iterable, Union,cast
 import pandas as pd
 from pandas.core.groupby.generic import SeriesGroupBy
+
+from .column import Node, AbstractCol
 
 
 SeriesType = Union[pd.Series, SeriesGroupBy]
 
 
-def flatten_cols(cols: list) -> list:
+def flatten_cols(cols: Iterable) -> Iterable:
     # to match PySpark API here, any of the arguments to cols
     # could be a list, which have to be flattened using `chain.from_iterable`.
     # However all the args to `from_iterable` have to be one level nested in lists
@@ -31,6 +33,14 @@ def flatten_cols(cols: list) -> list:
 
     return list(itertools.chain.from_iterable(cols))
 
+def flatten_and_process(cols: Iterable[Union[str,Node]]) -> Iterable[Node]:
+    flat_cols = flatten_cols(cols)
+    for i,col in enumerate(flat_cols):
+        if isinstance(col, str):
+            flat_cols[i] = AbstractCol(col)
 
-def rename_series(series: SeriesType, newname: str, _over=None) -> pd.Series:
+    return cast(list[Node],flat_cols)
+
+
+def rename_series(series: pd.Series, newname: str, _over=None) -> pd.Series:
     return series.rename(newname)

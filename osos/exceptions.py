@@ -3,8 +3,10 @@ class AnalysisException(Exception):
 
 
 class OsosValueError(Exception):
-    pass
+    def __init__(self, error_class=None, message_parameters=None):
+        pass
 
 
 class OsosTypeError(Exception):
-    pass
+    def __init__(self, error_class=None, message_parameters=None):
+        pass
