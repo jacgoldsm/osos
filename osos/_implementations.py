@@ -168,14 +168,7 @@ def median_func(series: pd.Series, *args, **kwargs):
 
 
 def sum_distinct_func(series: pd.Series, *args, **kwargs):
-    if isinstance(kwargs["_over"], EmptyWindow):
-        kwargs.pop("_over")
-        return pd.Series(np.unique(series).median(*args, **kwargs))
-    roll = _get_rolling_window(series, *args, **kwargs)
-    try:
-        return roll.median().reset_index()[series.name].astype(series.dtype)
-    except pd.errors.IntCastingNaNError:
-        return roll.median().reset_index()[series.name]
+    pass 
 
 
 def product_func(series: pd.Series, *args, **kwargs):
