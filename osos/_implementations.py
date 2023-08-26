@@ -145,6 +145,8 @@ def count_func():
 def lower_func(series: pd.Series, *args, **kwargs):
     return series.str.lower()
 
+def upper_func(series: pd.Series, *args, **kwargs):
+    return series.str.upper()
 
 def avg_func(series: pd.Series, *args, **kwargs):
     if isinstance(kwargs["_over"], EmptyWindow):
