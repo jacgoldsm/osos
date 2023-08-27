@@ -55,6 +55,9 @@ t = seven.withColumn(
     "rn", F.row_number().over(Window.partitionBy("tup").orderBy("eggs", "baz"))
 )
 u = one.withColumn("foosqrt", F.sqrt("foo"))
+v = one.agg(F.median("baz").alias("baz"))
+w = one.withColumn("tup", F.upper("tup"))
+
 
 
 ap = one._data.assign(boo=one._data["foo"] + one._data["baz"])
@@ -103,6 +106,10 @@ rp = one._data.assign(
 sp = seven._data.assign(**{"rn": [2, 1, 2, 1, 1, 1, 2, 1, 2, 1]})
 tp = seven._data.assign(**{"rn": [2, 1, 4, 3, 5, 1, 3, 2, 5, 4]})
 up = one._data.assign(**{"foosqrt": np.sqrt(one._data.foo)})
+vp = one._data.agg({"baz": np.median}).T
+wp = one._data.assign(tup=one._data["tup"].str.upper())
+
+
 
 
 def compares_equal(osos_dataframe: DataFrame, pandas_dataframe: pd.DataFrame) -> bool:
@@ -131,6 +138,8 @@ def test_methods():
     assert compares_equal(o, op)
     assert compares_equal(p, pp)
     assert compares_equal(q, qp)
+    assert compares_equal(v, vp)
+    assert compares_equal(w, wp)
 
 
 def test_functions():

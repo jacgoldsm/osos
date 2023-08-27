@@ -136,6 +136,19 @@ class DataFrame:
 
         return newdf
 
+
+    def show(self, n: int = 0, vertical: bool = False, truncate: Union[bool, int] = False):
+        if n == 0: 
+            n = len(self._data.index)
+        if truncate == False:
+            print(self._data.head(n=n).to_string(index=False))
+        else:
+            if isinstance(truncate, int) and truncate > 1:
+                l = truncate
+            else:
+                l = 20
+            print(self._data.applymap(lambda x: str(x)[:l]).head(n=n).to_string(index=False))
+
     def groupBy(self, *exprs: NodeOrStr) -> "GroupedData":
         flat_exprs = flatten_and_process(exprs)
 

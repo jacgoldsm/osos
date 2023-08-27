@@ -6046,7 +6046,10 @@ def upper(col: "AbstractColOrName") -> Func:
     |  PANDAS API|
     +------------+
     """
-    raise NotImplementedError
+    if isinstance(col, str):
+        col = AbstractCol(col)
+
+    return Func(upper_func, col)
 
 
 @try_remote_functions
