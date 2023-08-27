@@ -143,7 +143,7 @@ class DataFrame:
         if truncate == False:
             print(self._data.head(n=n).to_string(index=False))
         else:
-            if isinstance(truncate, int):
+            if isinstance(truncate, int) and truncate > 1:
                 l = truncate
             else:
                 l = 20
