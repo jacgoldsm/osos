@@ -106,12 +106,13 @@ rp = one._data.assign(
 sp = seven._data.assign(**{"rn": [2, 1, 2, 1, 1, 1, 2, 1, 2, 1]})
 tp = seven._data.assign(**{"rn": [2, 1, 4, 3, 5, 1, 3, 2, 5, 4]})
 up = one._data.assign(**{"foosqrt": np.sqrt(one._data.foo)})
-vp = one._data.agg({"baz": np.median}).T
+vp = pd.DataFrame(one._data.agg({"baz": np.median})).T
 wp = one._data.assign(tup=one._data["tup"].str.upper())
 
 
 
-
+print(v._data)
+print(vp)
 def compares_equal(osos_dataframe: DataFrame, pandas_dataframe: pd.DataFrame) -> bool:
     try:
         assert_frame_equal(osos_dataframe.toPandas(), pandas_dataframe)
