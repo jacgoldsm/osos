@@ -119,27 +119,64 @@ def abs_func(series: pd.Series, *args, **kwargs):
 
 
 def mode_func(series: pd.Series, *args, **kwargs):
-    pass
+    if isinstance(kwargs["_over"], EmptyWindow):
+        kwargs.pop("_over")
+        return pd.Series(series.mode(*args, **kwargs))
+    roll = _get_rolling_window(series, *args, **kwargs)
+    try:
+        return roll.apply(pd.Series.mode).reset_index()[series.name].astype(series.dtype)
+    except pd.errors.IntCastingNaNError:
+        return roll.apply(pd.Series.mode).reset_index()[series.name]
 
 
-def max_func():
-    pass
+def max_func(series: pd.Series, *args, **kwargs):
+    if isinstance(kwargs["_over"], EmptyWindow):
+        kwargs.pop("_over")
+        return pd.Series(series.max(*args, **kwargs))
+    roll = _get_rolling_window(series, *args, **kwargs)
+    try:
+        return roll.max().reset_index()[series.name].astype(series.dtype)
+    except pd.errors.IntCastingNaNError:
+        return roll.max().reset_index()[series.name]
 
 
-def min_func():
-    pass
+def min_func(series: pd.Series, *args, **kwargs):
+    if isinstance(kwargs["_over"], EmptyWindow):
+        kwargs.pop("_over")
+        return pd.Series(series.min(*args, **kwargs))
+    roll = _get_rolling_window(series, *args, **kwargs)
+    try:
+        return roll.min().reset_index()[series.name].astype(series.dtype)
+    except pd.errors.IntCastingNaNError:
+        return roll.min().reset_index()[series.name]
 
 
-def max_by_func():
-    pass
+def max_by_func(col: pd.Series, ord: pd.Series, *args, **kwargs):
+    if isinstance(kwargs["_over"], EmptyWindow):
+        kwargs.pop("_over")
+        idxmax = ord.idxmax()
+        return col[idxmax]
+    else:
+        raise AnalysisException("`max_by` cannot be a Window function")
 
 
-def min_by_func():
-    pass
+def min_by_func(col: pd.Series, ord: pd.Series, *args, **kwargs):
+    if isinstance(kwargs["_over"], EmptyWindow):
+        idxmax = ord.idxmax()
+        return col[idxmax]
+    else:
+        raise AnalysisException("`min_by` cannot be a Window function")
 
 
-def count_func():
-    pass
+def count_func(series: pd.Series, *args, **kwargs):
+    if isinstance(kwargs["_over"], EmptyWindow):
+        kwargs.pop("_over")
+        return pd.Series(series.count(*args, **kwargs))
+    roll = _get_rolling_window(series, *args, **kwargs)
+    try:
+        return roll.count().reset_index()[series.name].astype(series.dtype)
+    except pd.errors.IntCastingNaNError:
+        return roll.count().reset_index()[series.name]
 
 
 def lower_func(series: pd.Series, *args, **kwargs):
@@ -168,15 +205,27 @@ def median_func(series: pd.Series, *args, **kwargs):
 
 
 def sum_distinct_func(series: pd.Series, *args, **kwargs):
-    pass 
+    if isinstance(kwargs["_over"], EmptyWindow):
+        kwargs.pop("_over")
+        return pd.Series(series.unique().sum(*args, **kwargs))
+    else:
+        raise Exception("`sum_distinct` isn't available as a Window function") 
 
 
 def product_func(series: pd.Series, *args, **kwargs):
-    pass
+    if isinstance(kwargs["_over"], EmptyWindow):
+        kwargs.pop("_over")
+        return pd.Series(series.product(*args, **kwargs))
+    roll = _get_rolling_window(series, *args, **kwargs)
+    try:
+        return roll.apply(np.prod).reset_index()[series.name].astype(series.dtype)
+    except pd.errors.IntCastingNaNError:
+        return roll.apply(np.prod).reset_index()[series.name]
 
 
 def acos_func(series: pd.Series, *args, **kwargs):
-    pass
+    return pd.Series(np.arccos(series))
+
 
 
 def acosh_func(series: pd.Series, *args, **kwargs):
@@ -224,11 +273,13 @@ def csc_func(series: pd.Series, *args, **kwargs):
 
 
 def exp_func(series: pd.Series, *args, **kwargs):
-    pass
+    return pd.Series(np.exp(series))
+
 
 
 def expm1_func(series: pd.Series, *args, **kwargs):
-    pass
+    return pd.Series(np.expm1(series))
+
 
 
 def floor_func(series: pd.Series, *args, **kwargs):
@@ -244,7 +295,7 @@ def log1p_func(series: pd.Series, *args, **kwargs):
 
 
 def rint_func(series: pd.Series, *args, **kwargs):
-    pass
+    return series.round()
 
 
 def sec_func(series: pd.Series, *args, **kwargs):
@@ -252,7 +303,8 @@ def sec_func(series: pd.Series, *args, **kwargs):
 
 
 def signum_func(series: pd.Series, *args, **kwargs):
-    pass
+    return pd.Series(np.sign(series))
+
 
 
 def sin_func(series: pd.Series, *args, **kwargs):
@@ -284,27 +336,39 @@ def bitwise_not_func(series: pd.Series, *args, **kwargs):
 
 
 def asc_func(series: pd.Series, *args, **kwargs):
-    pass
+    return series.sort_values(ascending=True)
 
 
 def desc_func(series: pd.Series, *args, **kwargs):
-    pass
+    return series.sort_values(ascending=False)
 
 
-def stdev_func():
-    pass
+def stddev_func(series: pd.Series, *args, **kwargs):
+    if isinstance(kwargs["_over"], EmptyWindow):
+        kwargs.pop("_over")
+        return pd.Series(series.std(*args, **kwargs))
+    roll = _get_rolling_window(series, *args, **kwargs)
+    try:
+        return roll.std().reset_index()[series.name].astype(series.dtype)
+    except pd.errors.IntCastingNaNError:
+        return roll.std().reset_index()[series.name]
 
 
-def stdev_samp_func():
-    pass
+stddev_samp_func = stddev_func
 
 
-def variance_func():
-    pass
+def variance_func(series: pd.Series, *args, **kwargs):
+    if isinstance(kwargs["_over"], EmptyWindow):
+        kwargs.pop("_over")
+        return pd.Series(series.var(*args, **kwargs))
+    roll = _get_rolling_window(series, *args, **kwargs)
+    try:
+        return roll.var().reset_index()[series.name].astype(series.dtype)
+    except pd.errors.IntCastingNaNError:
+        return roll.var().reset_index()[series.name]
 
 
-def var_samp_func():
-    pass
+var_samp_func = variance_func
 
 
 def skewness_func():
@@ -362,5 +426,5 @@ def approx_count_distinct_func():
     pass
 
 
-def coalesce_func():
+def coalesce_func(*cols):
     pass
