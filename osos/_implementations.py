@@ -371,16 +371,30 @@ def variance_func(series: pd.Series, *args, **kwargs):
 var_samp_func = variance_func
 
 
-def skewness_func():
-    pass
+def skewness_func(series: pd.Series, *args, **kwargs):
+    if isinstance(kwargs["_over"], EmptyWindow):
+        kwargs.pop("_over")
+        return pd.Series(series.skew(*args, **kwargs))
+    roll = _get_rolling_window(series, *args, **kwargs)
+    try:
+        return roll.skew().reset_index()[series.name].astype(series.dtype)
+    except pd.errors.IntCastingNaNError:
+        return roll.skew().reset_index()[series.name]
 
 
-def kurtosis_func():
-    pass
+def kurtosis_func(series: pd.Series, *args, **kwargs):
+    if isinstance(kwargs["_over"], EmptyWindow):
+        kwargs.pop("_over")
+        return pd.Series(series.kurtosis(*args, **kwargs))
+    roll = _get_rolling_window(series, *args, **kwargs)
+    try:
+        return roll.apply(pd.Series.kurtosis).reset_index()[series.name].astype(series.dtype)
+    except pd.errors.IntCastingNaNError:
+        return roll.apply(pd.Series.kurtosis).reset_index()[series.name]
 
 
-def atan2_func():
-    pass
+def atan2_func(col1: pd.Series, col2: pd.Series, *args, **kwargs):
+    return pd.Series(np.arctan2(col1, col2))
 
 
 def hypot_func(series: pd.Series, *args, **kwargs):
@@ -427,4 +441,10 @@ def approx_count_distinct_func():
 
 
 def coalesce_func(*cols):
-    pass
+    if not len(cols) >= 2:
+        raise AnalysisException("Need at least 2 cols to coalesce.")
+    out = cols[0]
+    for i in range(len(cols) - 1):
+        out = np.where(~pd.isnull(out), out, cols[i+1])
+
+    return out
