@@ -448,3 +448,34 @@ def coalesce_func(*cols):
         out = np.where(~pd.isnull(out), out, cols[i+1])
 
     return out
+
+def lag_func(series: pd.Series, *args, **kwargs): 
+    if isinstance(kwargs["_over"], EmptyWindow):
+        raise AnalysisException("`lag_func` cannot be an Aggregate function")
+    roll = _get_rolling_window(series, _convert_to_rolling = False, *args, **kwargs)
+    if len(args) == 0:
+        offset, default = 1, None
+    elif len(args) == 1:
+        offset, default = args[0], None
+    elif len(args) == 2:
+        offset, default = args[0], args[1]
+    try:
+        return roll.shift(periods = offset, fill_value = default).sort_index().reset_index()[series.name].astype(series.dtype)
+    except pd.errors.IntCastingNaNError:
+        return roll.shift(periods = offset, fill_value = default).sort_index().reset_index()[series.name]
+
+
+def lead_func(series: pd.Series, *args, **kwargs):
+    if isinstance(kwargs["_over"], EmptyWindow):
+        raise AnalysisException("`lead_func` cannot be an Aggregate function")
+    roll = _get_rolling_window(series, _convert_to_rolling = False, *args, **kwargs)
+    if len(args) == 0:
+        offset, default = -1, None
+    elif len(args) == 1:
+        offset, default = -1*args[0], None
+    elif len(args) == 2:
+        offset, default = -1*args[0], args[1]
+    try:
+        return roll.shift(periods = offset, fill_value = default).sort_index().reset_index()[series.name].astype(series.dtype)
+    except pd.errors.IntCastingNaNError:
+        return roll.shift(periods = offset, fill_value = default).sort_index().reset_index()[series.name]
