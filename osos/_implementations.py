@@ -401,12 +401,12 @@ def hypot_func(series: pd.Series, *args, **kwargs):
     return pd.Series(np.hypot(series))
 
 
-def pow_func():
-    pass
+def pow_func(col1: pd.Series, col2: pd.Series, *args, **kwargs):
+    return col1 ** col2
 
 
-def pmod_func():
-    pass
+def pmod_func(col1: pd.Series, col2: pd.Series, *args, **kwargs):
+    return col1 % col2
 
 
 def row_number_func(idx, *args, **kwargs):
