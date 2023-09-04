@@ -8,6 +8,8 @@ from .column import (
     ArgList,
     AbstractIndex,
     Func,
+    SimpleContainer,
+    Node
 )
 from .exceptions import AnalysisException, OsosValueError, OsosTypeError
 from .dataframe import DataFrame
@@ -4143,7 +4145,13 @@ def lag(
     |  b|  8|           -1|
     +---+---+-------------+
     """
-    raise NotImplementedError
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    if not isinstance(offset, Node):
+        offset = SimpleContainer(offset, ())
+    if not isinstance(default, Node):
+        default = SimpleContainer(default, ())
+    return Func(lag_func, col, offset, default)
 
 
 @try_remote_functions
@@ -4226,7 +4234,13 @@ def lead(
     |  b|  8|        -1|
     +---+---+----------+
     """
-    raise NotImplementedError
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    if not isinstance(offset, Node):
+        offset = SimpleContainer(offset, ())
+    if not isinstance(default, Node):
+        default = SimpleContainer(default, ())
+    return Func(lead_func, col, offset)
 
 
 @try_remote_functions
