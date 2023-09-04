@@ -56,6 +56,14 @@ def range(start: int, end: Optional[int] = None, step: int = 1, numSlices: Optio
 
     return DataFrame(pd.DataFrame({"0":np.arange(start,end,step)}))
 
+
+class read:
+    def csv(path, *args, **kwargs):
+        return pd.read_csv(path, *args, **kwargs)
+
+    def text(path, *args, **kwargs):
+        return pd.read_csv(path, *args, **kwargs)
+
 def _test():
     pd_data = pd.DataFrame({"a":[1,2,3], "b":[4,5,6]})
     tuple_data = (1,2)

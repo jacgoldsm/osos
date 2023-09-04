@@ -387,16 +387,16 @@ df = OsosSession.createDataFrame([(2020, 6, 26)], ['Y', 'M', 'D'])
 df.select(make_date(df.Y, df.M, df.D).alias("datefield")).collect()
 
 #osos.functions.from_unixtime:
-OsosSession.conf.set("spark.sql.session.timeZone", "America/Los_Angeles")
+OsosSession.conf.set("OsosSession.sql.session.timeZone", "America/Los_Angeles")
 time_df = OsosSession.createDataFrame([(1428476400,)], ['unix_time'])
 time_df.select(from_unixtime('unix_time').alias('ts')).collect()
-OsosSession.conf.unset("spark.sql.session.timeZone")
+OsosSession.conf.unset("OsosSession.sql.session.timeZone")
 
 #osos.functions.unix_timestamp:
-OsosSession.conf.set("spark.sql.session.timeZone", "America/Los_Angeles")
+OsosSession.conf.set("OsosSession.sql.session.timeZone", "America/Los_Angeles")
 time_df = OsosSession.createDataFrame([('2015-04-08',)], ['dt'])
 time_df.select(unix_timestamp('dt', 'yyyy-MM-dd').alias('unix_time')).collect()
-OsosSession.conf.unset("spark.sql.session.timeZone")
+OsosSession.conf.unset("OsosSession.sql.session.timeZone")
 
 #osos.functions.to_timestamp:
 df = OsosSession.createDataFrame([('1997-02-28 10:30:00',)], ['t'])
@@ -447,11 +447,11 @@ w.session_window.end.cast("string").alias("end"), "sum").collect()
 
 #osos.functions.timestamp_seconds:
 from osos.functions import timestamp_seconds
-OsosSession.conf.set("spark.sql.session.timeZone", "UTC")
+OsosSession.conf.set("OsosSession.sql.session.timeZone", "UTC")
 time_df = OsosSession.createDataFrame([(1230219000,)], ['unix_time'])
 time_df.select(timestamp_seconds(time_df.unix_time).alias('ts')).show()
 time_df.select(timestamp_seconds('unix_time').alias('ts')).printSchema()
-OsosSession.conf.unset("spark.sql.session.timeZone")
+OsosSession.conf.unset("OsosSession.sql.session.timeZone")
 
 #osos.functions.window_time:
 import datetime
@@ -823,30 +823,30 @@ df.select(array_repeat(df.data, 3).alias('r')).collect()
 
 #osos.functions.map_contains_key:
 from osos.functions import map_contains_key
-df = spark.sql("SELECT map(1, 'a', 2, 'b') as data")
+df = OsosSession.sql("SELECT map(1, 'a', 2, 'b') as data")
 df.select(map_contains_key("data", 1)).show()
 df.select(map_contains_key("data", -1)).show()
 
 #osos.functions.map_keys:
 from osos.functions import map_keys
-df = spark.sql("SELECT map(1, 'a', 2, 'b') as data")
+df = OsosSession.sql("SELECT map(1, 'a', 2, 'b') as data")
 df.select(map_keys("data").alias("keys")).show()
 
 #osos.functions.map_values:
 from osos.functions import map_values
-df = spark.sql("SELECT map(1, 'a', 2, 'b') as data")
+df = OsosSession.sql("SELECT map(1, 'a', 2, 'b') as data")
 df.select(map_values("data").alias("values")).show()
 
 #osos.functions.map_entries:
 from osos.functions import map_entries
-df = spark.sql("SELECT map(1, 'a', 2, 'b') as data")
+df = OsosSession.sql("SELECT map(1, 'a', 2, 'b') as data")
 df = df.select(map_entries("data").alias("entries"))
 df.show()
 df.printSchema()
 
 #osos.functions.map_from_entries:
 from osos.functions import map_from_entries
-df = spark.sql("SELECT array(struct(1, 'a'), struct(2, 'b')) as data")
+df = OsosSession.sql("SELECT array(struct(1, 'a'), struct(2, 'b')) as data")
 df.select(map_from_entries("data").alias("map")).show()
 
 #osos.functions.arrays_zip:
@@ -858,7 +858,7 @@ df.printSchema()
 
 #osos.functions.map_concat:
 from osos.functions import map_concat
-df = spark.sql("SELECT map(1, 'a', 2, 'b') as map1, map(3, 'c') as map2")
+df = OsosSession.sql("SELECT map(1, 'a', 2, 'b') as map1, map(3, 'c') as map2")
 df.select(map_concat("map1", "map2").alias("map3")).show(truncate=False)
 
 #osos.functions.from_csv:
@@ -1202,8 +1202,7 @@ df.select(base64("value")).show()
 
 #osos.functions.bit_length:
 from osos.functions import bit_length
-OsosSession.createDataFrame([('cat',), ( 'ð',)], ['cat']) \
-select(bit_length('cat')).collect()
+OsosSession.createDataFrame([('cat',), ( 'ð',)], ['cat']).select(bit_length('cat')).collect()
 
 #osos.functions.concat_ws:
 df = OsosSession.createDataFrame([('abcd','123')], ['s', 'd'])
@@ -1256,8 +1255,7 @@ df.select(ltrim("value").alias("r")).withColumn("length", length("r")).show()
 
 #osos.functions.octet_length:
 from osos.functions import octet_length
-OsosSession.createDataFrame([('cat',), ( 'ð',)], ['cat']) \
-select(octet_length('cat')).collect()
+OsosSession.createDataFrame([('cat',), ( 'ð',)], ['cat']).select(octet_length('cat')).collect()
 
 #osos.functions.regexp_extract:
 df = OsosSession.createDataFrame([('100-200',)], ['str'])
@@ -1321,8 +1319,7 @@ df = OsosSession.createDataFrame([["Hello world. How are you?"]], ["s"])
 df.select(sentences("s")).show(truncate=False)
 
 #osos.functions.translate:
-OsosSession.createDataFrame([('translate',)], ['a']).select(translate('a', "rnlt", "123") \
-alias('r')).collect()
+OsosSession.createDataFrame([('translate',)], ['a']).select(translate('a', "rnlt", "123").alias('r')).collect()
 
 #osos.functions.trim:
 df = OsosSession.createDataFrame(["   Spark", "Spark  ", " Spark"], "STRING")
@@ -1336,9 +1333,9 @@ df.select(upper("value")).show()
 from osos.functions import call_udf, col
 from osos.types import IntegerType, StringType
 df = OsosSession.createDataFrame([(1, "a"),(2, "b"), (3, "c")],["id", "name"])
-_ = spark.udf.register("intX2", lambda i: i * 2, IntegerType())
+_ = OsosSession.udf.register("intX2", lambda i: i * 2, IntegerType())
 df.select(call_udf("intX2", "id")).show()
-_ = spark.udf.register("strX2", lambda s: s * 2, StringType())
+_ = OsosSession.udf.register("strX2", lambda s: s * 2, StringType())
 df.select(call_udf("strX2", col("name"))).show()
 
 #osos.functions.pandas_udf:
@@ -1357,7 +1354,7 @@ def slen(s):
 
 @pandas_udf("col1 string, col2 long")
 def func(s1: pd.Series, s2: pd.Series, s3: pd.DataFrame) -> pd.DataFrame:
-s3['col2'] = s1 + s2.str.len()
+    s3['col2'] = s1 + s2.str.len()
     return s3
 # Create a Spark DataFrame that has three columns including a struct column
 df = OsosSession.createDataFrame(
@@ -1382,8 +1379,8 @@ df.select(split_expand("name")).show()
 from typing import Iterator
 @pandas_udf("long")
 def plus_one(iterator: Iterator[pd.Series]) -> Iterator[pd.Series]:
-for s in iterator:
-yield s + 1
+    for s in iterator:
+        yield s + 1
 df = OsosSession.createDataFrame(pd.DataFrame([1, 2, 3], columns=["v"]))
 df.select(plus_one(df.v)).show()
 
@@ -1391,8 +1388,8 @@ from typing import Iterator, Tuple
 from osos.functions import struct, col
 @pandas_udf("long")
 def multiply(iterator: Iterator[Tuple[pd.Series, pd.DataFrame]]) -> Iterator[pd.Series]:
-for s1, df in iterator:
-yield s1 * df.v
+    for s1, df in iterator:
+        yield s1 * df.v
 df = OsosSession.createDataFrame(pd.DataFrame([1, 2, 3], columns=["v"]))
 df.withColumn('output', multiply(col("v"), struct(col("v")))).show()
 
