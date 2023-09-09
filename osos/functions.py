@@ -2744,7 +2744,7 @@ def broadcast(df: DataFrame) -> DataFrame:
     +-----+---+
     """
 
-    raise NotImplementedError
+    return df
 
 
 @try_remote_functions
