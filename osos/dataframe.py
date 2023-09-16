@@ -140,14 +140,21 @@ class DataFrame:
     def show(self, n: int = 0, vertical: bool = False, truncate: Union[bool, int] = False):
         if n == 0: 
             n = len(self._data.index)
-        if truncate == False:
-            print(self._data.head(n=n).to_string(index=False))
+        if isinstance(truncate, int) and truncate > 1:
+            l = truncate
         else:
-            if isinstance(truncate, int) and truncate > 1:
-                l = truncate
-            else:
-                l = 20
-            print(self._data.applymap(lambda x: str(x)[:l]).head(n=n).to_string(index=False))
+            l = 20
+        nrowsdf = self._data.iloc[0:n]
+        columns = nrowsdf.columns 
+        separator = "+-" + "-+-".join(["-" * len(col) for col in columns]) + "-+"
+        result = separator + "\n"
+        result += "| " + " | ".join([f"{col:>{len(col)}}" for col in columns]) + " |\n"
+        result += separator + "\n"
+        for _, row in nrowsdf.iterrows():
+            row_str = "| " + " | ".join([f"{str(val)[0:l]:>{len(col)}}" for val, col in zip(row, columns)]) + " |\n"
+            result += row_str
+        result += separator
+        print(result)
 
     def groupBy(self, *exprs: NodeOrStr) -> "GroupedData":
         flat_exprs = flatten_and_process(exprs)
