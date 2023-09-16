@@ -30,18 +30,16 @@ def col(name: str):
     return AbstractCol(name)
 
 
-try_remote_functions = lambda callable: callable
 
 
-@try_remote_functions
 def lit(col: Any) -> Func:
     """
     Creates a :class:`~osos.Col` of literal value.
 
-    .. versionadded:: 1.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -49,7 +47,7 @@ def lit(col: Any) -> Func:
         the value to make it as a PySpark literal. If a AbstractCol is passed,
         it returns the AbstractCol as is.
 
-        .. versionchanged:: 3.4.0
+        
             Since 3.4.0, it supports the list type.
 
     Returns
@@ -83,11 +81,6 @@ def col(col: str) -> Func:
     """
     Returns a :class:`~osos.Col` based on the given AbstractCol name.
 
-    .. versionadded:: 1.3.0
-
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
-
     Parameters
     ----------
     col : str
@@ -112,10 +105,10 @@ def asc(col: "AbstractColOrName") -> Func:
     """
     Returns a sort expression based on the ascending order of the given AbstractCol name.
 
-    .. versionadded:: 1.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -157,18 +150,20 @@ def asc(col: "AbstractColOrName") -> Func:
     |  4|
     +---+
     """
-    raise NotImplementedError
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    return asc_func(col)
 
 
-@try_remote_functions
+
 def desc(col: "AbstractColOrName") -> Func:
     """
     Returns a sort expression based on the descending order of the given AbstractCol name.
 
-    .. versionadded:: 1.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -195,18 +190,20 @@ def desc(col: "AbstractColOrName") -> Func:
     |  0|
     +---+
     """
-    raise NotImplementedError
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    return desc_func(col)
 
 
-@try_remote_functions
+
 def sqrt(col: "AbstractColOrName") -> Func:
     """
     Computes the square root of the specified float value.
 
-    .. versionadded:: 1.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -233,15 +230,15 @@ def sqrt(col: "AbstractColOrName") -> Func:
     return Func(sqrt_func, col)
 
 
-@try_remote_functions
+
 def abs(col: "AbstractColOrName") -> Func:
     """
     Computes the absolute value.
 
-    .. versionadded:: 1.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -268,15 +265,15 @@ def abs(col: "AbstractColOrName") -> Func:
     return Func(abs_func, col)
 
 
-@try_remote_functions
+
 def mode(col: "AbstractColOrName") -> Func:
     """
     Returns the most frequent value in a group.
 
-    .. versionadded:: 3.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -290,7 +287,7 @@ def mode(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([
+    >>> df = OsosSession.createDataFrame([
     ...     ("Java", 2012, 20000), ("dotNET", 2012, 5000),
     ...     ("Java", 2012, 20000), ("dotNET", 2012, 5000),
     ...     ("dotNET", 2013, 48000), ("Java", 2013, 30000)],
@@ -303,18 +300,20 @@ def mode(col: "AbstractColOrName") -> Func:
     |dotNET|      2012|
     +------+----------+
     """
+    if isinstance(col, str):
+        col = AbstractCol(col)
     return Func(mode_func, col)
 
 
-@try_remote_functions
+
 def max(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the maximum value of the expression in a group.
 
-    .. versionadded:: 1.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -336,18 +335,21 @@ def max(col: "AbstractColOrName") -> Func:
     |      9|
     +-------+
     """
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    
     return Func(max_func, col)
 
 
-@try_remote_functions
+
 def min(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the minimum value of the expression in a group.
 
-    .. versionadded:: 1.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -375,15 +377,15 @@ def min(col: "AbstractColOrName") -> Func:
     return Func(min_func, col)
 
 
-@try_remote_functions
+
 def max_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> Func:
     """
     Returns the value associated with the maximum value of ord.
 
-    .. versionadded:: 3.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -399,7 +401,7 @@ def max_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([
+    >>> df = OsosSession.createDataFrame([
     ...     ("Java", 2012, 20000), ("dotNET", 2012, 5000),
     ...     ("dotNET", 2013, 48000), ("Java", 2013, 30000)],
     ...     schema=("course", "year", "earnings"))
@@ -417,15 +419,15 @@ def max_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> Func:
     return Func(max_by_func, col, ord)
 
 
-@try_remote_functions
+
 def min_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> Func:
     """
     Returns the value associated with the minimum value of ord.
 
-    .. versionadded:: 3.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -441,7 +443,7 @@ def min_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([
+    >>> df = OsosSession.createDataFrame([
     ...     ("Java", 2012, 20000), ("dotNET", 2012, 5000),
     ...     ("dotNET", 2013, 48000), ("Java", 2013, 30000)],
     ...     schema=("course", "year", "earnings"))
@@ -459,15 +461,15 @@ def min_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> Func:
     return Func(min_by_func, col, ord)
 
 
-@try_remote_functions
+
 def count(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the number of items in a group.
 
-    .. versionadded:: 1.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -483,7 +485,7 @@ def count(col: "AbstractColOrName") -> Func:
     --------
     Count by all AbstractCols (start), and by a AbstractCol that does not count ``None``.
 
-    >>> df = spark.createDataFrame([(None,), ("a",), ("b",), ("c",)], schema=["alphabets"])
+    >>> df = OsosSession.createDataFrame([(None,), ("a",), ("b",), ("c",)], schema=["alphabets"])
     >>> df.select(count(expr("*")), count(df.alphabets)).show()
     +--------+----------------+
     |count(1)|count(alphabets)|
@@ -497,15 +499,15 @@ def count(col: "AbstractColOrName") -> Func:
     return Func(count_func, col)
 
 
-@try_remote_functions
+
 def sum(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the sum of all values in the expression.
 
-    .. versionadded:: 1.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -533,15 +535,15 @@ def sum(col: "AbstractColOrName") -> Func:
     return Func(sum_func, col)
 
 
-@try_remote_functions
+
 def avg(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the average of the values in a group.
 
-    .. versionadded:: 1.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -569,16 +571,16 @@ def avg(col: "AbstractColOrName") -> Func:
     return Func(avg_func, col)
 
 
-@try_remote_functions
+
 def mean(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the average of the values in a group.
     An alias of :func:`avg`.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -606,15 +608,15 @@ def mean(col: "AbstractColOrName") -> Func:
     return Func(avg_func, col)
 
 
-@try_remote_functions
+
 def median(col: "AbstractColOrName") -> Func:
     """
     Returns the median of the values in a group.
 
-    .. versionadded:: 3.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -628,7 +630,7 @@ def median(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([
+    >>> df = OsosSession.createDataFrame([
     ...     ("Java", 2012, 20000), ("dotNET", 2012, 5000),
     ...     ("Java", 2012, 22000), ("dotNET", 2012, 10000),
     ...     ("dotNET", 2013, 48000), ("Java", 2013, 30000)],
@@ -647,15 +649,15 @@ def median(col: "AbstractColOrName") -> Func:
     return Func(median_func, col)
 
 
-@try_remote_functions
+
 def sumDistinct(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the sum of distinct values in the expression.
 
-    .. versionadded:: 1.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     .. deprecated:: 3.2.0
         Use :func:`sum_distinct` instead.
@@ -667,15 +669,15 @@ def sumDistinct(col: "AbstractColOrName") -> Func:
     return Func(sum_distinct_func, col)
 
 
-@try_remote_functions
+
 def sum_distinct(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the sum of distinct values in the expression.
 
-    .. versionadded:: 3.2.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -689,7 +691,7 @@ def sum_distinct(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(None,), (1,), (1,), (2,)], schema=["numbers"])
+    >>> df = OsosSession.createDataFrame([(None,), (1,), (1,), (2,)], schema=["numbers"])
     >>> df.select(sum_distinct(col("numbers"))).show()
     +---------------------+
     |sum(DISTINCT numbers)|
@@ -700,18 +702,18 @@ def sum_distinct(col: "AbstractColOrName") -> Func:
     if isinstance(col, str):
         col = AbstractCol(col)
 
-    return Func(sum_distict_func, col)
+    return Func(sum_distinct_func, col)
 
 
-@try_remote_functions
+
 def product(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the product of the values in a group.
 
-    .. versionadded:: 3.2.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -742,15 +744,15 @@ def product(col: "AbstractColOrName") -> Func:
     return Func(product_func, col)
 
 
-@try_remote_functions
+
 def acos(col: "AbstractColOrName") -> Func:
     """
     Computes inverse cosine of the input AbstractCol.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -779,15 +781,15 @@ def acos(col: "AbstractColOrName") -> Func:
     return Func(acos_func, col)
 
 
-@try_remote_functions
+
 def acosh(col: "AbstractColOrName") -> Func:
     """
     Computes inverse hyperbolic cosine of the input AbstractCol.
 
-    .. versionadded:: 3.1.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -816,15 +818,15 @@ def acosh(col: "AbstractColOrName") -> Func:
     return Func(acosh_func, col)
 
 
-@try_remote_functions
+
 def asin(col: "AbstractColOrName") -> Func:
     """
     Computes inverse sine of the input AbstractCol.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -838,7 +840,7 @@ def asin(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(0,), (2,)])
+    >>> df = OsosSession.createDataFrame([(0,), (2,)])
     >>> df.select(asin(df.schema.fieldNames()[0])).show()
     +--------+
     |ASIN(_1)|
@@ -853,15 +855,15 @@ def asin(col: "AbstractColOrName") -> Func:
     return Func(asin_func, col)
 
 
-@try_remote_functions
+
 def asinh(col: "AbstractColOrName") -> Func:
     """
     Computes inverse hyperbolic sine of the input AbstractCol.
 
-    .. versionadded:: 3.1.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -889,15 +891,15 @@ def asinh(col: "AbstractColOrName") -> Func:
     return Func(asinh_func, col)
 
 
-@try_remote_functions
+
 def atan(col: "AbstractColOrName") -> Func:
     """
     Compute inverse tangent of the input AbstractCol.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -925,15 +927,15 @@ def atan(col: "AbstractColOrName") -> Func:
     return Func(atan_func, col)
 
 
-@try_remote_functions
+
 def atanh(col: "AbstractColOrName") -> Func:
     """
     Computes inverse hyperbolic tangent of the input AbstractCol.
 
-    .. versionadded:: 3.1.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -947,7 +949,7 @@ def atanh(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(0,), (2,)], schema=["numbers"])
+    >>> df = OsosSession.createDataFrame([(0,), (2,)], schema=["numbers"])
     >>> df.select(atanh(df["numbers"])).show()
     +--------------+
     |ATANH(numbers)|
@@ -962,15 +964,15 @@ def atanh(col: "AbstractColOrName") -> Func:
     return Func(atanh_func, col)
 
 
-@try_remote_functions
+
 def cbrt(col: "AbstractColOrName") -> Func:
     """
     Computes the cube-root of the given value.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -998,15 +1000,15 @@ def cbrt(col: "AbstractColOrName") -> Func:
     return Func(cbrt_func, col)
 
 
-@try_remote_functions
+
 def ceil(col: "AbstractColOrName") -> Func:
     """
     Computes the ceiling of the given value.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1034,15 +1036,15 @@ def ceil(col: "AbstractColOrName") -> Func:
     return Func(ceil_func, col)
 
 
-@try_remote_functions
+
 def cos(col: "AbstractColOrName") -> Func:
     """
     Computes cosine of the input AbstractCol.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1067,15 +1069,15 @@ def cos(col: "AbstractColOrName") -> Func:
     return Func(cos_func, col)
 
 
-@try_remote_functions
+
 def cosh(col: "AbstractColOrName") -> Func:
     """
     Computes hyperbolic cosine of the input AbstractCol.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1099,15 +1101,15 @@ def cosh(col: "AbstractColOrName") -> Func:
     return Func(cosh_func, col)
 
 
-@try_remote_functions
+
 def cot(col: "AbstractColOrName") -> Func:
     """
     Computes cotangent of the input AbstractCol.
 
-    .. versionadded:: 3.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1132,15 +1134,15 @@ def cot(col: "AbstractColOrName") -> Func:
     return Func(cot_func, col)
 
 
-@try_remote_functions
+
 def csc(col: "AbstractColOrName") -> Func:
     """
     Computes cosecant of the input AbstractCol.
 
-    .. versionadded:: 3.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1165,15 +1167,15 @@ def csc(col: "AbstractColOrName") -> Func:
     return Func(csc_func, col)
 
 
-@try_remote_functions
+
 def exp(col: "AbstractColOrName") -> Func:
     """
     Computes the exponential of the given value.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1201,15 +1203,15 @@ def exp(col: "AbstractColOrName") -> Func:
     return Func(exp_func, col)
 
 
-@try_remote_functions
+
 def expm1(col: "AbstractColOrName") -> Func:
     """
     Computes the exponential of the given value minus one.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1233,15 +1235,15 @@ def expm1(col: "AbstractColOrName") -> Func:
     return Func(expm1_func, col)
 
 
-@try_remote_functions
+
 def floor(col: "AbstractColOrName") -> Func:
     """
     Computes the floor of the given value.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1269,15 +1271,15 @@ def floor(col: "AbstractColOrName") -> Func:
     return Func(floor_func, col)
 
 
-@try_remote_functions
+
 def log(col: "AbstractColOrName") -> Func:
     """
     Computes the natural logarithm of the given value.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1302,15 +1304,15 @@ def log(col: "AbstractColOrName") -> Func:
     return Func(log_func, col, np.e)
 
 
-@try_remote_functions
+
 def log10(col: "AbstractColOrName") -> Func:
     """
     Computes the logarithm of the given value in Base 10.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1338,15 +1340,15 @@ def log10(col: "AbstractColOrName") -> Func:
     return Func(log_func, col, 10)
 
 
-@try_remote_functions
+
 def log1p(col: "AbstractColOrName") -> Func:
     """
     Computes the natural logarithm of the "given value plus one".
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1376,16 +1378,16 @@ def log1p(col: "AbstractColOrName") -> Func:
     return Func(log1p_func, col)
 
 
-@try_remote_functions
+
 def rint(col: "AbstractColOrName") -> Func:
     """
     Returns the double value that is closest in value to the argument and
     is equal to a mathematical integer.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1420,15 +1422,15 @@ def rint(col: "AbstractColOrName") -> Func:
     return Func(rint_func, col)
 
 
-@try_remote_functions
+
 def sec(col: "AbstractColOrName") -> Func:
     """
     Computes secant of the input AbstractCol.
 
-    .. versionadded:: 3.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1452,15 +1454,15 @@ def sec(col: "AbstractColOrName") -> Func:
     return Func(sec_func, col)
 
 
-@try_remote_functions
+
 def signum(col: "AbstractColOrName") -> Func:
     """
     Computes the signum of the given value.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1495,15 +1497,15 @@ def signum(col: "AbstractColOrName") -> Func:
     return Func(signum_func, col)
 
 
-@try_remote_functions
+
 def sin(col: "AbstractColOrName") -> Func:
     """
     Computes sine of the input AbstractCol.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1528,15 +1530,15 @@ def sin(col: "AbstractColOrName") -> Func:
     return Func(sin_func, col)
 
 
-@try_remote_functions
+
 def sinh(col: "AbstractColOrName") -> Func:
     """
     Computes hyperbolic sine of the input AbstractCol.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1561,15 +1563,15 @@ def sinh(col: "AbstractColOrName") -> Func:
     return Func(sinh_func, col)
 
 
-@try_remote_functions
+
 def tan(col: "AbstractColOrName") -> Func:
     """
     Computes tangent of the input AbstractCol.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1594,15 +1596,15 @@ def tan(col: "AbstractColOrName") -> Func:
     return Func(tan_func, col)
 
 
-@try_remote_functions
+
 def tanh(col: "AbstractColOrName") -> Func:
     """
     Computes hyperbolic tangent of the input AbstractCol.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1628,63 +1630,43 @@ def tanh(col: "AbstractColOrName") -> Func:
     return Func(tanh_func, col)
 
 
-@try_remote_functions
+
 def toDegrees(col: "AbstractColOrName") -> Func:
     """
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
-
-    .. deprecated:: 2.1.0
         Use :func:`degrees` instead.
     """
-    warn("Deprecated in 2.1, use degrees instead.", FutureWarning)
+    warn("Deprecated by Spark, use degrees instead.", FutureWarning)
     return degrees_func(col)
 
 
-@try_remote_functions
+
 def toRadians(col: "AbstractColOrName") -> Func:
     """
-    .. versionadded:: 1.4.0
-
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
-
-    .. deprecated:: 2.1.0
-        Use :func:`radians` instead.
+    Use :func:`radians` instead.
     """
-    warn("Deprecated in 2.1, use radians instead.", FutureWarning)
+    warn("Deprecated by Spark, use radians instead.", FutureWarning)
     return radians_func(col)
 
 
-@try_remote_functions
+
 def bitwiseNOT(col: "AbstractColOrName") -> Func:
     """
     Computes bitwise not.
 
-    .. versionadded:: 1.4.0
-
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
-
-    .. deprecated:: 3.2.0
-        Use :func:`bitwise_not` instead.
+    Use :func:`bitwise_not` instead.
     """
-    warn("Deprecated in 3.2, use bitwise_not instead.", FutureWarning)
+    warn("Deprecated by Spark, use bitwise_not instead.", FutureWarning)
     return bitwise_not_func(col)
 
 
-@try_remote_functions
+
 def bitwise_not(col: "AbstractColOrName") -> Func:
     """
     Computes bitwise not.
 
-    .. versionadded:: 3.2.0
-
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
-
+    
     Parameters
     ----------
     col : :class:`~osos.Col` or str
@@ -1717,17 +1699,13 @@ def bitwise_not(col: "AbstractColOrName") -> Func:
     return Func(bitwise_not_func, col)
 
 
-@try_remote_functions
+
 def asc_nulls_first(col: "AbstractColOrName") -> Func:
     """
     Returns a sort expression based on the ascending order of the given
     AbstractCol name, and null values return before non-null values.
 
-    .. versionadded:: 2.4.0
-
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
-
+    
     Parameters
     ----------
     col : :class:`~osos.Col` or str
@@ -1740,7 +1718,7 @@ def asc_nulls_first(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df1 = spark.createDataFrame([(1, "Bob"),
+    >>> df1 = OsosSession.createDataFrame([(1, "Bob"),
     ...                              (0, None),
     ...                              (2, "Alice")], ["age", "name"])
     >>> df1.sort(asc_nulls_first(df1.name)).show()
@@ -1759,16 +1737,16 @@ def asc_nulls_first(col: "AbstractColOrName") -> Func:
     return Func(asc_func, col, nulls_first=True)
 
 
-@try_remote_functions
+
 def asc_nulls_last(col: "AbstractColOrName") -> Func:
     """
     Returns a sort expression based on the ascending order of the given
     AbstractCol name, and null values appear after non-null values.
 
-    .. versionadded:: 2.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1782,7 +1760,7 @@ def asc_nulls_last(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df1 = spark.createDataFrame([(0, None),
+    >>> df1 = OsosSession.createDataFrame([(0, None),
     ...                              (1, "Bob"),
     ...                              (2, "Alice")], ["age", "name"])
     >>> df1.sort(asc_nulls_last(df1.name)).show()
@@ -1801,16 +1779,16 @@ def asc_nulls_last(col: "AbstractColOrName") -> Func:
     return Func(asc_func, col, nulls_first=False)
 
 
-@try_remote_functions
+
 def desc_nulls_first(col: "AbstractColOrName") -> Func:
     """
     Returns a sort expression based on the descending order of the given
     AbstractCol name, and null values appear before non-null values.
 
-    .. versionadded:: 2.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1824,7 +1802,7 @@ def desc_nulls_first(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df1 = spark.createDataFrame([(0, None),
+    >>> df1 = OsosSession.createDataFrame([(0, None),
     ...                              (1, "Bob"),
     ...                              (2, "Alice")], ["age", "name"])
     >>> df1.sort(desc_nulls_first(df1.name)).show()
@@ -1843,16 +1821,16 @@ def desc_nulls_first(col: "AbstractColOrName") -> Func:
     return Func(desc_func, col, nulls_first=True)
 
 
-@try_remote_functions
+
 def desc_nulls_last(col: "AbstractColOrName") -> Func:
     """
     Returns a sort expression based on the descending order of the given
     AbstractCol name, and null values appear after non-null values.
 
-    .. versionadded:: 2.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1866,7 +1844,7 @@ def desc_nulls_last(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df1 = spark.createDataFrame([(0, None),
+    >>> df1 = OsosSession.createDataFrame([(0, None),
     ...                              (1, "Bob"),
     ...                              (2, "Alice")], ["age", "name"])
     >>> df1.sort(desc_nulls_last(df1.name)).show()
@@ -1885,15 +1863,15 @@ def desc_nulls_last(col: "AbstractColOrName") -> Func:
     return Func(desc_func, col, nulls_first=False)
 
 
-@try_remote_functions
+
 def stddev(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: alias for stddev_samp.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1914,19 +1892,19 @@ def stddev(col: "AbstractColOrName") -> Func:
     if isinstance(col, str):
         col = AbstractCol(col)
 
-    return Func(stdev_func, col)
+    return Func(stddev_func, col)
 
 
-@try_remote_functions
+
 def stddev_samp(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the unbiased sample standard deviation of
     the expression in a group.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1947,19 +1925,19 @@ def stddev_samp(col: "AbstractColOrName") -> Func:
     if isinstance(col, str):
         col = AbstractCol(col)
 
-    return Func(stdev_samp_func, col)
+    return Func(stddev_samp_func, col)
 
 
-@try_remote_functions
+
 def stddev_pop(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns population standard deviation of
     the expression in a group.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -1980,18 +1958,18 @@ def stddev_pop(col: "AbstractColOrName") -> Func:
     if isinstance(col, str):
         col = AbstractCol(col)
 
-    return Func(stdev_func, col)
+    return Func(stddev_func, col)
 
 
-@try_remote_functions
+
 def variance(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: alias for var_samp
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2019,16 +1997,16 @@ def variance(col: "AbstractColOrName") -> Func:
     return Func(variance_func, col)
 
 
-@try_remote_functions
+
 def var_samp(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the unbiased sample variance of
     the values in a group.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2056,15 +2034,15 @@ def var_samp(col: "AbstractColOrName") -> Func:
     return Func(var_samp_func, col)
 
 
-@try_remote_functions
+
 def var_pop(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the population variance of the values in a group.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2088,15 +2066,15 @@ def var_pop(col: "AbstractColOrName") -> Func:
     return Func(variance_func, col)
 
 
-@try_remote_functions
+
 def skewness(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the skewness of the values in a group.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2110,7 +2088,7 @@ def skewness(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([[1],[1],[2]], ["c"])
+    >>> df = OsosSession.createDataFrame([[1],[1],[2]], ["c"])
     >>> df.select(skewness(df.c)).first()
     Row(skewness(c)=0.70710...)
     """
@@ -2120,15 +2098,15 @@ def skewness(col: "AbstractColOrName") -> Func:
     return Func(skewness_func, col)
 
 
-@try_remote_functions
+
 def kurtosis(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the kurtosis of the values in a group.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2142,7 +2120,7 @@ def kurtosis(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([[1],[1],[2]], ["c"])
+    >>> df = OsosSession.createDataFrame([[1],[1],[2]], ["c"])
     >>> df.select(kurtosis(df.c)).show()
     +-----------+
     |kurtosis(c)|
@@ -2156,15 +2134,12 @@ def kurtosis(col: "AbstractColOrName") -> Func:
     return Func(kurtosis_func, col)
 
 
-@try_remote_functions
+
 def collect_list(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns a list of objects with duplicates.
 
-    .. versionadded:: 1.6.0
-
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
 
     Notes
     -----
@@ -2183,22 +2158,24 @@ def collect_list(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df2 = spark.createDataFrame([(2,), (5,), (5,)], ('age',))
+    >>> df2 = OsosSession.createDataFrame([(2,), (5,), (5,)], ('age',))
     >>> df2.agg(collect_list('age')).collect()
     [Row(collect_list(age)=[2, 5, 5])]
     """
-    raise NotImplementedError
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    return Func(collect_list_func, col)
 
 
-@try_remote_functions
+
 def collect_set(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns a set of objects with duplicate elements eliminated.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Notes
     -----
@@ -2217,23 +2194,25 @@ def collect_set(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df2 = spark.createDataFrame([(2,), (5,), (5,)], ('age',))
+    >>> df2 = OsosSession.createDataFrame([(2,), (5,), (5,)], ('age',))
     >>> df2.agg(array_sort(collect_set('age')).alias('c')).collect()
     [Row(c=[2, 5])]
     """
-    raise NotImplementedError
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    return Func(collect_set_func, col)
 
 
-@try_remote_functions
+
 def degrees(col: "AbstractColOrName") -> Func:
     """
     Converts an angle measured in radians to an approximately equivalent angle
     measured in degrees.
 
-    .. versionadded:: 2.1.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2258,16 +2237,16 @@ def degrees(col: "AbstractColOrName") -> Func:
     return Func(degrees_func, col)
 
 
-@try_remote_functions
+
 def radians(col: "AbstractColOrName") -> Func:
     """
     Converts an angle measured in degrees to an approximately equivalent angle
     measured in radians.
 
-    .. versionadded:: 2.1.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2291,15 +2270,15 @@ def radians(col: "AbstractColOrName") -> Func:
     return Func(radians_func, col)
 
 
-@try_remote_functions
+
 def atan2(
     col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]
 ) -> Func:
     """
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2332,17 +2311,17 @@ def atan2(
     return Func(atan2_func, col1, col2)
 
 
-@try_remote_functions
+
 def hypot(
     col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]
 ) -> Func:
     """
     Computes ``sqrt(a^2 + b^2)`` without intermediate overflow or underflow.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2371,17 +2350,17 @@ def hypot(
     return Func(hypot_func, col1, col2)
 
 
-@try_remote_functions
+
 def pow(
     col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]
 ) -> Func:
     """
     Returns the value of the first argument raised to the power of the second argument.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2410,7 +2389,7 @@ def pow(
     return Func(pow_func, col1, col2)
 
 
-@try_remote_functions
+
 def pmod(
     dividend: Union["AbstractColOrName", float],
     divisor: Union["AbstractColOrName", float],
@@ -2418,10 +2397,10 @@ def pmod(
     """
     Returns the positive value of dividend mod divisor.
 
-    .. versionadded:: 3.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2438,7 +2417,7 @@ def pmod(
     Examples
     --------
     >>> from pyspark.sql.functions import pmod
-    >>> df = spark.createDataFrame([
+    >>> df = OsosSession.createDataFrame([
     ...     (1.0, float('nan')), (float('nan'), 2.0), (10.0, 3.0),
     ...     (float('nan'), float('nan')), (-3.0, 4.0), (-10.0, 3.0),
     ...     (-5.0, -6.0), (7.0, -8.0), (1.0, 2.0)],
@@ -2468,15 +2447,15 @@ def pmod(
     return Func(pmod_func, col1, col2)
 
 
-@try_remote_functions
+
 def row_number() -> Func:
     """
     Window function: returns a sequential number starting at 1 within a window partition.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Returns
     -------
@@ -2500,7 +2479,7 @@ def row_number() -> Func:
     return Func(row_number_func, AbstractIndex())
 
 
-@try_remote_functions
+
 def dense_rank() -> Func:
     """
     Window function: returns the rank of rows within a window partition, without any gaps.
@@ -2513,10 +2492,10 @@ def dense_rank() -> Func:
 
     This is equivalent to the DENSE_RANK function in SQL.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Returns
     -------
@@ -2526,7 +2505,7 @@ def dense_rank() -> Func:
     Examples
     --------
     >>> from pyspark.sql import Window, types
-    >>> df = spark.createDataFrame([1, 1, 2, 3, 3, 4], types.IntegerType())
+    >>> df = OsosSession.createDataFrame([1, 1, 2, 3, 3, 4], types.IntegerType())
     >>> w = Window.orderBy("value")
     >>> df.withAbstractCol("drank", dense_rank().over(w)).show()
     +-----+-----+
@@ -2540,10 +2519,10 @@ def dense_rank() -> Func:
     |    4|    4|
     +-----+-----+
     """
-    return dense_rank_func()
+    return Func(dense_rank_func, AbstractIndex())
 
 
-@try_remote_functions
+
 def rank() -> Func:
     """
     Window function: returns the rank of rows within a window partition.
@@ -2556,10 +2535,10 @@ def rank() -> Func:
 
     This is equivalent to the RANK function in SQL.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Returns
     -------
@@ -2569,7 +2548,7 @@ def rank() -> Func:
     Examples
     --------
     >>> from pyspark.sql import Window, types
-    >>> df = spark.createDataFrame([1, 1, 2, 3, 3, 4], types.IntegerType())
+    >>> df = OsosSession.createDataFrame([1, 1, 2, 3, 3, 4], types.IntegerType())
     >>> w = Window.orderBy("value")
     >>> df.withAbstractCol("drank", rank().over(w)).show()
     +-----+-----+
@@ -2583,19 +2562,19 @@ def rank() -> Func:
     |    4|    6|
     +-----+-----+
     """
-    return rank_func()
+    return Func(rank_func, AbstractIndex())
 
 
-@try_remote_functions
+
 def cume_dist() -> Func:
     """
     Window function: returns the cumulative distribution of values within a window partition,
     i.e. the fraction of rows that are below the current row.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Returns
     -------
@@ -2605,7 +2584,7 @@ def cume_dist() -> Func:
     Examples
     --------
     >>> from pyspark.sql import Window, types
-    >>> df = spark.createDataFrame([1, 2, 3, 3, 4], types.IntegerType())
+    >>> df = OsosSession.createDataFrame([1, 2, 3, 3, 4], types.IntegerType())
     >>> w = Window.orderBy("value")
     >>> df.withAbstractCol("cd", cume_dist().over(w)).show()
     +-----+---+
@@ -2618,18 +2597,18 @@ def cume_dist() -> Func:
     |    4|1.0|
     +-----+---+
     """
-    return cume_dist_func()
+    return Func(cume_dist_func, AbstractIndex())
 
 
-@try_remote_functions
+
 def percent_rank() -> Func:
     """
     Window function: returns the relative rank (i.e. percentile) of rows within a window partition.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Returns
     -------
@@ -2639,7 +2618,7 @@ def percent_rank() -> Func:
     Examples
     --------
     >>> from pyspark.sql import Window, types
-    >>> df = spark.createDataFrame([1, 1, 2, 3, 3, 4], types.IntegerType())
+    >>> df = OsosSession.createDataFrame([1, 1, 2, 3, 3, 4], types.IntegerType())
     >>> w = Window.orderBy("value")
     >>> df.withAbstractCol("pr", percent_rank().over(w)).show()
     +-----+---+
@@ -2653,38 +2632,27 @@ def percent_rank() -> Func:
     |    4|1.0|
     +-----+---+
     """
-    return percent_rank_func()
+    return Func(percent_rank_func(), AbstractIndex)
 
 
-@try_remote_functions
+
 def approxCountDistinct(col: "AbstractColOrName", rsd: Optional[float] = None) -> Func:
     """
-    .. versionadded:: 1.3.0
-
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
-
-    .. deprecated:: 2.1.0
-        Use :func:`approx_count_distinct` instead.
+    Use :func:`approx_count_distinct` instead.
     """
-    warn("Deprecated in 2.1, use approx_count_distinct instead.", FutureWarning)
-    return approx_count_distinct_func(col, rsd)
+    warn("Deprecated by Spark, use approx_count_distinct instead.", FutureWarning)
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    return Func(approx_count_distinct_func, col, rsd)
 
 
-@try_remote_functions
+
 def approx_count_distinct(
     col: "AbstractColOrName", rsd: Optional[float] = None
 ) -> Func:
     """Aggregate function: returns a new :class:`~osos.Col` for approximate distinct count
     of AbstractCol `col`.
 
-    .. versionadded:: 2.1.0
-
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
-
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
 
     Parameters
     ----------
@@ -2700,7 +2668,7 @@ def approx_count_distinct(
 
     Examples
     --------
-    >>> df = spark.createDataFrame([1,2,2,3], "INT")
+    >>> df = OsosSession.createDataFrame([1,2,2,3], "INT")
     >>> df.agg(approx_count_distinct("value").alias('distinct_values')).show()
     +---------------+
     |distinct_values|
@@ -2711,28 +2679,24 @@ def approx_count_distinct(
     if isinstance(col, str):
         col = AbstractCol(col)
 
-    return Func(approx_count_distinct_func, col, rsd or 0.05)
+    return Func(approx_count_distinct_func, col, rsd if rsd is not None else 0.05)
 
 
-@try_remote_functions
+
 def broadcast(df: DataFrame) -> DataFrame:
     """
     Marks a DataFrame as small enough for use in broadcast joins.
 
-    .. versionadded:: 1.6.0
-
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
-
+    
     Returns
     -------
-    :class:`~pyspark.sql.DataFrame`
-        DataFrame marked as ready for broadcast join.
+    :class:`~osos.DataFrame`
+        Does nothing, exists for compatibility with Spark
 
     Examples
     --------
-    >>> from pyspark.sql import types
-    >>> df = spark.createDataFrame([1, 2, 3, 3, 4], types.IntegerType())
+    >>> from osos import types
+    >>> df = OsosSession.createDataFrame([1, 2, 3, 3, 4], types.IntegerType())
     >>> df_small = spark.range(3)
     >>> df_b = broadcast(df_small)
     >>> df.join(df_b, df.value == df_small.id).show()
@@ -2747,14 +2711,14 @@ def broadcast(df: DataFrame) -> DataFrame:
     return df
 
 
-@try_remote_functions
+
 def coalesce(*cols: "AbstractColOrName") -> Func:
     """Returns the first AbstractCol that is not null.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2768,7 +2732,7 @@ def coalesce(*cols: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> cDf = spark.createDataFrame([(None, None), (1, None), (None, 2)], ("a", "b"))
+    >>> cDf = OsosSession.createDataFrame([(None, None), (1, None), (None, 2)], ("a", "b"))
     >>> cDf.show()
     +----+----+
     |   a|   b|
@@ -2803,15 +2767,15 @@ def coalesce(*cols: "AbstractColOrName") -> Func:
     return Func(coalesce_func, cols)
 
 
-@try_remote_functions
+
 def corr(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     """Returns a new :class:`~osos.Col` for the Pearson Correlation Coefficient for
     ``col1`` and ``col2``.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2829,23 +2793,23 @@ def corr(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     --------
     >>> a = range(20)
     >>> b = [2 * x for x in range(20)]
-    >>> df = spark.createDataFrame(zip(a, b), ["a", "b"])
+    >>> df = OsosSession.createDataFrame(zip(a, b), ["a", "b"])
     >>> df.agg(corr("a", "b").alias('c')).collect()
     [Row(c=1.0)]
     """
-    raise NotImplementedError
+    if isinstance(col1, str):
+        col = AbstractCol(col)
+    if isinstance(col2, str):
+        col = AbstractCol(col)
+    return Func(corr_func, col1, col2)
 
 
-@try_remote_functions
+
 def covar_pop(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     """Returns a new :class:`~osos.Col` for the population covariance of ``col1`` and
     ``col2``.
 
-    .. versionadded:: 2.0.0
-
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
-
+    
     Parameters
     ----------
     col1 : :class:`~osos.Col` or str
@@ -2862,22 +2826,26 @@ def covar_pop(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     --------
     >>> a = [1] * 10
     >>> b = [1] * 10
-    >>> df = spark.createDataFrame(zip(a, b), ["a", "b"])
+    >>> df = OsosSession.createDataFrame(zip(a, b), ["a", "b"])
     >>> df.agg(covar_pop("a", "b").alias('c')).collect()
     [Row(c=0.0)]
     """
-    raise NotImplementedError
+    if isinstance(col1, str):
+        col = AbstractCol(col)
+    if isinstance(col2, str):
+        col = AbstractCol(col)
+    return Func(covar_pop_func, col1, col2)
 
 
-@try_remote_functions
+
 def covar_samp(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     """Returns a new :class:`~osos.Col` for the sample covariance of ``col1`` and
     ``col2``.
 
-    .. versionadded:: 2.0.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2895,36 +2863,44 @@ def covar_samp(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     --------
     >>> a = [1] * 10
     >>> b = [1] * 10
-    >>> df = spark.createDataFrame(zip(a, b), ["a", "b"])
+    >>> df = OsosSession.createDataFrame(zip(a, b), ["a", "b"])
     >>> df.agg(covar_samp("a", "b").alias('c')).collect()
     [Row(c=0.0)]
     """
-    raise NotImplementedError
+    if isinstance(col1, str):
+        col = AbstractCol(col)
+    if isinstance(col2, str):
+        col = AbstractCol(col)
+    return Func(covar_samp_func, col1, col2)
 
 
-@try_remote_functions
+
 def countDistinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Func:
     """Returns a new :class:`~osos.Col` for distinct count of ``col`` or ``cols``.
 
     An alias of :func:`count_distinct`, and it is encouraged to use :func:`count_distinct`
     directly.
 
-    .. versionadded:: 1.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
     """
-    return count_distinct(col, *cols)
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    for col in cols:
+        col = AbstractCol(col)
+    return Func(count_distinct_func, col, *cols)
 
 
-@try_remote_functions
+
 def count_distinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Func:
     """Returns a new :class:`AbstractCol` for distinct count of ``col`` or ``cols``.
 
-    .. versionadded:: 3.2.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -2941,8 +2917,8 @@ def count_distinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Func
     Examples
     --------
     >>> from pyspark.sql import types
-    >>> df1 = spark.createDataFrame([1, 1, 3], types.IntegerType())
-    >>> df2 = spark.createDataFrame([1, 2], types.IntegerType())
+    >>> df1 = OsosSession.createDataFrame([1, 1, 3], types.IntegerType())
+    >>> df2 = OsosSession.createDataFrame([1, 2], types.IntegerType())
     >>> df1.join(df2).show()
     +-----+-----+
     |value|value|
@@ -2961,20 +2937,24 @@ def count_distinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Func
     |                           4|
     +----------------------------+
     """
-    raise NotImplemented("count_distinct", AbstractCol(col), _to_seq(cols, AbstractCol))
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    for col_ in cols:
+        col_ = AbstractCol(col_)
+    return Func(count_distinct_func, col, *cols)
 
 
-@try_remote_functions
+
 def first(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
     """Aggregate function: returns the first value in a group.
 
     The function by default returns the first values it sees. It will return the first non-null
     value it sees when ignoreNulls is set to true. If all values are null, then null is returned.
 
-    .. versionadded:: 1.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Notes
     -----
@@ -2995,7 +2975,7 @@ def first(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([("Alice", 2), ("Bob", 5), ("Alice", None)], ("name", "age"))
+    >>> df = OsosSession.createDataFrame([("Alice", 2), ("Bob", 5), ("Alice", None)], ("name", "age"))
     >>> df = df.orderBy(df.age)
     >>> df.groupby("name").agg(first("age")).orderBy("name").show()
     +-----+----------+
@@ -3018,16 +2998,16 @@ def first(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def grouping(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: indicates whether a specified AbstractCol in a GROUP BY list is aggregated
     or not, returns 1 for aggregated or 0 for not aggregated in the result set.
 
-    .. versionadded:: 2.0.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3041,7 +3021,7 @@ def grouping(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([("Alice", 2), ("Bob", 5)], ("name", "age"))
+    >>> df = OsosSession.createDataFrame([("Alice", 2), ("Bob", 5)], ("name", "age"))
     >>> df.cube("name").agg(grouping("name"), sum("age")).orderBy("name").show()
     +-----+--------------+--------+
     | name|grouping(name)|sum(age)|
@@ -3054,17 +3034,17 @@ def grouping(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def grouping_id(*cols: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the level of grouping, equals to
 
        (grouping(c1) << (n-1)) + (grouping(c2) << (n-2)) + ... + grouping(cn)
 
-    .. versionadded:: 2.0.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Notes
     -----
@@ -3083,7 +3063,7 @@ def grouping_id(*cols: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(1, "a", "a"),
+    >>> df = OsosSession.createDataFrame([(1, "a", "a"),
     ...                             (3, "a", "a"),
     ...                             (4, "b", "c")], ["c1", "c2", "c3"])
     >>> df.cube("c2", "c3").agg(grouping_id(), sum("c1")).orderBy("c2", "c3").show()
@@ -3102,15 +3082,15 @@ def grouping_id(*cols: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def input_file_name() -> Func:
     """
     Creates a string AbstractCol for the file name of the current Spark task.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Returns
     -------
@@ -3128,14 +3108,14 @@ def input_file_name() -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def isnan(col: "AbstractColOrName") -> Func:
     """An expression that returns true if the AbstractCol is NaN.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3149,7 +3129,7 @@ def isnan(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(1.0, float('nan')), (float('nan'), 2.0)], ("a", "b"))
+    >>> df = OsosSession.createDataFrame([(1.0, float('nan')), (float('nan'), 2.0)], ("a", "b"))
     >>> df.select("a", "b", isnan("a").alias("r1"), isnan(df.b).alias("r2")).show()
     +---+---+-----+-----+
     |  a|  b|   r1|   r2|
@@ -3161,14 +3141,14 @@ def isnan(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def isnull(col: "AbstractColOrName") -> Func:
     """An expression that returns true if the AbstractCol is null.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3182,7 +3162,7 @@ def isnull(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(1, None), (None, 2)], ("a", "b"))
+    >>> df = OsosSession.createDataFrame([(1, None), (None, 2)], ("a", "b"))
     >>> df.select("a", "b", isnull("a").alias("r1"), isnull(df.b).alias("r2")).show()
     +----+----+-----+-----+
     |   a|   b|   r1|   r2|
@@ -3194,17 +3174,17 @@ def isnull(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def last(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
     """Aggregate function: returns the last value in a group.
 
     The function by default returns the last values it sees. It will return the last non-null
     value it sees when ignoreNulls is set to true. If all values are null, then null is returned.
 
-    .. versionadded:: 1.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Notes
     -----
@@ -3225,7 +3205,7 @@ def last(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([("Alice", 2), ("Bob", 5), ("Alice", None)], ("name", "age"))
+    >>> df = OsosSession.createDataFrame([("Alice", 2), ("Bob", 5), ("Alice", None)], ("name", "age"))
     >>> df = df.orderBy(df.age.desc())
     >>> df.groupby("name").agg(last("age")).orderBy("name").show()
     +-----+---------+
@@ -3248,7 +3228,7 @@ def last(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def monotonically_increasing_id() -> Func:
     """A AbstractCol that generates monotonically increasing 64-bit integers.
 
@@ -3257,10 +3237,10 @@ def monotonically_increasing_id() -> Func:
     within each partition in the lower 33 bits. The assumption is that the data frame has
     less than 1 billion partitions, and each partition has less than 8 billion records.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Notes
     -----
@@ -3284,16 +3264,16 @@ def monotonically_increasing_id() -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def nanvl(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     """Returns col1 if it is not NaN, or col2 if col1 is NaN.
 
     Both inputs should be floating point AbstractCols (:class:`DoubleType` or :class:`FloatType`).
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3309,14 +3289,14 @@ def nanvl(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(1.0, float('nan')), (float('nan'), 2.0)], ("a", "b"))
+    >>> df = OsosSession.createDataFrame([(1.0, float('nan')), (float('nan'), 2.0)], ("a", "b"))
     >>> df.select(nanvl("a", "b").alias("r1"), nanvl(df.a, df.b).alias("r2")).collect()
     [Row(r1=1.0, r2=1.0), Row(r1=2.0, r2=2.0)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def percentile_approx(
     col: "AbstractColOrName",
     percentage: Union[AbstractCol, float, List[float], Tuple[float]],
@@ -3327,10 +3307,10 @@ def percentile_approx(
     of `col` values is less than the value or equal to that value.
 
 
-    .. versionadded:: 3.1.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3387,15 +3367,15 @@ def percentile_approx(
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def rand(seed: Optional[int] = None) -> Func:
     """Generates a random AbstractCol with independent and identically distributed (i.i.d.) samples
     uniformly distributed in [0.0, 1.0).
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Notes
     -----
@@ -3428,15 +3408,15 @@ def rand(seed: Optional[int] = None) -> Func:
         raise NotImplementedError
 
 
-@try_remote_functions
+
 def randn(seed: Optional[int] = None) -> Func:
     """Generates a AbstractCol with independent and identically distributed (i.i.d.) samples from
     the standard normal distribution.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Notes
     -----
@@ -3469,16 +3449,16 @@ def randn(seed: Optional[int] = None) -> Func:
         raise NotImplementedError
 
 
-@try_remote_functions
+
 def round(col: "AbstractColOrName", scale: int = 0) -> Func:
     """
     Round the given value to `scale` decimal places using HALF_UP rounding mode if `scale` >= 0
     or at integral part when `scale` < 0.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3494,22 +3474,22 @@ def round(col: "AbstractColOrName", scale: int = 0) -> Func:
 
     Examples
     --------
-    >>> spark.createDataFrame([(2.5,)], ['a']).select(round('a', 0).alias('r')).collect()
+    >>> OsosSession.createDataFrame([(2.5,)], ['a']).select(round('a', 0).alias('r')).collect()
     [Row(r=3.0)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def bround(col: "AbstractColOrName", scale: int = 0) -> Func:
     """
     Round the given value to `scale` decimal places using HALF_EVEN rounding mode if `scale` >= 0
     or at integral part when `scale` < 0.
 
-    .. versionadded:: 2.0.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3525,20 +3505,20 @@ def bround(col: "AbstractColOrName", scale: int = 0) -> Func:
 
     Examples
     --------
-    >>> spark.createDataFrame([(2.5,)], ['a']).select(bround('a', 0).alias('r')).collect()
+    >>> OsosSession.createDataFrame([(2.5,)], ['a']).select(bround('a', 0).alias('r')).collect()
     [Row(r=2.0)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def shiftLeft(col: "AbstractColOrName", numBits: int) -> Func:
     """Shift the given value numBits left.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     .. deprecated:: 3.2.0
         Use :func:`shiftleft` instead.
@@ -3547,14 +3527,14 @@ def shiftLeft(col: "AbstractColOrName", numBits: int) -> Func:
     return shiftleft(col, numBits)
 
 
-@try_remote_functions
+
 def shiftleft(col: "AbstractColOrName", numBits: int) -> Func:
     """Shift the given value numBits left.
 
-    .. versionadded:: 3.2.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3570,20 +3550,20 @@ def shiftleft(col: "AbstractColOrName", numBits: int) -> Func:
 
     Examples
     --------
-    >>> spark.createDataFrame([(21,)], ['a']).select(shiftleft('a', 1).alias('r')).collect()
+    >>> OsosSession.createDataFrame([(21,)], ['a']).select(shiftleft('a', 1).alias('r')).collect()
     [Row(r=42)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def shiftRight(col: "AbstractColOrName", numBits: int) -> Func:
     """(Signed) shift the given value numBits right.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     .. deprecated:: 3.2.0
         Use :func:`shiftright` instead.
@@ -3592,14 +3572,14 @@ def shiftRight(col: "AbstractColOrName", numBits: int) -> Func:
     return shiftright(col, numBits)
 
 
-@try_remote_functions
+
 def shiftright(col: "AbstractColOrName", numBits: int) -> Func:
     """(Signed) shift the given value numBits right.
 
-    .. versionadded:: 3.2.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3615,20 +3595,20 @@ def shiftright(col: "AbstractColOrName", numBits: int) -> Func:
 
     Examples
     --------
-    >>> spark.createDataFrame([(42,)], ['a']).select(shiftright('a', 1).alias('r')).collect()
+    >>> OsosSession.createDataFrame([(42,)], ['a']).select(shiftright('a', 1).alias('r')).collect()
     [Row(r=21)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def shiftRightUnsigned(col: "AbstractColOrName", numBits: int) -> Func:
     """Unsigned shift the given value numBits right.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     .. deprecated:: 3.2.0
         Use :func:`shiftrightunsigned` instead.
@@ -3637,14 +3617,14 @@ def shiftRightUnsigned(col: "AbstractColOrName", numBits: int) -> Func:
     return shiftrightunsigned(col, numBits)
 
 
-@try_remote_functions
+
 def shiftrightunsigned(col: "AbstractColOrName", numBits: int) -> Func:
     """Unsigned shift the given value numBits right.
 
-    .. versionadded:: 3.2.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3660,21 +3640,21 @@ def shiftrightunsigned(col: "AbstractColOrName", numBits: int) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(-42,)], ['a'])
+    >>> df = OsosSession.createDataFrame([(-42,)], ['a'])
     >>> df.select(shiftrightunsigned('a', 1).alias('r')).collect()
     [Row(r=9223372036854775787)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def spark_partition_id() -> Func:
     """A AbstractCol for partition ID.
 
-    .. versionadded:: 1.6.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Notes
     -----
@@ -3694,14 +3674,14 @@ def spark_partition_id() -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def expr(str: str) -> Func:
     """Parses the expression string into the AbstractCol that it represents
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3715,7 +3695,7 @@ def expr(str: str) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([["Alice"], ["Bob"]], ["name"])
+    >>> df = OsosSession.createDataFrame([["Alice"], ["Bob"]], ["name"])
     >>> df.select("name", expr("length(name)")).show()
     +-----+------------+
     | name|length(name)|
@@ -3739,7 +3719,7 @@ def struct(
     ...
 
 
-@try_remote_functions
+
 def struct(
     *cols: Union[
         "AbstractColOrName",
@@ -3748,10 +3728,10 @@ def struct(
 ) -> Func:
     """Creates a new struct AbstractCol.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3765,7 +3745,7 @@ def struct(
 
     Examples
     --------
-    >>> df = spark.createDataFrame([("Alice", 2), ("Bob", 5)], ("name", "age"))
+    >>> df = OsosSession.createDataFrame([("Alice", 2), ("Bob", 5)], ("name", "age"))
     >>> df.select(struct('age', 'name').alias("struct")).collect()
     [Row(struct=Row(age=2, name='Alice')), Row(struct=Row(age=5, name='Bob'))]
     >>> df.select(struct([df.age, df.name]).alias("struct")).collect()
@@ -3776,16 +3756,16 @@ def struct(
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def greatest(*cols: "AbstractColOrName") -> Func:
     """
     Returns the greatest value of the list of AbstractCol names, skipping null values.
     This function takes at least 2 parameters. It will return null if all parameters are null.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3799,7 +3779,7 @@ def greatest(*cols: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(1, 4, 3)], ['a', 'b', 'c'])
+    >>> df = OsosSession.createDataFrame([(1, 4, 3)], ['a', 'b', 'c'])
     >>> df.select(greatest(df.a, df.b, df.c).alias("greatest")).collect()
     [Row(greatest=4)]
     """
@@ -3811,16 +3791,16 @@ def greatest(*cols: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def least(*cols: "AbstractColOrName") -> Func:
     """
     Returns the least value of the list of AbstractCol names, skipping null values.
     This function takes at least 2 parameters. It will return null if all parameters are null.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3834,7 +3814,7 @@ def least(*cols: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(1, 4, 3)], ['a', 'b', 'c'])
+    >>> df = OsosSession.createDataFrame([(1, 4, 3)], ['a', 'b', 'c'])
     >>> df.select(least(df.a, df.b, df.c).alias("least")).collect()
     [Row(least=1)]
     """
@@ -3846,16 +3826,16 @@ def least(*cols: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def when(condition: AbstractCol, value: Any) -> Func:
     """Evaluates a list of conditions and returns one of multiple possible result expressions.
     If :func:`osos.Col.otherwise` is not invoked, None is returned for unmatched
     conditions.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3914,7 +3894,7 @@ def log(arg1: float, arg2: "AbstractColOrName") -> Func:
     ...
 
 
-@try_remote_functions
+
 def log(
     arg1: Union["AbstractColOrName", float], arg2: Optional["AbstractColOrName"] = None
 ) -> Func:
@@ -3922,10 +3902,10 @@ def log(
 
     If there is only one argument, then this takes the natural logarithm of the argument.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3941,7 +3921,7 @@ def log(
 
     Examples
     --------
-    >>> df = spark.createDataFrame([10, 100, 1000], "INT")
+    >>> df = OsosSession.createDataFrame([10, 100, 1000], "INT")
     >>> df.select(log(10.0, df.value).alias('ten')).show() # doctest: +SKIP
     +---+
     |ten|
@@ -3968,14 +3948,14 @@ def log(
         raise NotImplementedError
 
 
-@try_remote_functions
+
 def log2(col: "AbstractColOrName") -> Func:
     """Returns the base-2 logarithm of the argument.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -3989,7 +3969,7 @@ def log2(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(4,)], ['a'])
+    >>> df = OsosSession.createDataFrame([(4,)], ['a'])
     >>> df.select(log2('a').alias('log2')).show()
     +----+
     |log2|
@@ -4000,15 +3980,15 @@ def log2(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def conv(col: "AbstractColOrName", fromBase: int, toBase: int) -> Func:
     """
     Convert a number in a string AbstractCol from one base to another.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4026,22 +4006,22 @@ def conv(col: "AbstractColOrName", fromBase: int, toBase: int) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([("010101",)], ['n'])
+    >>> df = OsosSession.createDataFrame([("010101",)], ['n'])
     >>> df.select(conv(df.n, 2, 16).alias('hex')).collect()
     [Row(hex='15')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def factorial(col: "AbstractColOrName") -> Func:
     """
     Computes the factorial of the given value.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4055,7 +4035,7 @@ def factorial(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(5,)], ['n'])
+    >>> df = OsosSession.createDataFrame([(5,)], ['n'])
     >>> df.select(factorial(df.n).alias('f')).collect()
     [Row(f=120)]
     """
@@ -4065,7 +4045,7 @@ def factorial(col: "AbstractColOrName") -> Func:
 # ---------------  Window functions ------------------------
 
 
-@try_remote_functions
+
 def lag(
     col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = None
 ) -> Func:
@@ -4076,10 +4056,10 @@ def lag(
 
     This is equivalent to the LAG function in SQL.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4098,7 +4078,7 @@ def lag(
     Examples
     --------
     >>> from pyspark.sql import Window
-    >>> df = spark.createDataFrame([("a", 1),
+    >>> df = OsosSession.createDataFrame([("a", 1),
     ...                             ("a", 2),
     ...                             ("a", 3),
     ...                             ("b", 8),
@@ -4154,7 +4134,7 @@ def lag(
     return Func(lag_func, col, offset, default)
 
 
-@try_remote_functions
+
 def lead(
     col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = None
 ) -> Func:
@@ -4165,10 +4145,10 @@ def lead(
 
     This is equivalent to the LEAD function in SQL.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4187,7 +4167,7 @@ def lead(
     Examples
     --------
     >>> from pyspark.sql import Window
-    >>> df = spark.createDataFrame([("a", 1),
+    >>> df = OsosSession.createDataFrame([("a", 1),
     ...                             ("a", 2),
     ...                             ("a", 3),
     ...                             ("b", 8),
@@ -4243,7 +4223,7 @@ def lead(
     return Func(lead_func, col, offset)
 
 
-@try_remote_functions
+
 def nth_value(
     col: "AbstractColOrName", offset: int, ignoreNulls: Optional[bool] = False
 ) -> Func:
@@ -4256,10 +4236,10 @@ def nth_value(
 
     This is equivalent to the nth_value function in SQL.
 
-    .. versionadded:: 3.1.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4279,7 +4259,7 @@ def nth_value(
     Examples
     --------
     >>> from pyspark.sql import Window
-    >>> df = spark.createDataFrame([("a", 1),
+    >>> df = OsosSession.createDataFrame([("a", 1),
     ...                             ("a", 2),
     ...                             ("a", 3),
     ...                             ("b", 8),
@@ -4319,7 +4299,7 @@ def nth_value(
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def ntile(n: int) -> Func:
     """
     Window function: returns the ntile group id (from 1 to `n` inclusive)
@@ -4329,10 +4309,10 @@ def ntile(n: int) -> Func:
 
     This is equivalent to the NTILE function in SQL.
 
-    .. versionadded:: 1.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4347,7 +4327,7 @@ def ntile(n: int) -> Func:
     Examples
     --------
     >>> from pyspark.sql import Window
-    >>> df = spark.createDataFrame([("a", 1),
+    >>> df = OsosSession.createDataFrame([("a", 1),
     ...                             ("a", 2),
     ...                             ("a", 3),
     ...                             ("b", 8),
@@ -4380,16 +4360,16 @@ def ntile(n: int) -> Func:
 # ---------------------- Date/Timestamp functions ------------------------------
 
 
-@try_remote_functions
+
 def current_date() -> Func:
     """
     Returns the current date at the start of query evaluation as a :class:`DateType` AbstractCol.
     All calls of current_date within the same query return the same value.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Returns
     -------
@@ -4409,16 +4389,16 @@ def current_date() -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def current_timestamp() -> Func:
     """
     Returns the current timestamp at the start of query evaluation as a :class:`TimestampType`
     AbstractCol. All calls of current_timestamp within the same query return the same value.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Returns
     -------
@@ -4438,17 +4418,17 @@ def current_timestamp() -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def localtimestamp() -> Func:
     """
     Returns the current timestamp without time zone at the start of query evaluation
     as a timestamp without time zone AbstractCol. All calls of localtimestamp within the
     same query return the same value.
 
-    .. versionadded:: 3.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Returns
     -------
@@ -4468,7 +4448,7 @@ def localtimestamp() -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def date_format(date: "AbstractColOrName", format: str) -> Func:
     """
     Converts a date/timestamp/string to a value of string in the format specified by the date
@@ -4479,10 +4459,10 @@ def date_format(date: "AbstractColOrName", format: str) -> Func:
 
     .. _datetime pattern: https://spark.apache.org/docs/latest/sql-ref-datetime-pattern.html
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Notes
     -----
@@ -4502,22 +4482,22 @@ def date_format(date: "AbstractColOrName", format: str) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('2015-04-08',)], ['dt'])
+    >>> df = OsosSession.createDataFrame([('2015-04-08',)], ['dt'])
     >>> df.select(date_format('dt', 'MM/dd/yyy').alias('date')).collect()
     [Row(date='04/08/2015')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def year(col: "AbstractColOrName") -> Func:
     """
     Extract the year of a given date/timestamp as integer.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4531,22 +4511,22 @@ def year(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('2015-04-08',)], ['dt'])
+    >>> df = OsosSession.createDataFrame([('2015-04-08',)], ['dt'])
     >>> df.select(year('dt').alias('year')).collect()
     [Row(year=2015)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def quarter(col: "AbstractColOrName") -> Func:
     """
     Extract the quarter of a given date/timestamp as integer.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4560,22 +4540,22 @@ def quarter(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('2015-04-08',)], ['dt'])
+    >>> df = OsosSession.createDataFrame([('2015-04-08',)], ['dt'])
     >>> df.select(quarter('dt').alias('quarter')).collect()
     [Row(quarter=2)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def month(col: "AbstractColOrName") -> Func:
     """
     Extract the month of a given date/timestamp as integer.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4589,23 +4569,23 @@ def month(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('2015-04-08',)], ['dt'])
+    >>> df = OsosSession.createDataFrame([('2015-04-08',)], ['dt'])
     >>> df.select(month('dt').alias('month')).collect()
     [Row(month=4)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def dayofweek(col: "AbstractColOrName") -> Func:
     """
     Extract the day of the week of a given date/timestamp as integer.
     Ranges from 1 for a Sunday through to 7 for a Saturday
 
-    .. versionadded:: 2.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4619,22 +4599,22 @@ def dayofweek(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('2015-04-08',)], ['dt'])
+    >>> df = OsosSession.createDataFrame([('2015-04-08',)], ['dt'])
     >>> df.select(dayofweek('dt').alias('day')).collect()
     [Row(day=4)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def dayofmonth(col: "AbstractColOrName") -> Func:
     """
     Extract the day of the month of a given date/timestamp as integer.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4648,22 +4628,22 @@ def dayofmonth(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('2015-04-08',)], ['dt'])
+    >>> df = OsosSession.createDataFrame([('2015-04-08',)], ['dt'])
     >>> df.select(dayofmonth('dt').alias('day')).collect()
     [Row(day=8)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def dayofyear(col: "AbstractColOrName") -> Func:
     """
     Extract the day of the year of a given date/timestamp as integer.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4677,22 +4657,22 @@ def dayofyear(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('2015-04-08',)], ['dt'])
+    >>> df = OsosSession.createDataFrame([('2015-04-08',)], ['dt'])
     >>> df.select(dayofyear('dt').alias('day')).collect()
     [Row(day=98)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def hour(col: "AbstractColOrName") -> Func:
     """
     Extract the hours of a given timestamp as integer.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4707,22 +4687,22 @@ def hour(col: "AbstractColOrName") -> Func:
     Examples
     --------
     >>> import datetime
-    >>> df = spark.createDataFrame([(datetime.datetime(2015, 4, 8, 13, 8, 15),)], ['ts'])
+    >>> df = OsosSession.createDataFrame([(datetime.datetime(2015, 4, 8, 13, 8, 15),)], ['ts'])
     >>> df.select(hour('ts').alias('hour')).collect()
     [Row(hour=13)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def minute(col: "AbstractColOrName") -> Func:
     """
     Extract the minutes of a given timestamp as integer.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4737,22 +4717,22 @@ def minute(col: "AbstractColOrName") -> Func:
     Examples
     --------
     >>> import datetime
-    >>> df = spark.createDataFrame([(datetime.datetime(2015, 4, 8, 13, 8, 15),)], ['ts'])
+    >>> df = OsosSession.createDataFrame([(datetime.datetime(2015, 4, 8, 13, 8, 15),)], ['ts'])
     >>> df.select(minute('ts').alias('minute')).collect()
     [Row(minute=8)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def second(col: "AbstractColOrName") -> Func:
     """
     Extract the seconds of a given date as integer.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4767,24 +4747,24 @@ def second(col: "AbstractColOrName") -> Func:
     Examples
     --------
     >>> import datetime
-    >>> df = spark.createDataFrame([(datetime.datetime(2015, 4, 8, 13, 8, 15),)], ['ts'])
+    >>> df = OsosSession.createDataFrame([(datetime.datetime(2015, 4, 8, 13, 8, 15),)], ['ts'])
     >>> df.select(second('ts').alias('second')).collect()
     [Row(second=15)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def weekofyear(col: "AbstractColOrName") -> Func:
     """
     Extract the week number of a given date as integer.
     A week is considered to start on a Monday and week 1 is the first week with more than 3 days,
     as defined by ISO 8601
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4798,24 +4778,24 @@ def weekofyear(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('2015-04-08',)], ['dt'])
+    >>> df = OsosSession.createDataFrame([('2015-04-08',)], ['dt'])
     >>> df.select(weekofyear(df.dt).alias('week')).collect()
     [Row(week=15)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def make_date(
     year: "AbstractColOrName", month: "AbstractColOrName", day: "AbstractColOrName"
 ) -> Func:
     """
     Returns a AbstractCol with a date built from the year, month and day AbstractCols.
 
-    .. versionadded:: 3.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4833,23 +4813,23 @@ def make_date(
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(2020, 6, 26)], ['Y', 'M', 'D'])
+    >>> df = OsosSession.createDataFrame([(2020, 6, 26)], ['Y', 'M', 'D'])
     >>> df.select(make_date(df.Y, df.M, df.D).alias("datefield")).collect()
     [Row(datefield=datetime.date(2020, 6, 26))]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def date_add(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) -> Func:
     """
     Returns the date that is `days` days after `start`. If `days` is a negative value
     then these amount of days will be deducted from `start`.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4866,7 +4846,7 @@ def date_add(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) 
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('2015-04-08', 2,)], ['dt', 'add'])
+    >>> df = OsosSession.createDataFrame([('2015-04-08', 2,)], ['dt', 'add'])
     >>> df.select(date_add(df.dt, 1).alias('next_date')).collect()
     [Row(next_date=datetime.date(2015, 4, 9))]
     >>> df.select(date_add(df.dt, df.add.cast('integer')).alias('next_date')).collect()
@@ -4878,16 +4858,16 @@ def date_add(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) 
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def date_sub(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) -> Func:
     """
     Returns the date that is `days` days before `start`. If `days` is a negative value
     then these amount of days will be added to `start`.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4904,7 +4884,7 @@ def date_sub(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) 
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('2015-04-08', 2,)], ['dt', 'sub'])
+    >>> df = OsosSession.createDataFrame([('2015-04-08', 2,)], ['dt', 'sub'])
     >>> df.select(date_sub(df.dt, 1).alias('prev_date')).collect()
     [Row(prev_date=datetime.date(2015, 4, 7))]
     >>> df.select(date_sub(df.dt, df.sub.cast('integer')).alias('prev_date')).collect()
@@ -4916,15 +4896,15 @@ def date_sub(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) 
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def datediff(end: "AbstractColOrName", start: "AbstractColOrName") -> Func:
     """
     Returns the number of days from `start` to `end`.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4940,14 +4920,14 @@ def datediff(end: "AbstractColOrName", start: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('2015-04-08','2015-05-10')], ['d1', 'd2'])
+    >>> df = OsosSession.createDataFrame([('2015-04-08','2015-05-10')], ['d1', 'd2'])
     >>> df.select(datediff(df.d2, df.d1).alias('diff')).collect()
     [Row(diff=32)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def add_months(
     start: "AbstractColOrName", months: Union["AbstractColOrName", int]
 ) -> Func:
@@ -4955,10 +4935,10 @@ def add_months(
     Returns the date that is `months` months after `start`. If `months` is a negative value
     then these amount of months will be deducted from the `start`.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -4975,7 +4955,7 @@ def add_months(
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('2015-04-08', 2)], ['dt', 'add'])
+    >>> df = OsosSession.createDataFrame([('2015-04-08', 2)], ['dt', 'add'])
     >>> df.select(add_months(df.dt, 1).alias('next_month')).collect()
     [Row(next_month=datetime.date(2015, 5, 8))]
     >>> df.select(add_months(df.dt, df.add.cast('integer')).alias('next_month')).collect()
@@ -4987,7 +4967,7 @@ def add_months(
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def months_between(
     date1: "AbstractColOrName", date2: "AbstractColOrName", roundOff: bool = True
 ) -> Func:
@@ -4998,10 +4978,10 @@ def months_between(
     of their respective months. Otherwise, the difference is calculated assuming 31 days per month.
     The result is rounded off to 8 digits unless `roundOff` is set to `False`.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5019,7 +4999,7 @@ def months_between(
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('1997-02-28 10:30:00', '1996-10-30')], ['date1', 'date2'])
+    >>> df = OsosSession.createDataFrame([('1997-02-28 10:30:00', '1996-10-30')], ['date1', 'date2'])
     >>> df.select(months_between(df.date1, df.date2).alias('months')).collect()
     [Row(months=3.94959677)]
     >>> df.select(months_between(df.date1, df.date2, False).alias('months')).collect()
@@ -5030,7 +5010,7 @@ def months_between(
     )
 
 
-@try_remote_functions
+
 def to_date(col: "AbstractColOrName", format: Optional[str] = None) -> Func:
     """Converts a :class:`~osos.Col` into :class:`pyspark.sql.types.DateType`
     using the optionally specified format. Specify formats according to `datetime pattern`_.
@@ -5039,10 +5019,10 @@ def to_date(col: "AbstractColOrName", format: Optional[str] = None) -> Func:
 
     .. _datetime pattern: https://spark.apache.org/docs/latest/sql-ref-datetime-pattern.html
 
-    .. versionadded:: 2.2.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5058,11 +5038,11 @@ def to_date(col: "AbstractColOrName", format: Optional[str] = None) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('1997-02-28 10:30:00',)], ['t'])
+    >>> df = OsosSession.createDataFrame([('1997-02-28 10:30:00',)], ['t'])
     >>> df.select(to_date(df.t).alias('date')).collect()
     [Row(date=datetime.date(1997, 2, 28))]
 
-    >>> df = spark.createDataFrame([('1997-02-28 10:30:00',)], ['t'])
+    >>> df = OsosSession.createDataFrame([('1997-02-28 10:30:00',)], ['t'])
     >>> df.select(to_date(df.t, 'yyyy-MM-dd HH:mm:ss').alias('date')).collect()
     [Row(date=datetime.date(1997, 2, 28))]
     """
@@ -5082,7 +5062,7 @@ def to_timestamp(col: "AbstractColOrName", format: str) -> Func:
     ...
 
 
-@try_remote_functions
+
 def to_timestamp(col: "AbstractColOrName", format: Optional[str] = None) -> Func:
     """Converts a :class:`~osos.Col` into :class:`pyspark.sql.types.TimestampType`
     using the optionally specified format. Specify formats according to `datetime pattern`_.
@@ -5091,10 +5071,10 @@ def to_timestamp(col: "AbstractColOrName", format: Optional[str] = None) -> Func
 
     .. _datetime pattern: https://spark.apache.org/docs/latest/sql-ref-datetime-pattern.html
 
-    .. versionadded:: 2.2.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5110,11 +5090,11 @@ def to_timestamp(col: "AbstractColOrName", format: Optional[str] = None) -> Func
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('1997-02-28 10:30:00',)], ['t'])
+    >>> df = OsosSession.createDataFrame([('1997-02-28 10:30:00',)], ['t'])
     >>> df.select(to_timestamp(df.t).alias('dt')).collect()
     [Row(dt=datetime.datetime(1997, 2, 28, 10, 30))]
 
-    >>> df = spark.createDataFrame([('1997-02-28 10:30:00',)], ['t'])
+    >>> df = OsosSession.createDataFrame([('1997-02-28 10:30:00',)], ['t'])
     >>> df.select(to_timestamp(df.t, 'yyyy-MM-dd HH:mm:ss').alias('dt')).collect()
     [Row(dt=datetime.datetime(1997, 2, 28, 10, 30))]
     """
@@ -5124,15 +5104,15 @@ def to_timestamp(col: "AbstractColOrName", format: Optional[str] = None) -> Func
         raise NotImplementedError
 
 
-@try_remote_functions
+
 def trunc(date: "AbstractColOrName", format: str) -> Func:
     """
     Returns date truncated to the unit specified by the format.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5150,7 +5130,7 @@ def trunc(date: "AbstractColOrName", format: str) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('1997-02-28',)], ['d'])
+    >>> df = OsosSession.createDataFrame([('1997-02-28',)], ['d'])
     >>> df.select(trunc(df.d, 'year').alias('year')).collect()
     [Row(year=datetime.date(1997, 1, 1))]
     >>> df.select(trunc(df.d, 'mon').alias('month')).collect()
@@ -5159,15 +5139,15 @@ def trunc(date: "AbstractColOrName", format: str) -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def date_trunc(format: str, timestamp: "AbstractColOrName") -> Func:
     """
     Returns timestamp truncated to the unit specified by the format.
 
-    .. versionadded:: 2.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5187,7 +5167,7 @@ def date_trunc(format: str, timestamp: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('1997-02-28 05:02:11',)], ['t'])
+    >>> df = OsosSession.createDataFrame([('1997-02-28 05:02:11',)], ['t'])
     >>> df.select(date_trunc('year', df.t).alias('year')).collect()
     [Row(year=datetime.datetime(1997, 1, 1, 0, 0))]
     >>> df.select(date_trunc('mon', df.t).alias('month')).collect()
@@ -5196,16 +5176,16 @@ def date_trunc(format: str, timestamp: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def next_day(date: "AbstractColOrName", dayOfWeek: str) -> Func:
     """
     Returns the first date which is later than the value of the date AbstractCol
     based on second `week day` argument.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5222,22 +5202,22 @@ def next_day(date: "AbstractColOrName", dayOfWeek: str) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('2015-07-27',)], ['d'])
+    >>> df = OsosSession.createDataFrame([('2015-07-27',)], ['d'])
     >>> df.select(next_day(df.d, 'Sun').alias('date')).collect()
     [Row(date=datetime.date(2015, 8, 2))]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def last_day(date: "AbstractColOrName") -> Func:
     """
     Returns the last day of the month which the given date belongs to.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5251,14 +5231,14 @@ def last_day(date: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('1997-02-10',)], ['d'])
+    >>> df = OsosSession.createDataFrame([('1997-02-10',)], ['d'])
     >>> df.select(last_day(df.d).alias('date')).collect()
     [Row(date=datetime.date(1997, 2, 28))]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def from_unixtime(
     timestamp: "AbstractColOrName", format: str = "yyyy-MM-dd HH:mm:ss"
 ) -> Func:
@@ -5267,10 +5247,10 @@ def from_unixtime(
     representing the timestamp of that moment in the current system time zone in the given
     format.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5287,7 +5267,7 @@ def from_unixtime(
     Examples
     --------
     >>> spark.conf.set("spark.sql.session.timeZone", "America/Los_Angeles")
-    >>> time_df = spark.createDataFrame([(1428476400,)], ['unix_time'])
+    >>> time_df = OsosSession.createDataFrame([(1428476400,)], ['unix_time'])
     >>> time_df.select(from_unixtime('unix_time').alias('ts')).collect()
     [Row(ts='2015-04-08 00:00:00')]
     >>> spark.conf.unset("spark.sql.session.timeZone")
@@ -5305,7 +5285,7 @@ def unix_timestamp() -> Func:
     ...
 
 
-@try_remote_functions
+
 def unix_timestamp(
     timestamp: Optional["AbstractColOrName"] = None, format: str = "yyyy-MM-dd HH:mm:ss"
 ) -> Func:
@@ -5316,10 +5296,10 @@ def unix_timestamp(
 
     if `timestamp` is None, then it returns current timestamp.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5336,7 +5316,7 @@ def unix_timestamp(
     Examples
     --------
     >>> spark.conf.set("spark.sql.session.timeZone", "America/Los_Angeles")
-    >>> time_df = spark.createDataFrame([('2015-04-08',)], ['dt'])
+    >>> time_df = OsosSession.createDataFrame([('2015-04-08',)], ['dt'])
     >>> time_df.select(unix_timestamp('dt', 'yyyy-MM-dd').alias('unix_time')).collect()
     [Row(unix_time=1428476400)]
     >>> spark.conf.unset("spark.sql.session.timeZone")
@@ -5346,7 +5326,7 @@ def unix_timestamp(
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") -> Func:
     """
     This is a common function for databases supporting TIMESTAMP WITHOUT TIMEZONE. This function
@@ -5362,10 +5342,10 @@ def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") 
     according to the timezone in the string, and finally display the result by converting the
     timestamp to string according to the session local timezone.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5379,7 +5359,7 @@ def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") 
         supported as aliases of '+00:00'. Other short names are not recommended to use
         because they can be ambiguous.
 
-        .. versionchanged:: 2.4
+        
            `tz` can take a :class:`~osos.Col` containing timezone ID strings.
 
     Returns
@@ -5389,7 +5369,7 @@ def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") 
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('1997-02-28 10:30:00', 'JST')], ['ts', 'tz'])
+    >>> df = OsosSession.createDataFrame([('1997-02-28 10:30:00', 'JST')], ['ts', 'tz'])
     >>> df.select(from_utc_timestamp(df.ts, "PST").alias('local_time')).collect()
     [Row(local_time=datetime.datetime(1997, 2, 28, 2, 30))]
     >>> df.select(from_utc_timestamp(df.ts, df.tz).alias('local_time')).collect()
@@ -5400,7 +5380,7 @@ def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") 
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") -> Func:
     """
     This is a common function for databases supporting TIMESTAMP WITHOUT TIMEZONE. This function
@@ -5416,10 +5396,10 @@ def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") ->
     according to the timezone in the string, and finally display the result by converting the
     timestamp to string according to the session local timezone.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5433,7 +5413,7 @@ def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") ->
         supported as aliases of '+00:00'. Other short names are not recommended to use
         because they can be ambiguous.
 
-        .. versionchanged:: 2.4.0
+        
            `tz` can take a :class:`~osos.Col` containing timezone ID strings.
 
     Returns
@@ -5443,7 +5423,7 @@ def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") ->
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('1997-02-28 10:30:00', 'JST')], ['ts', 'tz'])
+    >>> df = OsosSession.createDataFrame([('1997-02-28 10:30:00', 'JST')], ['ts', 'tz'])
     >>> df.select(to_utc_timestamp(df.ts, "PST").alias('utc_time')).collect()
     [Row(utc_time=datetime.datetime(1997, 2, 28, 18, 30))]
     >>> df.select(to_utc_timestamp(df.ts, df.tz).alias('utc_time')).collect()
@@ -5454,16 +5434,16 @@ def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") ->
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def timestamp_seconds(col: "AbstractColOrName") -> Func:
     """
     Converts the number of seconds from the Unix epoch (1970-01-01T00:00:00Z)
     to a timestamp.
 
-    .. versionadded:: 3.1.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5479,7 +5459,7 @@ def timestamp_seconds(col: "AbstractColOrName") -> Func:
     --------
     >>> from pyspark.sql.functions import timestamp_seconds
     >>> spark.conf.set("spark.sql.session.timeZone", "UTC")
-    >>> time_df = spark.createDataFrame([(1230219000,)], ['unix_time'])
+    >>> time_df = OsosSession.createDataFrame([(1230219000,)], ['unix_time'])
     >>> time_df.select(timestamp_seconds(time_df.unix_time).alias('ts')).show()
     +-------------------+
     |                 ts|
@@ -5495,7 +5475,7 @@ def timestamp_seconds(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def window(
     timeAbstractCol: "AbstractColOrName",
     windowDuration: str,
@@ -5520,10 +5500,10 @@ def window(
     The output AbstractCol will be a struct called 'window' by default with the nested AbstractCols 'start'
     and 'end', where 'start' and 'end' will be of :class:`pyspark.sql.types.TimestampType`.
 
-    .. versionadded:: 2.0.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5556,7 +5536,7 @@ def window(
     Examples
     --------
     >>> import datetime
-    >>> df = spark.createDataFrame(
+    >>> df = OsosSession.createDataFrame(
     ...     [(datetime.datetime(2016, 3, 11, 9, 0, 7), 1)],
     ... ).toDF("date", "val")
     >>> w = df.groupBy(window("date", "5 seconds")).agg(sum("val").alias("sum"))
@@ -5591,7 +5571,7 @@ def window(
         raise NotImplementedError
 
 
-@try_remote_functions
+
 def window_time(
     windowAbstractCol: "AbstractColOrName",
 ) -> Func:
@@ -5602,10 +5582,10 @@ def window_time(
     ``window.end - lit(1).alias("microsecond")`` (as microsecond is the minimal supported event
     time precision). The window AbstractCol must be one produced by a window aggregating operator.
 
-    .. versionadded:: 3.4.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5620,7 +5600,7 @@ def window_time(
     Examples
     --------
     >>> import datetime
-    >>> df = spark.createDataFrame(
+    >>> df = OsosSession.createDataFrame(
     ...     [(datetime.datetime(2016, 3, 11, 9, 0, 7), 1)],
     ... ).toDF("date", "val")
 
@@ -5641,7 +5621,7 @@ def window_time(
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def session_window(
     timeAbstractCol: "AbstractColOrName", gapDuration: Union[AbstractCol, str]
 ) -> Func:
@@ -5662,10 +5642,10 @@ def session_window(
     The output AbstractCol will be a struct called 'session_window' by default with the nested AbstractCols
     'start' and 'end', where 'start' and 'end' will be of :class:`pyspark.sql.types.TimestampType`.
 
-    .. versionadded:: 3.2.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5684,7 +5664,7 @@ def session_window(
 
     Examples
     --------
-    >>> df = spark.createDataFrame([("2016-03-11 09:00:07", 1)]).toDF("date", "val")
+    >>> df = OsosSession.createDataFrame([("2016-03-11 09:00:07", 1)]).toDF("date", "val")
     >>> w = df.groupBy(session_window("date", "5 seconds")).agg(sum("val").alias("sum"))
     >>> w.select(w.session_window.start.cast("string").alias("start"),
     ...          w.session_window.end.cast("string").alias("end"), "sum").collect()
@@ -5716,14 +5696,14 @@ def session_window(
 # ---------------------------- misc functions ----------------------------------
 
 
-@try_remote_functions
+
 def crc32(col: "AbstractColOrName") -> Func:
     """
     Calculates the cyclic redundancy check value  (CRC32) of a binary AbstractCol and
     returns the value as a bigint.
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5735,24 +5715,24 @@ def crc32(col: "AbstractColOrName") -> Func:
     :class:`~osos.Col`
         the AbstractCol for computed results.
 
-    .. versionadded:: 1.5.0
+    
 
     Examples
     --------
-    >>> spark.createDataFrame([('ABC',)], ['a']).select(crc32('a').alias('crc32')).collect()
+    >>> OsosSession.createDataFrame([('ABC',)], ['a']).select(crc32('a').alias('crc32')).collect()
     [Row(crc32=2743272264)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def md5(col: "AbstractColOrName") -> Func:
     """Calculates the MD5 digest and returns the value as a 32 character hex string.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5766,20 +5746,20 @@ def md5(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> spark.createDataFrame([('ABC',)], ['a']).select(md5('a').alias('hash')).collect()
+    >>> OsosSession.createDataFrame([('ABC',)], ['a']).select(md5('a').alias('hash')).collect()
     [Row(hash='902fbdd2b1df0c4f70b4a5d23525e932')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def sha1(col: "AbstractColOrName") -> Func:
     """Returns the hex string result of SHA-1.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5793,22 +5773,22 @@ def sha1(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> spark.createDataFrame([('ABC',)], ['a']).select(sha1('a').alias('hash')).collect()
+    >>> OsosSession.createDataFrame([('ABC',)], ['a']).select(sha1('a').alias('hash')).collect()
     [Row(hash='3c01bdbb26f358bab27f267924aa2c9a03fcfdb8')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def sha2(col: "AbstractColOrName", numBits: int) -> Func:
     """Returns the hex string result of SHA-2 family of hash functions (SHA-224, SHA-256, SHA-384,
     and SHA-512). The numBits indicates the desired bit length of the result, which must have a
     value of 224, 256, 384, 512, or 0 (which is equivalent to 256).
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5825,7 +5805,7 @@ def sha2(col: "AbstractColOrName", numBits: int) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([["Alice"], ["Bob"]], ["name"])
+    >>> df = OsosSession.createDataFrame([["Alice"], ["Bob"]], ["name"])
     >>> df.withAbstractCol("sha2", sha2(df.name, 256)).show(truncate=False)
     +-----+----------------------------------------------------------------+
     |name |sha2                                                            |
@@ -5837,14 +5817,14 @@ def sha2(col: "AbstractColOrName", numBits: int) -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def hash(*cols: "AbstractColOrName") -> Func:
     """Calculates the hash code of given AbstractCols, and returns the result as an int AbstractCol.
 
-    .. versionadded:: 2.0.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5858,7 +5838,7 @@ def hash(*cols: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('ABC', 'DEF')], ['c1', 'c2'])
+    >>> df = OsosSession.createDataFrame([('ABC', 'DEF')], ['c1', 'c2'])
 
     Hash for one AbstractCol
 
@@ -5881,15 +5861,15 @@ def hash(*cols: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def xxhash64(*cols: "AbstractColOrName") -> Func:
     """Calculates the hash code of given AbstractCols using the 64-bit variant of the xxHash algorithm,
     and returns the result as a long AbstractCol. The hash computation uses an initial seed of 42.
 
-    .. versionadded:: 3.0.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5903,7 +5883,7 @@ def xxhash64(*cols: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('ABC', 'DEF')], ['c1', 'c2'])
+    >>> df = OsosSession.createDataFrame([('ABC', 'DEF')], ['c1', 'c2'])
 
     Hash for one AbstractCol
 
@@ -5926,7 +5906,7 @@ def xxhash64(*cols: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def assert_true(
     col: "AbstractColOrName", errMsg: Optional[Union[AbstractCol, str]] = None
 ) -> Func:
@@ -5934,10 +5914,10 @@ def assert_true(
     Returns `null` if the input AbstractCol is `true`; throws an exception
     with the provided error message otherwise.
 
-    .. versionadded:: 3.1.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -5953,7 +5933,7 @@ def assert_true(
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(0,1)], ['a', 'b'])
+    >>> df = OsosSession.createDataFrame([(0,1)], ['a', 'b'])
     >>> df.select(assert_true(df.a < df.b).alias('r')).collect()
     [Row(r=None)]
     >>> df.select(assert_true(df.a < df.b, df.a).alias('r')).collect()
@@ -5984,15 +5964,15 @@ def assert_true(
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def raise_error(errMsg: Union[AbstractCol, str]) -> Func:
     """
     Throws an exception with the provided error message.
 
-    .. versionadded:: 3.1.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6028,15 +6008,15 @@ def raise_error(errMsg: Union[AbstractCol, str]) -> Func:
 # ---------------------- String/Binary functions ------------------------------
 
 
-@try_remote_functions
+
 def upper(col: "AbstractColOrName") -> Func:
     """
     Converts a string expression to upper case.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6050,7 +6030,7 @@ def upper(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame(["Spark", "PySpark", "Pandas API"], "STRING")
+    >>> df = OsosSession.createDataFrame(["Spark", "PySpark", "Pandas API"], "STRING")
     >>> df.select(upper("value")).show()
     +------------+
     |upper(value)|
@@ -6066,15 +6046,15 @@ def upper(col: "AbstractColOrName") -> Func:
     return Func(upper_func, col)
 
 
-@try_remote_functions
+
 def lower(col: "AbstractColOrName") -> Func:
     """
     Converts a string expression to lower case.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6088,7 +6068,7 @@ def lower(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame(["Spark", "PySpark", "Pandas API"], "STRING")
+    >>> df = OsosSession.createDataFrame(["Spark", "PySpark", "Pandas API"], "STRING")
     >>> df.select(lower("value")).show()
     +------------+
     |lower(value)|
@@ -6104,15 +6084,15 @@ def lower(col: "AbstractColOrName") -> Func:
     return Func(lower_func, col)
 
 
-@try_remote_functions
+
 def ascii(col: "AbstractColOrName") -> Func:
     """
     Computes the numeric value of the first character of the string AbstractCol.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6126,7 +6106,7 @@ def ascii(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame(["Spark", "PySpark", "Pandas API"], "STRING")
+    >>> df = OsosSession.createDataFrame(["Spark", "PySpark", "Pandas API"], "STRING")
     >>> df.select(ascii("value")).show()
     +------------+
     |ascii(value)|
@@ -6139,15 +6119,15 @@ def ascii(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def base64(col: "AbstractColOrName") -> Func:
     """
     Computes the BASE64 encoding of a binary AbstractCol and returns it as a string AbstractCol.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6161,7 +6141,7 @@ def base64(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame(["Spark", "PySpark", "Pandas API"], "STRING")
+    >>> df = OsosSession.createDataFrame(["Spark", "PySpark", "Pandas API"], "STRING")
     >>> df.select(base64("value")).show()
     +----------------+
     |   base64(value)|
@@ -6174,15 +6154,15 @@ def base64(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def unbase64(col: "AbstractColOrName") -> Func:
     """
     Decodes a BASE64 encoded string AbstractCol and returns it as a binary AbstractCol.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6196,7 +6176,7 @@ def unbase64(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame(["U3Bhcms=",
+    >>> df = OsosSession.createDataFrame(["U3Bhcms=",
     ...                             "UHlTcGFyaw==",
     ...                             "UGFuZGFzIEFQSQ=="], "STRING")
     >>> df.select(unbase64("value")).show()
@@ -6211,15 +6191,15 @@ def unbase64(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def ltrim(col: "AbstractColOrName") -> Func:
     """
     Trim the spaces from left end for the specified string value.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6233,7 +6213,7 @@ def ltrim(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame(["   Spark", "Spark  ", " Spark"], "STRING")
+    >>> df = OsosSession.createDataFrame(["   Spark", "Spark  ", " Spark"], "STRING")
     >>> df.select(ltrim("value").alias("r")).withAbstractCol("length", length("r")).show()
     +-------+------+
     |      r|length|
@@ -6246,15 +6226,15 @@ def ltrim(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def rtrim(col: "AbstractColOrName") -> Func:
     """
     Trim the spaces from right end for the specified string value.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6268,7 +6248,7 @@ def rtrim(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame(["   Spark", "Spark  ", " Spark"], "STRING")
+    >>> df = OsosSession.createDataFrame(["   Spark", "Spark  ", " Spark"], "STRING")
     >>> df.select(rtrim("value").alias("r")).withAbstractCol("length", length("r")).show()
     +--------+------+
     |       r|length|
@@ -6281,15 +6261,15 @@ def rtrim(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def trim(col: "AbstractColOrName") -> Func:
     """
     Trim the spaces from both ends for the specified string AbstractCol.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6303,7 +6283,7 @@ def trim(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame(["   Spark", "Spark  ", " Spark"], "STRING")
+    >>> df = OsosSession.createDataFrame(["   Spark", "Spark  ", " Spark"], "STRING")
     >>> df.select(trim("value").alias("r")).withAbstractCol("length", length("r")).show()
     +-----+------+
     |    r|length|
@@ -6316,16 +6296,16 @@ def trim(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def concat_ws(sep: str, *cols: "AbstractColOrName") -> Func:
     """
     Concatenates multiple input string AbstractCols together into a single string AbstractCol,
     using the given separator.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6341,23 +6321,23 @@ def concat_ws(sep: str, *cols: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('abcd','123')], ['s', 'd'])
+    >>> df = OsosSession.createDataFrame([('abcd','123')], ['s', 'd'])
     >>> df.select(concat_ws('-', df.s, df.d).alias('s')).collect()
     [Row(s='abcd-123')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def decode(col: "AbstractColOrName", charset: str) -> Func:
     """
     Computes the first argument into a string from a binary using the provided character set
     (one of 'US-ASCII', 'ISO-8859-1', 'UTF-8', 'UTF-16BE', 'UTF-16LE', 'UTF-16').
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6373,7 +6353,7 @@ def decode(col: "AbstractColOrName", charset: str) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('abcd',)], ['a'])
+    >>> df = OsosSession.createDataFrame([('abcd',)], ['a'])
     >>> df.select(decode("a", "UTF-8")).show()
     +----------------+
     |decode(a, UTF-8)|
@@ -6384,16 +6364,16 @@ def decode(col: "AbstractColOrName", charset: str) -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def encode(col: "AbstractColOrName", charset: str) -> Func:
     """
     Computes the first argument into a binary from a string using the provided character set
     (one of 'US-ASCII', 'ISO-8859-1', 'UTF-8', 'UTF-16BE', 'UTF-16LE', 'UTF-16').
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6409,7 +6389,7 @@ def encode(col: "AbstractColOrName", charset: str) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('abcd',)], ['c'])
+    >>> df = OsosSession.createDataFrame([('abcd',)], ['c'])
     >>> df.select(encode("c", "UTF-8")).show()
     +----------------+
     |encode(c, UTF-8)|
@@ -6420,16 +6400,16 @@ def encode(col: "AbstractColOrName", charset: str) -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def format_number(col: "AbstractColOrName", d: int) -> Func:
     """
     Formats the number X to a format like '#,--#,--#.--', rounded to d decimal places
     with HALF_EVEN round mode, and returns the result as a string.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6443,21 +6423,21 @@ def format_number(col: "AbstractColOrName", d: int) -> Func:
     :class:`~osos.Col`
         the AbstractCol of formatted results.
 
-    >>> spark.createDataFrame([(5,)], ['a']).select(format_number('a', 4).alias('v')).collect()
+    >>> OsosSession.createDataFrame([(5,)], ['a']).select(format_number('a', 4).alias('v')).collect()
     [Row(v='5.0000')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def format_string(format: str, *cols: "AbstractColOrName") -> Func:
     """
     Formats the arguments in printf-style and returns the result as a string AbstractCol.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6473,23 +6453,23 @@ def format_string(format: str, *cols: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([(5, "hello")], ['a', 'b'])
+    >>> df = OsosSession.createDataFrame([(5, "hello")], ['a', 'b'])
     >>> df.select(format_string('%d %s', df.a, df.b).alias('v')).collect()
     [Row(v='5 hello')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def instr(str: "AbstractColOrName", substr: str) -> Func:
     """
     Locate the position of the first occurrence of substr AbstractCol in the given string.
     Returns null if either of the arguments are null.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Notes
     -----
@@ -6510,14 +6490,14 @@ def instr(str: "AbstractColOrName", substr: str) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('abcd',)], ['s',])
+    >>> df = OsosSession.createDataFrame([('abcd',)], ['s',])
     >>> df.select(instr(df.s, 'b').alias('s')).collect()
     [Row(s=2)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def overlay(
     src: "AbstractColOrName",
     replace: "AbstractColOrName",
@@ -6528,10 +6508,10 @@ def overlay(
     Overlay the specified portion of `src` with `replace`,
     starting from byte position `pos` of `src` and proceeding for `len` bytes.
 
-    .. versionadded:: 3.0.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6552,7 +6532,7 @@ def overlay(
 
     Examples
     --------
-    >>> df = spark.createDataFrame([("SPARK_SQL", "CORE")], ("x", "y"))
+    >>> df = OsosSession.createDataFrame([("SPARK_SQL", "CORE")], ("x", "y"))
     >>> df.select(overlay("x", "y", 7).alias("overlayed")).collect()
     [Row(overlayed='SPARK_CORE')]
     >>> df.select(overlay("x", "y", 7, 0).alias("overlayed")).collect()
@@ -6577,7 +6557,7 @@ def overlay(
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def sentences(
     string: "AbstractColOrName",
     language: Optional["AbstractColOrName"] = None,
@@ -6587,10 +6567,10 @@ def sentences(
     Splits a string into arrays of sentences, where each sentence is an array of words.
     The 'language' and 'country' arguments are optional, and if omitted, the default locale is used.
 
-    .. versionadded:: 3.2.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6608,14 +6588,14 @@ def sentences(
 
     Examples
     --------
-    >>> df = spark.createDataFrame([["This is an example sentence."]], ["string"])
+    >>> df = OsosSession.createDataFrame([["This is an example sentence."]], ["string"])
     >>> df.select(sentences(df.string, lit("en"), lit("US"))).show(truncate=False)
     +-----------------------------------+
     |sentences(string, en, US)          |
     +-----------------------------------+
     |[[This, is, an, example, sentence]]|
     +-----------------------------------+
-    >>> df = spark.createDataFrame([["Hello world. How are you?"]], ["s"])
+    >>> df = OsosSession.createDataFrame([["Hello world. How are you?"]], ["s"])
     >>> df.select(sentences("s")).show(truncate=False)
     +---------------------------------+
     |sentences(s, , )                 |
@@ -6631,17 +6611,17 @@ def sentences(
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def substring(str: "AbstractColOrName", pos: int, len: int) -> Func:
     """
     Substring starts at `pos` and is of length `len` when str is String type or
     returns the slice of byte array that starts at `pos` in byte and is of length `len`
     when str is Binary type.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Notes
     -----
@@ -6663,14 +6643,14 @@ def substring(str: "AbstractColOrName", pos: int, len: int) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('abcd',)], ['s',])
+    >>> df = OsosSession.createDataFrame([('abcd',)], ['s',])
     >>> df.select(substring(df.s, 1, 2).alias('s')).collect()
     [Row(s='ab')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def substring_index(str: "AbstractColOrName", delim: str, count: int) -> Func:
     """
     Returns the substring from string str before count occurrences of the delimiter delim.
@@ -6678,10 +6658,10 @@ def substring_index(str: "AbstractColOrName", delim: str, count: int) -> Func:
     returned. If count is negative, every to the right of the final delimiter (counting from the
     right) is returned. substring_index performs a case-sensitive match when searching for delim.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6699,7 +6679,7 @@ def substring_index(str: "AbstractColOrName", delim: str, count: int) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('a.b.c.d',)], ['s'])
+    >>> df = OsosSession.createDataFrame([('a.b.c.d',)], ['s'])
     >>> df.select(substring_index(df.s, '.', 2).alias('s')).collect()
     [Row(s='a.b')]
     >>> df.select(substring_index(df.s, '.', -3).alias('s')).collect()
@@ -6708,14 +6688,14 @@ def substring_index(str: "AbstractColOrName", delim: str, count: int) -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def levenshtein(left: "AbstractColOrName", right: "AbstractColOrName") -> Func:
     """Computes the Levenshtein distance of the two given strings.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6731,22 +6711,22 @@ def levenshtein(left: "AbstractColOrName", right: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df0 = spark.createDataFrame([('kitten', 'sitting',)], ['l', 'r'])
+    >>> df0 = OsosSession.createDataFrame([('kitten', 'sitting',)], ['l', 'r'])
     >>> df0.select(levenshtein('l', 'r').alias('d')).collect()
     [Row(d=3)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def locate(substr: str, str: "AbstractColOrName", pos: int = 1) -> Func:
     """
     Locate the position of the first occurrence of substr in a string AbstractCol, after position pos.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6769,22 +6749,22 @@ def locate(substr: str, str: "AbstractColOrName", pos: int = 1) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('abcd',)], ['s',])
+    >>> df = OsosSession.createDataFrame([('abcd',)], ['s',])
     >>> df.select(locate('b', df.s, 1).alias('s')).collect()
     [Row(s=2)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def lpad(col: "AbstractColOrName", len: int, pad: str) -> Func:
     """
     Left-pad the string AbstractCol to width `len` with `pad`.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6802,22 +6782,22 @@ def lpad(col: "AbstractColOrName", len: int, pad: str) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('abcd',)], ['s',])
+    >>> df = OsosSession.createDataFrame([('abcd',)], ['s',])
     >>> df.select(lpad(df.s, 6, '#').alias('s')).collect()
     [Row(s='##abcd')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def rpad(col: "AbstractColOrName", len: int, pad: str) -> Func:
     """
     Right-pad the string AbstractCol to width `len` with `pad`.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6835,22 +6815,22 @@ def rpad(col: "AbstractColOrName", len: int, pad: str) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('abcd',)], ['s',])
+    >>> df = OsosSession.createDataFrame([('abcd',)], ['s',])
     >>> df.select(rpad(df.s, 6, '#').alias('s')).collect()
     [Row(s='abcd##')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def repeat(col: "AbstractColOrName", n: int) -> Func:
     """
     Repeats a string AbstractCol n times, and returns it as a new string AbstractCol.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6866,22 +6846,22 @@ def repeat(col: "AbstractColOrName", n: int) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('ab',)], ['s',])
+    >>> df = OsosSession.createDataFrame([('ab',)], ['s',])
     >>> df.select(repeat(df.s, 3).alias('s')).collect()
     [Row(s='ababab')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def split(str: "AbstractColOrName", pattern: str, limit: int = -1) -> Func:
     """
     Splits str around matches of the given pattern.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6899,7 +6879,7 @@ def split(str: "AbstractColOrName", pattern: str, limit: int = -1) -> Func:
         * ``limit <= 0``: `pattern` will be applied as many times as possible, and the resulting
                           array can be of any size.
 
-        .. versionchanged:: 3.0
+        
            `split` now takes an optional `limit` field. If not provided, default limit value is -1.
 
     Returns
@@ -6909,7 +6889,7 @@ def split(str: "AbstractColOrName", pattern: str, limit: int = -1) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('oneAtwoBthreeC',)], ['s',])
+    >>> df = OsosSession.createDataFrame([('oneAtwoBthreeC',)], ['s',])
     >>> df.select(split(df.s, '[ABC]', 2).alias('s')).collect()
     [Row(s=['one', 'twoBthreeC'])]
     >>> df.select(split(df.s, '[ABC]', -1).alias('s')).collect()
@@ -6918,15 +6898,15 @@ def split(str: "AbstractColOrName", pattern: str, limit: int = -1) -> Func:
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def regexp_extract(str: "AbstractColOrName", pattern: str, idx: int) -> Func:
     r"""Extract a specific group matched by a Java regex, from the specified string AbstractCol.
     If the regex did not match, or the specified group did not match, an empty string is returned.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6944,20 +6924,20 @@ def regexp_extract(str: "AbstractColOrName", pattern: str, idx: int) -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([('100-200',)], ['str'])
+    >>> df = OsosSession.createDataFrame([('100-200',)], ['str'])
     >>> df.select(regexp_extract('str', r'(\d+)-(\d+)', 1).alias('d')).collect()
     [Row(d='100')]
-    >>> df = spark.createDataFrame([('foo',)], ['str'])
+    >>> df = OsosSession.createDataFrame([('foo',)], ['str'])
     >>> df.select(regexp_extract('str', r'(\d+)', 1).alias('d')).collect()
     [Row(d='')]
-    >>> df = spark.createDataFrame([('aaaac',)], ['str'])
+    >>> df = OsosSession.createDataFrame([('aaaac',)], ['str'])
     >>> df.select(regexp_extract('str', '(a+)(b)?(c)', 2).alias('d')).collect()
     [Row(d='')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def regexp_replace(
     string: "AbstractColOrName",
     pattern: Union[str, AbstractCol],
@@ -6965,10 +6945,10 @@ def regexp_replace(
 ) -> Func:
     r"""Replace all substrings of the specified string value that match regexp with replacement.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -6986,7 +6966,7 @@ def regexp_replace(
 
     Examples
     --------
-    >>> df = spark.createDataFrame([("100-200", r"(\d+)", "--")], ["str", "pattern", "replacement"])
+    >>> df = OsosSession.createDataFrame([("100-200", r"(\d+)", "--")], ["str", "pattern", "replacement"])
     >>> df.select(regexp_replace('str', r'(\d+)', '--').alias('d')).collect()
     [Row(d='-----')]
     >>> df.select(regexp_replace("str", col("pattern"), col("replacement")).alias('d')).collect()
@@ -7003,14 +6983,14 @@ def regexp_replace(
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def initcap(col: "AbstractColOrName") -> Func:
     """Translate the first letter of each word to upper case in the sentence.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -7024,21 +7004,21 @@ def initcap(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> spark.createDataFrame([('ab cd',)], ['a']).select(initcap("a").alias('v')).collect()
+    >>> OsosSession.createDataFrame([('ab cd',)], ['a']).select(initcap("a").alias('v')).collect()
     [Row(v='Ab Cd')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def soundex(col: "AbstractColOrName") -> Func:
     """
     Returns the SoundEx encoding for a string
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -7052,21 +7032,21 @@ def soundex(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([("Peters",),("Uhrbach",)], ['name'])
+    >>> df = OsosSession.createDataFrame([("Peters",),("Uhrbach",)], ['name'])
     >>> df.select(soundex(df.name).alias("soundex")).collect()
     [Row(soundex='P362'), Row(soundex='U612')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def bin(col: "AbstractColOrName") -> Func:
     """Returns the string representation of the binary value of the given AbstractCol.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -7080,23 +7060,23 @@ def bin(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> df = spark.createDataFrame([2,5], "INT")
+    >>> df = OsosSession.createDataFrame([2,5], "INT")
     >>> df.select(bin(df.value).alias('c')).collect()
     [Row(c='10'), Row(c='101')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def hex(col: "AbstractColOrName") -> Func:
     """Computes hex value of the given AbstractCol, which could be :class:`pyspark.sql.types.StringType`,
     :class:`pyspark.sql.types.BinaryType`, :class:`pyspark.sql.types.IntegerType` or
     :class:`pyspark.sql.types.LongType`.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -7110,21 +7090,21 @@ def hex(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> spark.createDataFrame([('ABC', 3)], ['a', 'b']).select(hex('a'), hex('b')).collect()
+    >>> OsosSession.createDataFrame([('ABC', 3)], ['a', 'b']).select(hex('a'), hex('b')).collect()
     [Row(hex(a)='414243', hex(b)='3')]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def unhex(col: "AbstractColOrName") -> Func:
     """Inverse of hex. Interprets each pair of characters as a hexadecimal number
     and converts to the byte representation of number.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -7138,22 +7118,22 @@ def unhex(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> spark.createDataFrame([('414243',)], ['a']).select(unhex('a')).collect()
+    >>> OsosSession.createDataFrame([('414243',)], ['a']).select(unhex('a')).collect()
     [Row(unhex(a)=bytearray(b'ABC'))]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def length(col: "AbstractColOrName") -> Func:
     """Computes the character length of string data or number of bytes of binary data.
     The length of character data includes the trailing spaces. The length of binary data
     includes binary zeros.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -7167,21 +7147,21 @@ def length(col: "AbstractColOrName") -> Func:
 
     Examples
     --------
-    >>> spark.createDataFrame([('ABC ',)], ['a']).select(length('a').alias('length')).collect()
+    >>> OsosSession.createDataFrame([('ABC ',)], ['a']).select(length('a').alias('length')).collect()
     [Row(length=4)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def octet_length(col: "AbstractColOrName") -> Func:
     """
     Calculates the byte length for the specified string AbstractCol.
 
-    .. versionadded:: 3.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -7196,22 +7176,22 @@ def octet_length(col: "AbstractColOrName") -> Func:
     Examples
     --------
     >>> from pyspark.sql.functions import octet_length
-    >>> spark.createDataFrame([('cat',), ( '\U0001F408',)], ['cat']) \\
+    >>> OsosSession.createDataFrame([('cat',), ( '\U0001F408',)], ['cat']) \\
     ...      .select(octet_length('cat')).collect()
         [Row(octet_length(cat)=3), Row(octet_length(cat)=4)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def bit_length(col: "AbstractColOrName") -> Func:
     """
     Calculates the bit length for the specified string AbstractCol.
 
-    .. versionadded:: 3.3.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -7226,24 +7206,24 @@ def bit_length(col: "AbstractColOrName") -> Func:
     Examples
     --------
     >>> from pyspark.sql.functions import bit_length
-    >>> spark.createDataFrame([('cat',), ( '\U0001F408',)], ['cat']) \\
+    >>> OsosSession.createDataFrame([('cat',), ( '\U0001F408',)], ['cat']) \\
     ...      .select(bit_length('cat')).collect()
         [Row(bit_length(cat)=24), Row(bit_length(cat)=32)]
     """
     raise NotImplementedError
 
 
-@try_remote_functions
+
 def translate(srcCol: "AbstractColOrName", matching: str, replace: str) -> Func:
     """A function translate any character in the `srcCol` by a character in `matching`.
     The characters in `replace` is corresponding to the characters in `matching`.
     Translation will happen whenever any character in the string is matching with the character
     in the `matching`.
 
-    .. versionadded:: 1.5.0
+    
 
-    .. versionchanged:: 3.4.0
-        Supports Spark Connect.
+    
+        
 
     Parameters
     ----------
@@ -7262,7 +7242,7 @@ def translate(srcCol: "AbstractColOrName", matching: str, replace: str) -> Func:
 
     Examples
     --------
-    >>> spark.createDataFrame([('translate',)], ['a']).select(translate('a', "rnlt", "123") \\
+    >>> OsosSession.createDataFrame([('translate',)], ['a']).select(translate('a', "rnlt", "123") \\
     ...     .alias('r')).collect()
     [Row(r='1a2s3ae')]
     """
