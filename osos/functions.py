@@ -2303,10 +2303,10 @@ def atan2(
     Row(ATAN2(1, 2)=0.46364...)
     """
     if isinstance(col1, str):
-        col = AbstractCol(col)
+        col1 = AbstractCol(col1)
 
-    if isinstance(col1, str):
-        col = AbstractCol(col)
+    if isinstance(col2, str):
+        col2 = AbstractCol(col2)
 
     return Func(atan2_func, col1, col2)
 
@@ -2381,10 +2381,10 @@ def pow(
     Row(POWER(3, 2)=9.0)
     """
     if isinstance(col1, str):
-        col = AbstractCol(col)
+        col1 = AbstractCol(col1)
 
     if isinstance(col1, str):
-        col = AbstractCol(col)
+        col2 = AbstractCol(col2)
 
     return Func(pow_func, col1, col2)
 
@@ -2439,10 +2439,10 @@ def pmod(
     """
     col1, col2 = dividend, divisor
     if isinstance(col1, str):
-        col = AbstractCol(col)
+        col1 = AbstractCol(col1)
 
     if isinstance(col1, str):
-        col = AbstractCol(col)
+        col2 = AbstractCol(col2)
 
     return Func(pmod_func, col1, col2)
 
@@ -2452,10 +2452,6 @@ def row_number() -> Func:
     """
     Window function: returns a sequential number starting at 1 within a window partition.
 
-    
-
-    
-        
 
     Returns
     -------
@@ -2798,9 +2794,9 @@ def corr(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     [Row(c=1.0)]
     """
     if isinstance(col1, str):
-        col = AbstractCol(col)
+        col1 = AbstractCol(col1)
     if isinstance(col2, str):
-        col = AbstractCol(col)
+        col2 = AbstractCol(col2)
     return Func(corr_func, col1, col2)
 
 
@@ -2831,9 +2827,9 @@ def covar_pop(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     [Row(c=0.0)]
     """
     if isinstance(col1, str):
-        col = AbstractCol(col)
+        col1 = AbstractCol(col1)
     if isinstance(col2, str):
-        col = AbstractCol(col)
+        col2 = AbstractCol(col2)
     return Func(covar_pop_func, col1, col2)
 
 
@@ -2868,9 +2864,9 @@ def covar_samp(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     [Row(c=0.0)]
     """
     if isinstance(col1, str):
-        col = AbstractCol(col)
+        col1 = AbstractCol(col1)
     if isinstance(col2, str):
-        col = AbstractCol(col)
+        col2 = AbstractCol(col2)
     return Func(covar_samp_func, col1, col2)
 
 
