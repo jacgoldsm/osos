@@ -1097,27 +1097,6 @@ def raise_error_func(errMsg: Union[pd.Series, str]):
 
 
 
-
-
-
-def upper_func(col: pd.Series):
-    
-    if isinstance(col, str):
-        col = pd.Series_func(col)
-
-    return False
-
-
-
-def lower_func(col: pd.Series):
-    
-    if isinstance(col, str):
-        col = pd.Series_func(col)
-
-    return False
-
-
-
 def ascii_func(col: pd.Series):
     
     raise NotImplementedError

@@ -2342,10 +2342,10 @@ def hypot(
     Row(HYPOT(1, 2)=2.23606...)
     """
     if isinstance(col1, str):
-        col = AbstractCol(col)
+        col1 = AbstractCol(col1)
 
-    if isinstance(col1, str):
-        col = AbstractCol(col)
+    if isinstance(col2, str):
+        col2 = AbstractCol(col2)
 
     return Func(hypot_func, col1, col2)
 
@@ -2937,6 +2937,7 @@ def count_distinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Func
     |                           4|
     +----------------------------+
     """
+    cols = list(cols)
     if isinstance(col, str):
         col = AbstractCol(col)
     for col_ in cols:
@@ -2995,7 +2996,10 @@ def first(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
     |  Bob|         5|
     +-----+----------+
     """
-    raise NotImplementedError
+    
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    return Func(first_func, col)
 
 
 
@@ -3031,7 +3035,9 @@ def grouping(col: "AbstractColOrName") -> Func:
     |  Bob|             0|       5|
     +-----+--------------+--------+
     """
-    raise NotImplementedError
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    return Func(grouping_func, col)
 
 
 
@@ -3042,10 +3048,6 @@ def grouping_id(*cols: "AbstractColOrName") -> Func:
        (grouping(c1) << (n-1)) + (grouping(c2) << (n-2)) + ... + grouping(cn)
 
     
-
-    
-        
-
     Notes
     -----
     The list of AbstractCols should match with grouping AbstractCols exactly, or empty (means all
@@ -3079,7 +3081,7 @@ def grouping_id(*cols: "AbstractColOrName") -> Func:
     |   b|   c|            0|      4|
     +----+----+-------------+-------+
     """
-    raise NotImplementedError
+    return Func(grouping_id(), AbstractIndex())
 
 
 
@@ -3089,8 +3091,6 @@ def input_file_name() -> Func:
 
     
 
-    
-        
 
     Returns
     -------
@@ -3112,9 +3112,6 @@ def input_file_name() -> Func:
 def isnan(col: "AbstractColOrName") -> Func:
     """An expression that returns true if the AbstractCol is NaN.
 
-    
-
-    
         
 
     Parameters
@@ -3138,17 +3135,15 @@ def isnan(col: "AbstractColOrName") -> Func:
     |NaN|2.0| true|false|
     +---+---+-----+-----+
     """
-    raise NotImplementedError
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    return Func(isnan_func, col)
 
 
 
 def isnull(col: "AbstractColOrName") -> Func:
     """An expression that returns true if the AbstractCol is null.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3171,7 +3166,9 @@ def isnull(col: "AbstractColOrName") -> Func:
     |null|   2| true|false|
     +----+----+-----+-----+
     """
-    raise NotImplementedError
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    return Func(isnull_func, col)
 
 
 
@@ -3225,35 +3222,19 @@ def last(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
     |  Bob|        5|
     +-----+---------+
     """
-    raise NotImplementedError
+    if isinstance(col, str):
+        col = AbstractCol(col)
+    return Func(last_func, col)
 
 
 
 def monotonically_increasing_id() -> Func:
     """A AbstractCol that generates monotonically increasing 64-bit integers.
 
-    The generated ID is guaranteed to be monotonically increasing and unique, but not consecutive.
-    The current implementation puts the partition ID in the upper 31 bits, and the record number
-    within each partition in the lower 33 bits. The assumption is that the data frame has
-    less than 1 billion partitions, and each partition has less than 8 billion records.
-
-    
-
-    
-        
-
-    Notes
-    -----
-    The function is non-deterministic because its result depends on partition IDs.
-
-    As an example, consider a :class:`DataFrame` with two partitions, each with 3 records.
-    This expression would return the following IDs:
-    0, 1, 2, 8589934592 (1L << 33), 8589934593, 8589934594.
 
     Returns
     -------
     :class:`~osos.Col`
-        last value of the group.
 
     Examples
     --------
@@ -3261,7 +3242,7 @@ def monotonically_increasing_id() -> Func:
     >>> df0.select(monotonically_increasing_id().alias('id')).collect()
     [Row(id=0), Row(id=1), Row(id=2), Row(id=8589934592), Row(id=8589934593), Row(id=8589934594)]
     """
-    raise NotImplementedError
+    return Func(monotonically_increasing_id_func, AbstractIndex())
 
 
 
@@ -3270,10 +3251,6 @@ def nanvl(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
 
     Both inputs should be floating point AbstractCols (:class:`DoubleType` or :class:`FloatType`).
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3293,7 +3270,11 @@ def nanvl(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     >>> df.select(nanvl("a", "b").alias("r1"), nanvl(df.a, df.b).alias("r2")).collect()
     [Row(r1=1.0, r2=1.0), Row(r1=2.0, r2=2.0)]
     """
-    raise NotImplementedError
+    if isinstance(col1, str):
+        col1 = AbstractCol(col1)
+    if isinstance(col2, str):
+        col2 = AbstractCol(col2)
+    return Func(nanvl_func, col1, col2)
 
 
 
@@ -3306,11 +3287,6 @@ def percentile_approx(
     in the ordered `col` values (sorted from least to greatest) such that no more than `percentage`
     of `col` values is less than the value or equal to that value.
 
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3359,12 +3335,11 @@ def percentile_approx(
         percentage = AbstractLit(percentage)
 
     accuracy = (
-        AbstractCol(accuracy)
-        if isinstance(accuracy, AbstractCol)
+          accuracy if isinstance(accuracy, AbstractCol)
         else AbstractLit(accuracy)
     )
 
-    raise NotImplementedError
+    return percentile_approx_func(col, percentage, accuracy)
 
 
 
@@ -3373,10 +3348,6 @@ def rand(seed: Optional[int] = None) -> Func:
     uniformly distributed in [0.0, 1.0).
 
     
-
-    
-        
-
     Notes
     -----
     The function is non-deterministic in general case.
@@ -3403,9 +3374,9 @@ def rand(seed: Optional[int] = None) -> Func:
     +---+------------------+
     """
     if seed is not None:
-        raise NotImplementedError
+        return Func(rand_func, seed)
     else:
-        raise NotImplementedError
+        return Func(rand_func, seed=0)
 
 
 
@@ -3414,9 +3385,6 @@ def randn(seed: Optional[int] = None) -> Func:
     the standard normal distribution.
 
     
-
-    
-        
 
     Notes
     -----
@@ -3444,9 +3412,9 @@ def randn(seed: Optional[int] = None) -> Func:
     +---+--------------------+
     """
     if seed is not None:
-        raise NotImplementedError
+        return Func(randn_func, seed)
     else:
-        raise NotImplementedError
+        return Func(randn_func, seed)
 
 
 
@@ -3456,10 +3424,6 @@ def round(col: "AbstractColOrName", scale: int = 0) -> Func:
     or at integral part when `scale` < 0.
 
     
-
-    
-        
-
     Parameters
     ----------
     col : :class:`~osos.Col` or str
@@ -7188,10 +7152,6 @@ def bit_length(col: "AbstractColOrName") -> Func:
     """
     Calculates the bit length for the specified string AbstractCol.
 
-    
-
-    
-        
 
     Parameters
     ----------
