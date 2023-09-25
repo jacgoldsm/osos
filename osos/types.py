@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 from decimal import Decimal
 
+from typing import List,Tuple
+
 # integral
 IntegerType = lambda: np.int32
 FloatType = lambda: np.float32
@@ -32,10 +34,10 @@ YearMonthIntervalType = lambda *args: pd.Timedelta
 DayTimeIntervalType = lambda *args: pd.Timedelta
 
 # complex
-ArrayType = lambda elementType, containsNull=False: list
+ArrayType = lambda elementType, containsNull=False: List
 MapType = lambda keyType, elementType, valueContainsNull=False: dict
 StructType = lambda fields: np.array
-StructField = lambda name,dataType,nullable=False: tuple
+StructField = lambda name,dataType,nullable=False: Tuple
 
 
 

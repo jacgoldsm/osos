@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.window.rolling import Rolling as RollingWindow
-from typing import Union, Callable, Iterable, Any, overload, Optional
+from typing import Union, Callable, Iterable, Any, overload, Optional,List,Tuple
 from warnings import warn
 
 from .window import EmptyWindow, ConcreteWindowSpec
@@ -568,7 +568,7 @@ def nanvl_func(col1: pd.Series, col2: pd.Series):
 
 def percentile_approx_func(
     col: pd.Series,
-    percentage: Union[pd.Series, float, list[float], tuple[float]],
+    percentage: Union[pd.Series, float, List[float], tuple[float]],
     accuracy: Union[pd.Series, float] = 10000,
 ):
     
@@ -677,7 +677,7 @@ def struct_func(*cols: pd.Series):
 
 @overload
 def struct_func(
-    __cols: Union[list[pd.Series], tuple[pd.Series, ...]]
+    __cols: Union[List[pd.Series], Tuple[pd.Series, ...]]
 ):
     ...
 
@@ -686,7 +686,7 @@ def struct_func(
 def struct_func(
     *cols: Union[
         pd.Series,
-        Union[list[pd.Series], tuple[pd.Series, ...]],
+        Union[List[pd.Series], tuple[pd.Series, ...]],
     ]
 ):
     

@@ -1,6 +1,6 @@
 from .exceptions import AnalysisException
 from .utils import flatten_cols
-from typing import Union
+from typing import Union,List
 
 from .column import Node, AbstractCol, SimpleContainer, ColumnList, ForwardRef
 
@@ -160,8 +160,8 @@ class ConcreteWindowSpec:
         rows_between=None,
         range_between=None,
     ) -> None:
-        self.partition_by: list["ColumnType"] = partition_by
-        self.order_by: list["ColumnType"] = order_by
+        self.partition_by: List["ColumnType"] = partition_by
+        self.order_by: List["ColumnType"] = order_by
         self.rows_between: "SimpleContainer" = rows_between
         self.range_between: "SimpleContainer" = range_between
 

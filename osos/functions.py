@@ -15,7 +15,7 @@ from .exceptions import AnalysisException, OsosValueError, OsosTypeError
 from .dataframe import DataFrame
 
 
-from typing import Any, Optional, Union, List, Tuple, overload, Callable
+from typing import Any, Optional, Union, List, Tuple, overload, Callable,Tuple
 from warnings import warn
 
 # all the public names in _implementations end in "_func"

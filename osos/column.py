@@ -1,5 +1,5 @@
 from numbers import Number
-from typing import Union, Iterable, TYPE_CHECKING
+from typing import Union, Iterable, TYPE_CHECKING,List
 import operator
 from copy import deepcopy
 import numpy as np
@@ -95,7 +95,7 @@ class Node:
 
 
 class ColumnList(Node):
-    def __init__(self, args: list["AbstractColOrLit"]):
+    def __init__(self, args: List["AbstractColOrLit"]):
         def extract_columns(*args):
             return list(args)
 

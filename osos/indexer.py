@@ -1,7 +1,7 @@
 from pandas.api.indexers import BaseIndexer
 import pandas as pd
 import numpy as np
-from typing import Union
+from typing import Union,Tuple
 
 
 from .window import currentRow, unboundedFollowing, unboundedPreceding
@@ -29,7 +29,7 @@ class SparkIndexer(BaseIndexer):
         min_periods: Union[int, None] = None,
         center: Union[bool, None] = None,
         closed: Union[str, None] = None,
-    ) -> tuple[np.ndarray, np.ndarray]:
+    ) -> Tuple[np.ndarray, np.ndarray]:
 
         # case 1: partitioned by column(s), no range/row spec
         # the partitioning is already done by the groupby,

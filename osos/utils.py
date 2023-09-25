@@ -1,5 +1,5 @@
 import itertools
-from typing import Iterable, Union,cast
+from typing import Iterable, Union,cast,List
 import pandas as pd
 from pandas.core.groupby.generic import SeriesGroupBy
 
@@ -39,7 +39,7 @@ def flatten_and_process(cols: Iterable[Union[str,Node]]) -> Iterable[Node]:
         if isinstance(col, str):
             flat_cols[i] = AbstractCol(col)
 
-    return cast(list[Node],flat_cols)
+    return cast(List[Node],flat_cols)
 
 
 def rename_series(series: pd.Series, newname: str, _over=None) -> pd.Series:
