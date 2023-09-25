@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from decimal import Decimal
 
-from typing import List,Tuple
+from typing import List,Tuple,Dict
 
 # integral
 IntegerType = lambda: np.int32
@@ -35,7 +35,7 @@ DayTimeIntervalType = lambda *args: pd.Timedelta
 
 # complex
 ArrayType = lambda elementType, containsNull=False: List
-MapType = lambda keyType, elementType, valueContainsNull=False: dict
+MapType = lambda keyType, elementType, valueContainsNull=False: Dict
 StructType = lambda fields: np.array
 StructField = lambda name,dataType,nullable=False: Tuple
 

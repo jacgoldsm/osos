@@ -112,7 +112,7 @@ class FuncOrOp(Node):
 
 
 class ForwardRef:
-    def __init__(self, reference: str, args: Union[list, None] = None):
+    def __init__(self, reference: str, args: Union[List, None] = None):
         self.reference = reference
         self.args = args if args is not None else []
 

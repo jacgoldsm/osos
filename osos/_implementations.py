@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.window.rolling import Rolling as RollingWindow
-from typing import Union, Callable, Iterable, Any, overload, Optional,List,Tuple
+from typing import Union, Callable, Iterable, Any, overload, Optional,List,Tuple,Dict
 from warnings import warn
 
 from .window import EmptyWindow, ConcreteWindowSpec
@@ -104,7 +104,7 @@ def sum_func(series: SeriesType, *args, **kwargs) -> pd.Series:
 def udf_func(
     series: pd.Series,
     udf: Callable,
-    args_and_kwargs: dict[Iterable, dict[str, Any]],
+    args_and_kwargs: Dict[Iterable, Dict[str, Any]],
     _over=None,
 ) -> pd.Series:
     args, kwargs = args_and_kwargs.get("args"), args_and_kwargs.get("kwargs")
@@ -568,7 +568,7 @@ def nanvl_func(col1: pd.Series, col2: pd.Series):
 
 def percentile_approx_func(
     col: pd.Series,
-    percentage: Union[pd.Series, float, List[float], tuple[float]],
+    percentage: Union[pd.Series, float, List[float], Tuple[float]],
     accuracy: Union[pd.Series, float] = 10000,
 ):
     
@@ -686,7 +686,7 @@ def struct_func(
 def struct_func(
     *cols: Union[
         pd.Series,
-        Union[List[pd.Series], tuple[pd.Series, ...]],
+        Union[List[pd.Series], Tuple[pd.Series, ...]],
     ]
 ):
     
