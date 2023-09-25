@@ -69,18 +69,18 @@ fp = pd.DataFrame(one._data.agg({"baz": sum})).T
 gp = one._data[["foo"]].rename({"foo": "moo"}, axis="columns")
 hp = one._data.groupby("tup").agg({"baz": sum}).reset_index()
 ip = one._data.rename({"foo": "jk"}, axis="columns")
-jp = three._data.dropna(subset="col").merge(
-    four._data.dropna(subset="col"), on=["col"], how="inner"
+jp = three._data.dropna(subset=["col"]).merge(
+    four._data.dropna(subset=["col"]), on=["col"], how="inner"
 )
-kp = three._data.merge(four._data.dropna(subset="col"), on=["col"], how="left")
-lp_notnull = three._data.dropna(subset="col").merge(
-    four._data.dropna(subset="col"), on=["col"], how="outer"
+kp = three._data.merge(four._data.dropna(subset=["col"]), on=["col"], how="left")
+lp_notnull = three._data.dropna(subset=["col"]).merge(
+    four._data.dropna(subset=["col"]), on=["col"], how="outer"
 )
 lp_leftnull = three._data[three._data.isnull().any(axis=1)]
 lp_rightnull = four._data[four._data.isnull().any(axis=1)]
 lp_allnull = pd.concat([lp_leftnull, lp_rightnull], axis=0, ignore_index=True)
 lp = pd.concat([lp_notnull, lp_allnull], axis=0, ignore_index=True)
-mp = three._data.dropna(subset="col").merge(four._data, on=["col"], how="right")
+mp = three._data.dropna(subset=["col"]).merge(four._data, on=["col"], how="right")
 np_ = one._data.assign(moo=one._data["baz"] * 2)
 # this is incredibly annoying to do in Pandas. Motivation for Osos!
 calc = np.array(
