@@ -43,9 +43,10 @@ def _parse_schema(schema):
         for elem in schema:
             cols.append(re.search('(.*):', elem).group(1))
         return cols
-
     elif isinstance(schema,list):
         return schema
+    else:
+        raise TypeError("schema must be str or list")
 
 
 def range(start: int, end: Optional[int] = None, step: int = 1, numSlices: Optional[int] = None):
@@ -54,7 +55,7 @@ def range(start: int, end: Optional[int] = None, step: int = 1, numSlices: Optio
         end = start
         start = 0
 
-    return DataFrame(pd.DataFrame({"0":np.arange(start,end,step)}))
+    return DataFrame(pd.DataFrame({"id":np.arange(start,end,step)}))
 
 
 class read:

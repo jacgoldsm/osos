@@ -2,6 +2,7 @@ import osos.functions as F
 from osos.dataframe import DataFrame
 from osos.window import Window
 from osos.functions import col
+from osos import OsosSession
 
 
 import numpy as np
@@ -57,6 +58,8 @@ t = seven.withColumn(
 u = one.withColumn("foosqrt", F.sqrt("foo"))
 v = one.agg(F.median("baz").alias("baz"))
 w = one.withColumn("tup", F.upper("tup"))
+df = OsosSession.range(3)
+x = df.select(F.when(df['id'] == 2, 3).otherwise(4).alias("age"))
 
 
 
@@ -108,11 +111,9 @@ tp = seven._data.assign(**{"rn": [2, 1, 4, 3, 5, 1, 3, 2, 5, 4]})
 up = one._data.assign(**{"foosqrt": np.sqrt(one._data.foo)})
 vp = pd.DataFrame(one._data.agg({"baz": np.median})).T
 wp = one._data.assign(tup=one._data["tup"].str.upper())
+xp = pd.DataFrame({'age':[4,4,3]})
 
 
-
-print(v._data)
-print(vp)
 def compares_equal(osos_dataframe: DataFrame, pandas_dataframe: pd.DataFrame) -> bool:
     try:
         assert_frame_equal(osos_dataframe.toPandas(), pandas_dataframe)
@@ -148,6 +149,7 @@ def test_functions():
     assert compares_equal(s, sp)
     assert compares_equal(t, tp)
     assert compares_equal(u, up)
+    assert compares_equal(x,xp)
 
 
 iris_pd = pd.read_csv(

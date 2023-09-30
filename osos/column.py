@@ -93,6 +93,58 @@ class Node:
     def alias(self, newname):
         return Func(rename_series, self, NameString(newname, ()))
 
+class When(Node):
+    """
+    The `_args` in a `When` Node will have one of the following two structures:
+    - [condition,value,condition,value...condition,value]
+    - [condition,value,condition,value...True,value] (if `otherwise`)
+    In either case, even numbered elements are conditions, and odd-numbered
+    elements are values.
+
+    In the resolved form, `args` is a list of columns, where even-numbered elements are 
+    boolean conditions, and odd-numbered elements are values.
+    """
+    def __init__(self, condition, value):
+        self._name = self._when_func
+        if not isinstance(value,Node):
+            value = AbstractLit(value)
+        self._args = [condition,value,]
+
+    @staticmethod
+    def _when_func(*args: pd.Series, **kwargs):
+        predicted_dtype = args[-1].dtype
+        if np.issubdtype(predicted_dtype, np.number):
+            null_type = np.nan
+        else:
+            null_type = None
+        col = np.full(len(args[0].index), null_type)
+        conditions = [args[i] for i in range(len(args)) if i % 2 == 0] # even numbers
+        values = [args[i] for i in range(len(args)) if i % 2 == 1] # odd numbers
+
+        # `i` will loop over all the conditions in reverse order,
+        # so starting with `True` if `otherwise` exists
+        for i in reversed(range(len(conditions))):
+            col = np.where(conditions[i], values[i], col)
+
+        # make some effort to cast back to int if possible
+        # i.e. if all the replacement values were ints and there are no missings
+        if all(np.issubdtype(val,np.integer) for val in values) and not np.isnan(col).any():
+            col = col.astype(int)
+        
+        return pd.Series(col)
+
+    def when(self, condition,value):
+        if not isinstance(value,Node):
+            value = AbstractLit(value)
+        self._args += [condition,value]
+        return self
+
+    def otherwise(self,value):
+        if not isinstance(value,Node):
+            value = AbstractLit(value)
+        self._args += [SimpleContainer(True, []),value]
+        return self
+
 
 class ColumnList(Node):
     def __init__(self, args: List["AbstractColOrLit"]):
@@ -186,10 +238,10 @@ class AbstractIndex(Node):
 
 class SimpleContainer(Node):
     def __bool__(self):
-        return bool(self._args)
+        return bool(self._name)
 
     def __str__(self):
-        return str(self._args)
+        return f"SimpleContainer: {str(self._name)}"
 
     __repr__ = __str__
 

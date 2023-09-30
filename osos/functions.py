@@ -9,7 +9,8 @@ from .column import (
     AbstractIndex,
     Func,
     SimpleContainer,
-    Node
+    Node,
+    When,
 )
 from .exceptions import AnalysisException, OsosValueError, OsosTypeError
 from .dataframe import DataFrame
@@ -3792,10 +3793,6 @@ def when(condition: AbstractCol, value: Any) -> Func:
     If :func:`osos.Col.otherwise` is not invoked, None is returned for unmatched
     conditions.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3830,18 +3827,7 @@ def when(condition: AbstractCol, value: Any) -> Func:
     |   3|
     +----+
     """
-    # Explicitly not using AbstractColOrName type here to make reading condition less opaque
-    if not isinstance(condition, AbstractCol):
-        raise OsosTypeError(
-            error_class="NOT_AbstractCol",
-            message_parameters={
-                "arg_name": "condition",
-                "arg_type": type(condition).__name__,
-            },
-        )
-    v = value._jc if isinstance(value, AbstractCol) else value
-
-    raise NotImplementedError
+    return When(condition,value)
 
 
 @overload  # type: ignore[no-redef]
