@@ -13,7 +13,7 @@ from .column import (
 
 from copy import deepcopy, copy
 import numpy as np
-from typing import Iterable, Union, Optional,cast
+from typing import Iterable, Union, Optional, cast
 import pandas as pd
 
 
@@ -23,7 +23,8 @@ from .utils import flatten_and_process_cols
 from .window import EmptyWindow
 from ._forwardrefs import forward_dict
 
-NodeOrStr = Union[Node,str]
+NodeOrStr = Union[Node, str]
+
 
 class DataFrame:
     @staticmethod
@@ -41,13 +42,12 @@ class DataFrame:
         elif isinstance(item, (list, tuple)):
             return self.select(*item)
         elif isinstance(item, int):
-            return AbstractCol(self._data.iloc[:,item].name)
+            return AbstractCol(self._data.iloc[:, item].name)
 
     def __getattr__(self, attr):
         if attr not in self._data.columns:
             raise Exception("Attribute not found")
         return AbstractCol(attr)
-
 
     @property
     def true_index(self):
@@ -95,12 +95,14 @@ class DataFrame:
                 if isinstance(node, Func):
                     res = node._name(
                         *list(self._eval_recursive(n) for n in node._args),
-                        _over=self._eval_recursive(node._over)
+                        _over=self._eval_recursive(node._over),
                     )
                 else:
-                    res: pd.Series = node._name(*list(self._eval_recursive(n) for n in node._args))
+                    res: pd.Series = node._name(
+                        *list(self._eval_recursive(n) for n in node._args)
+                    )
 
-        return res # type: ignore
+        return res  # type: ignore
 
     def withColumn(self, name: str, expr: Node) -> "DataFrame":
 
@@ -134,26 +136,33 @@ class DataFrame:
                 boolean_mask.dtype == np.bool8
             ), "`filter` expressions must return boolean results"
             newdf = DataFrame(newdf._data.loc[boolean_mask])
-            newdf._data.index = np.arange(len(newdf._data.index)) #type: ignore
+            newdf._data.index = np.arange(len(newdf._data.index))  # type: ignore
 
         return newdf
 
-
-    def show(self, n: int = 0, vertical: bool = False, truncate: Union[bool, int] = False):
-        if n == 0: 
+    def show(
+        self, n: int = 0, vertical: bool = False, truncate: Union[bool, int] = False
+    ):
+        if n == 0:
             n = len(self._data.index)
         if isinstance(truncate, int) and truncate > 1:
             l = truncate
         else:
             l = 20
         nrowsdf = self._data.iloc[0:n]
-        columns = nrowsdf.columns 
+        columns = nrowsdf.columns
         separator = "+-" + "-+-".join(["-" * len(col) for col in columns]) + "-+"
         result = separator + "\n"
         result += "| " + " | ".join([f"{col:>{len(col)}}" for col in columns]) + " |\n"
         result += separator + "\n"
         for _, row in nrowsdf.iterrows():
-            row_str = "| " + " | ".join([f"{str(val)[0:l]:>{len(col)}}" for val, col in zip(row, columns)]) + " |\n"
+            row_str = (
+                "| "
+                + " | ".join(
+                    [f"{str(val)[0:l]:>{len(col)}}" for val, col in zip(row, columns)]
+                )
+                + " |\n"
+            )
             result += row_str
         result += separator
         print(result)
@@ -190,7 +199,7 @@ class DataFrame:
             out.append(ser)
 
         newdf = pd.concat(out, axis=1)
-        newdf.index = np.arange(len(newdf.index)) # type: ignore
+        newdf.index = np.arange(len(newdf.index))  # type: ignore
         if isinstance(self, GroupedData):
             newdf = pd.concat([self._uniques, newdf], axis=1)
 
@@ -280,7 +289,7 @@ class DataFrame:
             raise Exception("Unknown join type")
         return DataFrame(out)
 
-    def _resolve_leaf(self, node: NodeOrStr) -> Union[pd.Series,Node]:
+    def _resolve_leaf(self, node: NodeOrStr) -> Union[pd.Series, Node]:
         if isinstance(node, AbstractCol):
             return self._data[node._name]
         elif isinstance(node, AbstractLit):
@@ -310,7 +319,7 @@ class GroupedData(DataFrame):
             .drop("__index__", axis=1)
             .reset_index()
         )
-        uniques.index = np.arange(len(uniques.index)) #type: ignore
+        uniques.index = np.arange(len(uniques.index))  # type: ignore
         self._uniques = uniques
 
     @property

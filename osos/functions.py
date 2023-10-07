@@ -19,7 +19,7 @@ from .exceptions import AnalysisException, OsosValueError, OsosTypeError
 from .dataframe import DataFrame
 
 
-from typing import Any, Optional, Union, List, Tuple, overload, Callable,Tuple
+from typing import Any, Optional, Union, List, Tuple, overload, Callable, Tuple
 from warnings import warn
 
 # all the public names in _implementations end in "_func"
@@ -45,7 +45,7 @@ def lit(col: Any) -> Func:
         the value to make it as a PySpark literal. If a AbstractCol is passed,
         it returns the AbstractCol as is.
 
-        
+
             Since 3.4.0, it supports the list type.
 
     Returns
@@ -147,15 +147,9 @@ def asc(col: "AbstractColOrName") -> Func:
     return asc_func(col)
 
 
-
 def desc(col: "AbstractColOrName") -> Func:
     """
     Returns a sort expression based on the descending order of the given AbstractCol name.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -182,20 +176,13 @@ def desc(col: "AbstractColOrName") -> Func:
     |  0|
     +---+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+    col = process_one_col(col)
     return desc_func(col)
-
 
 
 def sqrt(col: "AbstractColOrName") -> Func:
     """
     Computes the square root of the specified float value.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -217,20 +204,13 @@ def sqrt(col: "AbstractColOrName") -> Func:
     |    2.0|
     +-------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+    col = process_one_col(col)
     return Func(sqrt_func, col)
-
 
 
 def abs(col: "AbstractColOrName") -> Func:
     """
     Computes the absolute value.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -252,20 +232,13 @@ def abs(col: "AbstractColOrName") -> Func:
     |      1|
     +-------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+    col = process_one_col(col)
     return Func(abs_func, col)
-
 
 
 def mode(col: "AbstractColOrName") -> Func:
     """
     Returns the most frequent value in a group.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -292,20 +265,14 @@ def mode(col: "AbstractColOrName") -> Func:
     |dotNET|      2012|
     +------+----------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+    col = process_one_col(col)
     return Func(mode_func, col)
-
 
 
 def max(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the maximum value of the expression in a group.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -327,21 +294,14 @@ def max(col: "AbstractColOrName") -> Func:
     |      9|
     +-------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-    
+    col = process_one_col(col)
     return Func(max_func, col)
-
 
 
 def min(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the minimum value of the expression in a group.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -363,21 +323,13 @@ def min(col: "AbstractColOrName") -> Func:
     |      0|
     +-------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
     return Func(min_func, col)
-
 
 
 def max_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> Func:
     """
     Returns the value associated with the maximum value of ord.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -405,21 +357,14 @@ def max_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> Func:
     |dotNET|                  2013|
     +------+----------------------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
+    ord = process_one_col(ord)
     return Func(max_by_func, col, ord)
-
 
 
 def min_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> Func:
     """
     Returns the value associated with the minimum value of ord.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -447,21 +392,13 @@ def min_by(col: "AbstractColOrName", ord: "AbstractColOrName") -> Func:
     |dotNET|                  2012|
     +------+----------------------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
     return Func(min_by_func, col, ord)
-
 
 
 def count(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the number of items in a group.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -485,21 +422,13 @@ def count(col: "AbstractColOrName") -> Func:
     |       4|               3|
     +--------+----------------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
     return Func(count_func, col)
-
 
 
 def sum(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the sum of all values in the expression.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -521,21 +450,13 @@ def sum(col: "AbstractColOrName") -> Func:
     |     45|
     +-------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
     return Func(sum_func, col)
-
 
 
 def avg(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the average of the values in a group.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -557,22 +478,14 @@ def avg(col: "AbstractColOrName") -> Func:
     |    4.5|
     +-------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
     return Func(avg_func, col)
-
 
 
 def mean(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the average of the values in a group.
     An alias of :func:`avg`.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -594,21 +507,14 @@ def mean(col: "AbstractColOrName") -> Func:
     |    4.5|
     +-------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
     return Func(avg_func, col)
-
 
 
 def median(col: "AbstractColOrName") -> Func:
     """
     Returns the median of the values in a group.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -635,41 +541,26 @@ def median(col: "AbstractColOrName") -> Func:
     |dotNET|         10000.0|
     +------+----------------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
     return Func(median_func, col)
-
 
 
 def sumDistinct(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the sum of distinct values in the expression.
 
-    
-
-    
-        
 
     .. deprecated:: 3.2.0
         Use :func:`sum_distinct` instead.
     """
-    warn("Deprecated in 3.2, use sum_distinct instead.", FutureWarning)
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    warn("Deprecated, use sum_distinct instead.", FutureWarning)
+    col = process_one_col(col)
     return Func(sum_distinct_func, col)
-
 
 
 def sum_distinct(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the sum of distinct values in the expression.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -691,21 +582,13 @@ def sum_distinct(col: "AbstractColOrName") -> Func:
     |                    3|
     +---------------------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
     return Func(sum_distinct_func, col)
-
 
 
 def product(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the product of the values in a group.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -730,21 +613,13 @@ def product(col: "AbstractColOrName") -> Func:
     |   2|   80.0|
     +----+-------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
     return Func(product_func, col)
-
 
 
 def acos(col: "AbstractColOrName") -> Func:
     """
     Computes inverse cosine of the input AbstractCol.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -767,21 +642,18 @@ def acos(col: "AbstractColOrName") -> Func:
     |     NaN|
     +--------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
     return Func(acos_func, col)
-
 
 
 def acosh(col: "AbstractColOrName") -> Func:
     """
     Computes inverse hyperbolic cosine of the input AbstractCol.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -804,21 +676,13 @@ def acosh(col: "AbstractColOrName") -> Func:
     |      0.0|
     +---------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
     return Func(acosh_func, col)
-
 
 
 def asin(col: "AbstractColOrName") -> Func:
     """
     Computes inverse sine of the input AbstractCol.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -841,21 +705,13 @@ def asin(col: "AbstractColOrName") -> Func:
     |     NaN|
     +--------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
     return Func(asin_func, col)
-
 
 
 def asinh(col: "AbstractColOrName") -> Func:
     """
     Computes inverse hyperbolic sine of the input AbstractCol.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -877,21 +733,13 @@ def asinh(col: "AbstractColOrName") -> Func:
     |      0.0|
     +---------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
     return Func(asinh_func, col)
-
 
 
 def atan(col: "AbstractColOrName") -> Func:
     """
     Compute inverse tangent of the input AbstractCol.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -913,21 +761,13 @@ def atan(col: "AbstractColOrName") -> Func:
     |     0.0|
     +--------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-
+    col = process_one_col(col)
     return Func(atan_func, col)
-
 
 
 def atanh(col: "AbstractColOrName") -> Func:
     """
     Computes inverse hyperbolic tangent of the input AbstractCol.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -950,21 +790,20 @@ def atanh(col: "AbstractColOrName") -> Func:
     |           NaN|
     +--------------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(atanh_func, col)
-
 
 
 def cbrt(col: "AbstractColOrName") -> Func:
     """
     Computes the cube-root of the given value.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -986,21 +825,20 @@ def cbrt(col: "AbstractColOrName") -> Func:
     |     3.0|
     +--------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(cbrt_func, col)
-
 
 
 def ceil(col: "AbstractColOrName") -> Func:
     """
     Computes the ceiling of the given value.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1022,21 +860,20 @@ def ceil(col: "AbstractColOrName") -> Func:
     |         0|
     +----------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(ceil_func, col)
-
 
 
 def cos(col: "AbstractColOrName") -> Func:
     """
     Computes cosine of the input AbstractCol.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1055,21 +892,20 @@ def cos(col: "AbstractColOrName") -> Func:
     >>> df.select(cos(lit(math.pi))).first()
     Row(COS(3.14159...)=-1.0)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(cos_func, col)
-
 
 
 def cosh(col: "AbstractColOrName") -> Func:
     """
     Computes hyperbolic cosine of the input AbstractCol.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1087,21 +923,20 @@ def cosh(col: "AbstractColOrName") -> Func:
     >>> df.select(cosh(lit(1))).first()
     Row(COSH(1)=1.54308...)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(cosh_func, col)
-
 
 
 def cot(col: "AbstractColOrName") -> Func:
     """
     Computes cotangent of the input AbstractCol.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1120,21 +955,20 @@ def cot(col: "AbstractColOrName") -> Func:
     >>> df.select(cot(lit(math.radians(45)))).first()
     Row(COT(0.78539...)=1.00000...)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(cot_func, col)
-
 
 
 def csc(col: "AbstractColOrName") -> Func:
     """
     Computes cosecant of the input AbstractCol.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1153,21 +987,20 @@ def csc(col: "AbstractColOrName") -> Func:
     >>> df.select(csc(lit(math.radians(90)))).first()
     Row(CSC(1.57079...)=1.0)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(csc_func, col)
-
 
 
 def exp(col: "AbstractColOrName") -> Func:
     """
     Computes the exponential of the given value.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1189,21 +1022,20 @@ def exp(col: "AbstractColOrName") -> Func:
     |   1.0|
     +------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(exp_func, col)
-
 
 
 def expm1(col: "AbstractColOrName") -> Func:
     """
     Computes the exponential of the given value minus one.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1221,21 +1053,20 @@ def expm1(col: "AbstractColOrName") -> Func:
     >>> df.select(expm1(lit(1))).first()
     Row(EXPM1(1)=1.71828...)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(expm1_func, col)
-
 
 
 def floor(col: "AbstractColOrName") -> Func:
     """
     Computes the floor of the given value.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1257,21 +1088,20 @@ def floor(col: "AbstractColOrName") -> Func:
     |         2|
     +----------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(floor_func, col)
-
 
 
 def log(col: "AbstractColOrName") -> Func:
     """
     Computes the natural logarithm of the given value.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1290,21 +1120,20 @@ def log(col: "AbstractColOrName") -> Func:
     >>> df.select(log(lit(math.e))).first()
     Row(ln(2.71828...)=1.0)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(log_func, col, np.e)
-
 
 
 def log10(col: "AbstractColOrName") -> Func:
     """
     Computes the logarithm of the given value in Base 10.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1326,21 +1155,20 @@ def log10(col: "AbstractColOrName") -> Func:
     |       2.0|
     +----------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(log_func, col, 10)
-
 
 
 def log1p(col: "AbstractColOrName") -> Func:
     """
     Computes the natural logarithm of the "given value plus one".
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1364,11 +1192,10 @@ def log1p(col: "AbstractColOrName") -> Func:
     >>> df.select(log(lit(math.e+1))).first()
     Row(ln(3.71828...)=1.31326...)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(log1p_func, col)
-
 
 
 def rint(col: "AbstractColOrName") -> Func:
@@ -1376,10 +1203,10 @@ def rint(col: "AbstractColOrName") -> Func:
     Returns the double value that is closest in value to the argument and
     is equal to a mathematical integer.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1408,21 +1235,20 @@ def rint(col: "AbstractColOrName") -> Func:
     |      10.0|
     +----------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(rint_func, col)
-
 
 
 def sec(col: "AbstractColOrName") -> Func:
     """
     Computes secant of the input AbstractCol.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1440,21 +1266,20 @@ def sec(col: "AbstractColOrName") -> Func:
     >>> df.select(sec(lit(1.5))).first()
     Row(SEC(1.5)=14.13683...)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(sec_func, col)
-
 
 
 def signum(col: "AbstractColOrName") -> Func:
     """
     Computes the signum of the given value.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1483,21 +1308,20 @@ def signum(col: "AbstractColOrName") -> Func:
     |      1.0|
     +---------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(signum_func, col)
-
 
 
 def sin(col: "AbstractColOrName") -> Func:
     """
     Computes sine of the input AbstractCol.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1516,21 +1340,20 @@ def sin(col: "AbstractColOrName") -> Func:
     >>> df.select(sin(lit(math.radians(90)))).first()
     Row(SIN(1.57079...)=1.0)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(sin_func, col)
-
 
 
 def sinh(col: "AbstractColOrName") -> Func:
     """
     Computes hyperbolic sine of the input AbstractCol.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1549,21 +1372,20 @@ def sinh(col: "AbstractColOrName") -> Func:
     >>> df.select(sinh(lit(1.1))).first()
     Row(SINH(1.1)=1.33564...)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(sinh_func, col)
-
 
 
 def tan(col: "AbstractColOrName") -> Func:
     """
     Computes tangent of the input AbstractCol.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1582,21 +1404,20 @@ def tan(col: "AbstractColOrName") -> Func:
     >>> df.select(tan(lit(math.radians(45)))).first()
     Row(TAN(0.78539...)=0.99999...)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(tan_func, col)
-
 
 
 def tanh(col: "AbstractColOrName") -> Func:
     """
     Computes hyperbolic tangent of the input AbstractCol.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1616,22 +1437,20 @@ def tanh(col: "AbstractColOrName") -> Func:
     >>> df.select(tanh(lit(math.radians(90)))).first()
     Row(TANH(1.57079...)=0.91715...)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(tanh_func, col)
 
 
-
 def toDegrees(col: "AbstractColOrName") -> Func:
     """
-    
 
-        Use :func:`degrees` instead.
+
+    Use :func:`degrees` instead.
     """
     warn("Deprecated by Spark, use degrees instead.", FutureWarning)
     return degrees_func(col)
-
 
 
 def toRadians(col: "AbstractColOrName") -> Func:
@@ -1640,7 +1459,6 @@ def toRadians(col: "AbstractColOrName") -> Func:
     """
     warn("Deprecated by Spark, use radians instead.", FutureWarning)
     return radians_func(col)
-
 
 
 def bitwiseNOT(col: "AbstractColOrName") -> Func:
@@ -1653,12 +1471,11 @@ def bitwiseNOT(col: "AbstractColOrName") -> Func:
     return bitwise_not_func(col)
 
 
-
 def bitwise_not(col: "AbstractColOrName") -> Func:
     """
     Computes bitwise not.
 
-    
+
     Parameters
     ----------
     col : :class:`~osos.Col` or str
@@ -1685,11 +1502,10 @@ def bitwise_not(col: "AbstractColOrName") -> Func:
     | -2|
     +---+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(bitwise_not_func, col)
-
 
 
 def asc_nulls_first(col: "AbstractColOrName") -> Func:
@@ -1697,7 +1513,7 @@ def asc_nulls_first(col: "AbstractColOrName") -> Func:
     Returns a sort expression based on the ascending order of the given
     AbstractCol name, and null values return before non-null values.
 
-    
+
     Parameters
     ----------
     col : :class:`~osos.Col` or str
@@ -1723,11 +1539,10 @@ def asc_nulls_first(col: "AbstractColOrName") -> Func:
     +---+-----+
 
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(asc_func, col, nulls_first=True)
-
 
 
 def asc_nulls_last(col: "AbstractColOrName") -> Func:
@@ -1735,10 +1550,10 @@ def asc_nulls_last(col: "AbstractColOrName") -> Func:
     Returns a sort expression based on the ascending order of the given
     AbstractCol name, and null values appear after non-null values.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1765,11 +1580,10 @@ def asc_nulls_last(col: "AbstractColOrName") -> Func:
     +---+-----+
 
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(asc_func, col, nulls_first=False)
-
 
 
 def desc_nulls_first(col: "AbstractColOrName") -> Func:
@@ -1777,10 +1591,10 @@ def desc_nulls_first(col: "AbstractColOrName") -> Func:
     Returns a sort expression based on the descending order of the given
     AbstractCol name, and null values appear before non-null values.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1807,11 +1621,10 @@ def desc_nulls_first(col: "AbstractColOrName") -> Func:
     +---+-----+
 
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(desc_func, col, nulls_first=True)
-
 
 
 def desc_nulls_last(col: "AbstractColOrName") -> Func:
@@ -1819,10 +1632,10 @@ def desc_nulls_last(col: "AbstractColOrName") -> Func:
     Returns a sort expression based on the descending order of the given
     AbstractCol name, and null values appear after non-null values.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1849,21 +1662,20 @@ def desc_nulls_last(col: "AbstractColOrName") -> Func:
     +---+-----+
 
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(desc_func, col, nulls_first=False)
-
 
 
 def stddev(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: alias for stddev_samp.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1881,11 +1693,10 @@ def stddev(col: "AbstractColOrName") -> Func:
     >>> df.select(stddev(df.id)).first()
     Row(stddev_samp(id)=1.87082...)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(stddev_func, col)
-
 
 
 def stddev_samp(col: "AbstractColOrName") -> Func:
@@ -1893,10 +1704,10 @@ def stddev_samp(col: "AbstractColOrName") -> Func:
     Aggregate function: returns the unbiased sample standard deviation of
     the expression in a group.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1914,11 +1725,10 @@ def stddev_samp(col: "AbstractColOrName") -> Func:
     >>> df.select(stddev_samp(df.id)).first()
     Row(stddev_samp(id)=1.87082...)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(stddev_samp_func, col)
-
 
 
 def stddev_pop(col: "AbstractColOrName") -> Func:
@@ -1926,10 +1736,10 @@ def stddev_pop(col: "AbstractColOrName") -> Func:
     Aggregate function: returns population standard deviation of
     the expression in a group.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1947,21 +1757,20 @@ def stddev_pop(col: "AbstractColOrName") -> Func:
     >>> df.select(stddev_pop(df.id)).first()
     Row(stddev_pop(id)=1.70782...)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(stddev_func, col)
-
 
 
 def variance(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: alias for var_samp
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -1983,11 +1792,10 @@ def variance(col: "AbstractColOrName") -> Func:
     |         3.5|
     +------------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(variance_func, col)
-
 
 
 def var_samp(col: "AbstractColOrName") -> Func:
@@ -1995,10 +1803,10 @@ def var_samp(col: "AbstractColOrName") -> Func:
     Aggregate function: returns the unbiased sample variance of
     the values in a group.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -2020,21 +1828,20 @@ def var_samp(col: "AbstractColOrName") -> Func:
     |         3.5|
     +------------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(var_samp_func, col)
-
 
 
 def var_pop(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the population variance of the values in a group.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -2052,21 +1859,20 @@ def var_pop(col: "AbstractColOrName") -> Func:
     >>> df.select(var_pop(df.id)).first()
     Row(var_pop(id)=2.91666...)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(variance_func, col)
-
 
 
 def skewness(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the skewness of the values in a group.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -2084,21 +1890,20 @@ def skewness(col: "AbstractColOrName") -> Func:
     >>> df.select(skewness(df.c)).first()
     Row(skewness(c)=0.70710...)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(skewness_func, col)
-
 
 
 def kurtosis(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns the kurtosis of the values in a group.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -2120,18 +1925,17 @@ def kurtosis(col: "AbstractColOrName") -> Func:
     |       -1.5|
     +-----------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(kurtosis_func, col)
-
 
 
 def collect_list(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns a list of objects with duplicates.
 
-    
+
 
     Notes
     -----
@@ -2154,20 +1958,19 @@ def collect_list(col: "AbstractColOrName") -> Func:
     >>> df2.agg(collect_list('age')).collect()
     [Row(collect_list(age)=[2, 5, 5])]
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-    return Func(collect_list_func, col)
 
+    col = process_one_col(col)
+    return Func(collect_list_func, col)
 
 
 def collect_set(col: "AbstractColOrName") -> Func:
     """
     Aggregate function: returns a set of objects with duplicate elements eliminated.
 
-    
 
-    
-        
+
+
+
 
     Notes
     -----
@@ -2190,10 +1993,9 @@ def collect_set(col: "AbstractColOrName") -> Func:
     >>> df2.agg(array_sort(collect_set('age')).alias('c')).collect()
     [Row(c=[2, 5])]
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-    return Func(collect_set_func, col)
 
+    col = process_one_col(col)
+    return Func(collect_set_func, col)
 
 
 def degrees(col: "AbstractColOrName") -> Func:
@@ -2201,10 +2003,10 @@ def degrees(col: "AbstractColOrName") -> Func:
     Converts an angle measured in radians to an approximately equivalent angle
     measured in degrees.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -2223,11 +2025,10 @@ def degrees(col: "AbstractColOrName") -> Func:
     >>> df.select(degrees(lit(math.pi))).first()
     Row(DEGREES(3.14159...)=180.0)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(degrees_func, col)
-
 
 
 def radians(col: "AbstractColOrName") -> Func:
@@ -2235,10 +2036,10 @@ def radians(col: "AbstractColOrName") -> Func:
     Converts an angle measured in degrees to an approximately equivalent angle
     measured in radians.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -2256,21 +2057,20 @@ def radians(col: "AbstractColOrName") -> Func:
     >>> df.select(radians(lit(180))).first()
     Row(RADIANS(180)=3.14159...)
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(radians_func, col)
-
 
 
 def atan2(
     col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]
 ) -> Func:
     """
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -2303,17 +2103,16 @@ def atan2(
     return Func(atan2_func, col1, col2)
 
 
-
 def hypot(
     col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]
 ) -> Func:
     """
     Computes ``sqrt(a^2 + b^2)`` without intermediate overflow or underflow.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -2342,17 +2141,16 @@ def hypot(
     return Func(hypot_func, col1, col2)
 
 
-
 def pow(
     col1: Union["AbstractColOrName", float], col2: Union["AbstractColOrName", float]
 ) -> Func:
     """
     Returns the value of the first argument raised to the power of the second argument.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -2381,7 +2179,6 @@ def pow(
     return Func(pow_func, col1, col2)
 
 
-
 def pmod(
     dividend: Union["AbstractColOrName", float],
     divisor: Union["AbstractColOrName", float],
@@ -2389,10 +2186,10 @@ def pmod(
     """
     Returns the positive value of dividend mod divisor.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -2439,7 +2236,6 @@ def pmod(
     return Func(pmod_func, col1, col2)
 
 
-
 def row_number() -> Func:
     """
     Window function: returns a sequential number starting at 1 within a window partition.
@@ -2467,7 +2263,6 @@ def row_number() -> Func:
     return Func(row_number_func, AbstractIndex())
 
 
-
 def dense_rank() -> Func:
     """
     Window function: returns the rank of rows within a window partition, without any gaps.
@@ -2480,10 +2275,10 @@ def dense_rank() -> Func:
 
     This is equivalent to the DENSE_RANK function in SQL.
 
-    
 
-    
-        
+
+
+
 
     Returns
     -------
@@ -2510,7 +2305,6 @@ def dense_rank() -> Func:
     return Func(dense_rank_func, AbstractIndex())
 
 
-
 def rank() -> Func:
     """
     Window function: returns the rank of rows within a window partition.
@@ -2523,10 +2317,10 @@ def rank() -> Func:
 
     This is equivalent to the RANK function in SQL.
 
-    
 
-    
-        
+
+
+
 
     Returns
     -------
@@ -2553,16 +2347,15 @@ def rank() -> Func:
     return Func(rank_func, AbstractIndex())
 
 
-
 def cume_dist() -> Func:
     """
     Window function: returns the cumulative distribution of values within a window partition,
     i.e. the fraction of rows that are below the current row.
 
-    
 
-    
-        
+
+
+
 
     Returns
     -------
@@ -2588,15 +2381,14 @@ def cume_dist() -> Func:
     return Func(cume_dist_func, AbstractIndex())
 
 
-
 def percent_rank() -> Func:
     """
     Window function: returns the relative rank (i.e. percentile) of rows within a window partition.
 
-    
 
-    
-        
+
+
+
 
     Returns
     -------
@@ -2623,16 +2415,14 @@ def percent_rank() -> Func:
     return Func(percent_rank_func(), AbstractIndex)
 
 
-
 def approxCountDistinct(col: "AbstractColOrName", rsd: Optional[float] = None) -> Func:
     """
     Use :func:`approx_count_distinct` instead.
     """
     warn("Deprecated by Spark, use approx_count_distinct instead.", FutureWarning)
-    if isinstance(col, str):
-        col = AbstractCol(col)
-    return Func(approx_count_distinct_func, col, rsd)
 
+    col = process_one_col(col)
+    return Func(approx_count_distinct_func, col, rsd)
 
 
 def approx_count_distinct(
@@ -2664,18 +2454,16 @@ def approx_count_distinct(
     |              3|
     +---------------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
 
+    col = process_one_col(col)
     return Func(approx_count_distinct_func, col, rsd if rsd is not None else 0.05)
-
 
 
 def broadcast(df: DataFrame) -> DataFrame:
     """
     Marks a DataFrame as small enough for use in broadcast joins.
 
-    
+
     Returns
     -------
     :class:`~osos.DataFrame`
@@ -2699,14 +2487,8 @@ def broadcast(df: DataFrame) -> DataFrame:
     return df
 
 
-
 def coalesce(*cols: "AbstractColOrName") -> Func:
     """Returns the first AbstractCol that is not null.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -2748,22 +2530,13 @@ def coalesce(*cols: "AbstractColOrName") -> Func:
     |null|   2|             0.0|
     +----+----+----------------+
     """
-    for col in cols:
-        if isinstance(col, str):
-            col = AbstractCol(col)
-
+    cols = flatten_and_process_cols(cols)
     return Func(coalesce_func, cols)
-
 
 
 def corr(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     """Returns a new :class:`~osos.Col` for the Pearson Correlation Coefficient for
     ``col1`` and ``col2``.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -2785,19 +2558,15 @@ def corr(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     >>> df.agg(corr("a", "b").alias('c')).collect()
     [Row(c=1.0)]
     """
-    if isinstance(col1, str):
-        col1 = AbstractCol(col1)
-    if isinstance(col2, str):
-        col2 = AbstractCol(col2)
+    col1, col2 = flatten_and_process_cols([col1, col2])
     return Func(corr_func, col1, col2)
-
 
 
 def covar_pop(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     """Returns a new :class:`~osos.Col` for the population covariance of ``col1`` and
     ``col2``.
 
-    
+
     Parameters
     ----------
     col1 : :class:`~osos.Col` or str
@@ -2818,22 +2587,13 @@ def covar_pop(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     >>> df.agg(covar_pop("a", "b").alias('c')).collect()
     [Row(c=0.0)]
     """
-    if isinstance(col1, str):
-        col1 = AbstractCol(col1)
-    if isinstance(col2, str):
-        col2 = AbstractCol(col2)
+    col1, col2 = flatten_and_process_cols([col1, col2])
     return Func(covar_pop_func, col1, col2)
-
 
 
 def covar_samp(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     """Returns a new :class:`~osos.Col` for the sample covariance of ``col1`` and
     ``col2``.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -2855,12 +2615,8 @@ def covar_samp(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     >>> df.agg(covar_samp("a", "b").alias('c')).collect()
     [Row(c=0.0)]
     """
-    if isinstance(col1, str):
-        col1 = AbstractCol(col1)
-    if isinstance(col2, str):
-        col2 = AbstractCol(col2)
+    col1, col2 = flatten_and_process_cols([col1, col2])
     return Func(covar_samp_func, col1, col2)
-
 
 
 def countDistinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Func:
@@ -2869,26 +2625,14 @@ def countDistinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Func:
     An alias of :func:`count_distinct`, and it is encouraged to use :func:`count_distinct`
     directly.
 
-    
-
-    
-        
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-    for col in cols:
-        col = AbstractCol(col)
-    return Func(count_distinct_func, col, *cols)
-
+    cols = flatten_and_process_cols([col, *cols])
+    return Func(count_distinct_func, *cols)
 
 
 def count_distinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Func:
     """Returns a new :class:`AbstractCol` for distinct count of ``col`` or ``cols``.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -2925,13 +2669,8 @@ def count_distinct(col: "AbstractColOrName", *cols: "AbstractColOrName") -> Func
     |                           4|
     +----------------------------+
     """
-    cols = list(cols)
-    if isinstance(col, str):
-        col = AbstractCol(col)
-    for col_ in cols:
-        col_ = AbstractCol(col_)
-    return Func(count_distinct_func, col, *cols)
-
+    cols = flatten_and_process_cols([col, *cols])
+    return Func(count_distinct_func, *cols)
 
 
 def first(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
@@ -2940,10 +2679,6 @@ def first(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
     The function by default returns the first values it sees. It will return the first non-null
     value it sees when ignoreNulls is set to true. If all values are null, then null is returned.
 
-    
-
-    
-        
 
     Notes
     -----
@@ -2984,11 +2719,9 @@ def first(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
     |  Bob|         5|
     +-----+----------+
     """
-    
-    if isinstance(col, str):
-        col = AbstractCol(col)
-    return Func(first_func, col)
 
+    col = process_one_col(col)
+    return Func(first_func, col)
 
 
 def grouping(col: "AbstractColOrName") -> Func:
@@ -2996,10 +2729,6 @@ def grouping(col: "AbstractColOrName") -> Func:
     Aggregate function: indicates whether a specified AbstractCol in a GROUP BY list is aggregated
     or not, returns 1 for aggregated or 0 for not aggregated in the result set.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3023,10 +2752,9 @@ def grouping(col: "AbstractColOrName") -> Func:
     |  Bob|             0|       5|
     +-----+--------------+--------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-    return Func(grouping_func, col)
 
+    col = process_one_col(col)
+    return Func(grouping_func, col)
 
 
 def grouping_id(*cols: "AbstractColOrName") -> Func:
@@ -3035,7 +2763,7 @@ def grouping_id(*cols: "AbstractColOrName") -> Func:
 
        (grouping(c1) << (n-1)) + (grouping(c2) << (n-2)) + ... + grouping(cn)
 
-    
+
     Notes
     -----
     The list of AbstractCols should match with grouping AbstractCols exactly, or empty (means all
@@ -3069,15 +2797,14 @@ def grouping_id(*cols: "AbstractColOrName") -> Func:
     |   b|   c|            0|      4|
     +----+----+-------------+-------+
     """
-    return Func(grouping_id_func(), AbstractIndex())
-
+    return Func(grouping_id_func, AbstractIndex())
 
 
 def input_file_name() -> Func:
     """
     Creates a string AbstractCol for the file name of the current Spark task.
 
-    
+
 
 
     Returns
@@ -3096,11 +2823,10 @@ def input_file_name() -> Func:
     raise NotImplementedError
 
 
-
 def isnan(col: "AbstractColOrName") -> Func:
     """An expression that returns true if the AbstractCol is NaN.
 
-        
+
 
     Parameters
     ----------
@@ -3123,10 +2849,9 @@ def isnan(col: "AbstractColOrName") -> Func:
     |NaN|2.0| true|false|
     +---+---+-----+-----+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-    return Func(isnull_func, col)
 
+    col = process_one_col(col)
+    return Func(isnull_func, col)
 
 
 def isnull(col: "AbstractColOrName") -> Func:
@@ -3154,10 +2879,9 @@ def isnull(col: "AbstractColOrName") -> Func:
     |null|   2| true|false|
     +----+----+-----+-----+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-    return Func(isnull_func, col)
 
+    col = process_one_col(col)
+    return Func(isnull_func, col)
 
 
 def last(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
@@ -3165,11 +2889,6 @@ def last(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
 
     The function by default returns the last values it sees. It will return the last non-null
     value it sees when ignoreNulls is set to true. If all values are null, then null is returned.
-
-    
-
-    
-        
 
     Notes
     -----
@@ -3210,10 +2929,9 @@ def last(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
     |  Bob|        5|
     +-----+---------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
-    return Func(last_func, col, ignorenulls=ignorenulls)
 
+    col = process_one_col(col)
+    return Func(last_func, col, ignorenulls=ignorenulls)
 
 
 def monotonically_increasing_id() -> Func:
@@ -3231,7 +2949,6 @@ def monotonically_increasing_id() -> Func:
     [Row(id=0), Row(id=1), Row(id=2), Row(id=8589934592), Row(id=8589934593), Row(id=8589934594)]
     """
     return Func(monotonically_increasing_id_func, AbstractIndex())
-
 
 
 def nanvl(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
@@ -3258,12 +2975,8 @@ def nanvl(col1: "AbstractColOrName", col2: "AbstractColOrName") -> Func:
     >>> df.select(nanvl("a", "b").alias("r1"), nanvl(df.a, df.b).alias("r2")).collect()
     [Row(r1=1.0, r2=1.0), Row(r1=2.0, r2=2.0)]
     """
-    if isinstance(col1, str):
-        col1 = AbstractCol(col1)
-    if isinstance(col2, str):
-        col2 = AbstractCol(col2)
+    col1, col2 = flatten_and_process_cols([col1, col2])
     return Func(nanvl_func, col1, col2)
-
 
 
 def percentile_approx(
@@ -3315,27 +3028,18 @@ def percentile_approx(
      |-- median: double (nullable = true)
     """
 
-    if isinstance(percentage, AbstractCol):
-        # Already a AbstractCol
-        percentage = AbstractCol(percentage)
-    else:
-        # Probably scalar
-        percentage = AbstractLit(percentage)
-
-    accuracy = (
-          accuracy if isinstance(accuracy, AbstractCol)
-        else AbstractLit(accuracy)
-    )
+    col = process_one_col(col)
+    percentage = process_one_col_or_lit(percentage)
+    accuracy = process_one_col_or_lit(accuracy)
 
     return percentile_approx_func(col, percentage, accuracy)
-
 
 
 def rand(seed: Optional[int] = None) -> Func:
     """Generates a random AbstractCol with independent and identically distributed (i.i.d.) samples
     uniformly distributed in [0.0, 1.0).
 
-    
+
     Notes
     -----
     The function is non-deterministic in general case.
@@ -3367,12 +3071,11 @@ def rand(seed: Optional[int] = None) -> Func:
         return Func(rand_func, seed=0)
 
 
-
 def randn(seed: Optional[int] = None) -> Func:
     """Generates a AbstractCol with independent and identically distributed (i.i.d.) samples from
     the standard normal distribution.
 
-    
+
 
     Notes
     -----
@@ -3405,13 +3108,12 @@ def randn(seed: Optional[int] = None) -> Func:
         return Func(randn_func, seed)
 
 
-
 def round(col: "AbstractColOrName", scale: int = 0) -> Func:
     """
     Round the given value to `scale` decimal places using HALF_UP rounding mode if `scale` >= 0
     or at integral part when `scale` < 0.
 
-    
+
     Parameters
     ----------
     col : :class:`~osos.Col` or str
@@ -3429,8 +3131,9 @@ def round(col: "AbstractColOrName", scale: int = 0) -> Func:
     >>> OsosSession.createDataFrame([(2.5,)], ['a']).select(round('a', 0).alias('r')).collect()
     [Row(r=3.0)]
     """
-    return round_func(col,scale=scale,mode="HALF_UP")
-
+    col = process_one_col(col)
+    scale = process_one_col_or_lit(scale)
+    return round_func(col, scale=scale, mode="HALF_UP")
 
 
 def bround(col: "AbstractColOrName", scale: int = 0) -> Func:
@@ -3455,8 +3158,9 @@ def bround(col: "AbstractColOrName", scale: int = 0) -> Func:
     >>> OsosSession.createDataFrame([(2.5,)], ['a']).select(bround('a', 0).alias('r')).collect()
     [Row(r=2.0)]
     """
-    return round_func(col,scale=scale,mode="HALF_EVEN")
-
+    col = process_one_col(col)
+    scale = process_one_col_or_lit(scale)
+    return round_func(col, scale=scale, mode="HALF_EVEN")
 
 
 def shiftLeft(col: "AbstractColOrName", numBits: int) -> Func:
@@ -3466,8 +3170,8 @@ def shiftLeft(col: "AbstractColOrName", numBits: int) -> Func:
         Use :func:`shiftleft` instead.
     """
     warn("Deprecated, use shiftleft instead.", FutureWarning)
+    col = process_one_col(col)
     return shiftleft_func(col, numBits)
-
 
 
 def shiftleft(col: "AbstractColOrName", numBits: int) -> Func:
@@ -3490,16 +3194,15 @@ def shiftleft(col: "AbstractColOrName", numBits: int) -> Func:
     >>> OsosSession.createDataFrame([(21,)], ['a']).select(shiftleft('a', 1).alias('r')).collect()
     [Row(r=42)]
     """
+    col = process_one_col(col)
     return shiftleft_func(col, numBits)
 
 
-
 def shiftRight(col: "AbstractColOrName", numBits: int) -> Func:
-    """(Signed) shift the given value numBits right.
-    """
+    """(Signed) shift the given value numBits right."""
     warn("Deprecated, use shiftright instead.", FutureWarning)
+    col = process_one_col(col)
     return shiftright_func(col, numBits)
-
 
 
 def shiftright(col: "AbstractColOrName", numBits: int) -> Func:
@@ -3522,15 +3225,15 @@ def shiftright(col: "AbstractColOrName", numBits: int) -> Func:
     >>> OsosSession.createDataFrame([(42,)], ['a']).select(shiftright('a', 1).alias('r')).collect()
     [Row(r=21)]
     """
+    col = process_one_col(col)
     return shiftright_func(col, numBits)
 
 
 def shiftRightUnsigned(col: "AbstractColOrName", numBits: int) -> Func:
-    """Unsigned shift the given value numBits right.
-    """
+    """Unsigned shift the given value numBits right."""
     warn("Deprecated, use shiftrightunsigned instead.", FutureWarning)
+    col = process_one_col(col)
     return shiftrightunsigned_func(col, numBits)
-
 
 
 def shiftrightunsigned(col: "AbstractColOrName", numBits: int) -> Func:
@@ -3554,8 +3257,8 @@ def shiftrightunsigned(col: "AbstractColOrName", numBits: int) -> Func:
     >>> df.select(shiftrightunsigned('a', 1).alias('r')).collect()
     [Row(r=9223372036854775787)]
     """
+    col = process_one_col(col)
     return shiftright_func(col, numBits)
-
 
 
 def spark_partition_id() -> Func:
@@ -3577,7 +3280,6 @@ def spark_partition_id() -> Func:
     [Row(pid=0), Row(pid=0)]
     """
     raise NotImplementedError("Spark function not applicable to `osos`")
-
 
 
 def expr(str: str) -> Func:
@@ -3619,7 +3321,6 @@ def struct(
     ...
 
 
-
 def struct(
     *cols: Union[
         "AbstractColOrName",
@@ -3651,7 +3352,6 @@ def struct(
     raise NotImplementedError
 
 
-
 def greatest(*cols: "AbstractColOrName") -> Func:
     """
     Returns the greatest value of the list of AbstractCol names, skipping null values.
@@ -3679,9 +3379,8 @@ def greatest(*cols: "AbstractColOrName") -> Func:
             error_class="WRONG_NUM_AbstractColS",
             message_parameters={"func_name": "greatest", "num_cols": "2"},
         )
-    cols = flatten_and_process(cols)
+    cols = flatten_and_process_cols(cols)
     return greatest_func(cols)
-
 
 
 def least(*cols: "AbstractColOrName") -> Func:
@@ -3711,7 +3410,7 @@ def least(*cols: "AbstractColOrName") -> Func:
             error_class="WRONG_NUM_AbstractColS",
             message_parameters={"func_name": "least", "num_cols": "2"},
         )
-    cols = flatten_and_process(cols)
+    cols = flatten_and_process_cols(cols)
     return least_func(cols)
 
 
@@ -3754,7 +3453,7 @@ def when(condition: AbstractCol, value: Any) -> Func:
     |   3|
     +----+
     """
-    return When(condition,value)
+    return When(condition, value)
 
 
 @overload  # type: ignore[no-redef]
@@ -3767,7 +3466,6 @@ def log(arg1: float, arg2: "AbstractColOrName") -> Func:
     ...
 
 
-
 def log(
     arg1: Union["AbstractColOrName", float], arg2: Optional["AbstractColOrName"] = None
 ) -> Func:
@@ -3775,7 +3473,7 @@ def log(
 
     If there is only one argument, then this takes the natural logarithm of the argument.
 
-    
+
     Parameters
     ----------
     arg1 : :class:`~osos.Col`, str or float
@@ -3811,12 +3509,13 @@ def log(
     |4.605170185988092|
     +-----------------+
     """
+    arg1 = process_one_col_or_lit(arg1)
+    arg2 = arg2 if arg2 is None else process_one_col_or_lit(arg2)
 
     if arg2 is None:
-        return log_func(arg1,base=np.e)
+        return log_func(arg1, base=np.e)
     else:
         return log_func(arg2, base=arg1)
-
 
 
 def log2(col: "AbstractColOrName") -> Func:
@@ -3843,8 +3542,8 @@ def log2(col: "AbstractColOrName") -> Func:
     | 2.0|
     +----+
     """
-    return log_func(col,AbstractLit(2))
-
+    col = process_one_col(col)
+    return log_func(col, AbstractLit(2))
 
 
 def conv(col: "AbstractColOrName", fromBase: int, toBase: int) -> Func:
@@ -3875,15 +3574,10 @@ def conv(col: "AbstractColOrName", fromBase: int, toBase: int) -> Func:
     raise NotImplementedError
 
 
-
 def factorial(col: "AbstractColOrName") -> Func:
     """
     Computes the factorial of the given value.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3907,7 +3601,6 @@ def factorial(col: "AbstractColOrName") -> Func:
 # ---------------  Window functions ------------------------
 
 
-
 def lag(
     col: "AbstractColOrName", offset: int = 1, default: Optional[Any] = None
 ) -> Func:
@@ -3917,11 +3610,6 @@ def lag(
     an `offset` of one will return the previous row at any given point in the window partition.
 
     This is equivalent to the LAG function in SQL.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3987,14 +3675,13 @@ def lag(
     |  b|  8|           -1|
     +---+---+-------------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
     if not isinstance(offset, Node):
         offset = SimpleContainer(offset, ())
     if not isinstance(default, Node):
         default = SimpleContainer(default, ())
     return Func(lag_func, col, offset, default)
-
 
 
 def lead(
@@ -4006,11 +3693,6 @@ def lead(
     an `offset` of one will return the next row at any given point in the window partition.
 
     This is equivalent to the LEAD function in SQL.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4076,14 +3758,13 @@ def lead(
     |  b|  8|        -1|
     +---+---+----------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
     if not isinstance(offset, Node):
         offset = SimpleContainer(offset, ())
     if not isinstance(default, Node):
         default = SimpleContainer(default, ())
     return Func(lead_func, col, offset)
-
 
 
 def nth_value(
@@ -4097,11 +3778,6 @@ def nth_value(
     true. If all values are null, then null is returned.
 
     This is equivalent to the nth_value function in SQL.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4161,7 +3837,6 @@ def nth_value(
     raise NotImplementedError
 
 
-
 def ntile(n: int) -> Func:
     """
     Window function: returns the ntile group id (from 1 to `n` inclusive)
@@ -4171,10 +3846,6 @@ def ntile(n: int) -> Func:
 
     This is equivalent to the NTILE function in SQL.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4222,16 +3893,10 @@ def ntile(n: int) -> Func:
 # ---------------------- Date/Timestamp functions ------------------------------
 
 
-
 def current_date() -> Func:
     """
     Returns the current date at the start of query evaluation as a :class:`DateType` AbstractCol.
     All calls of current_date within the same query return the same value.
-
-    
-
-    
-        
 
     Returns
     -------
@@ -4251,16 +3916,10 @@ def current_date() -> Func:
     raise NotImplementedError
 
 
-
 def current_timestamp() -> Func:
     """
     Returns the current timestamp at the start of query evaluation as a :class:`TimestampType`
     AbstractCol. All calls of current_timestamp within the same query return the same value.
-
-    
-
-    
-        
 
     Returns
     -------
@@ -4280,17 +3939,11 @@ def current_timestamp() -> Func:
     raise NotImplementedError
 
 
-
 def localtimestamp() -> Func:
     """
     Returns the current timestamp without time zone at the start of query evaluation
     as a timestamp without time zone AbstractCol. All calls of localtimestamp within the
     same query return the same value.
-
-    
-
-    
-        
 
     Returns
     -------
@@ -4310,7 +3963,6 @@ def localtimestamp() -> Func:
     raise NotImplementedError
 
 
-
 def date_format(date: "AbstractColOrName", format: str) -> Func:
     """
     Converts a date/timestamp/string to a value of string in the format specified by the date
@@ -4320,11 +3972,6 @@ def date_format(date: "AbstractColOrName", format: str) -> Func:
     pattern letters of `datetime pattern`_. can be used.
 
     .. _datetime pattern: https://spark.apache.org/docs/latest/sql-ref-datetime-pattern.html
-
-    
-
-    
-        
 
     Notes
     -----
@@ -4351,15 +3998,9 @@ def date_format(date: "AbstractColOrName", format: str) -> Func:
     raise NotImplementedError
 
 
-
 def year(col: "AbstractColOrName") -> Func:
     """
     Extract the year of a given date/timestamp as integer.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4380,15 +4021,9 @@ def year(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def quarter(col: "AbstractColOrName") -> Func:
     """
     Extract the quarter of a given date/timestamp as integer.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4409,15 +4044,9 @@ def quarter(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def month(col: "AbstractColOrName") -> Func:
     """
     Extract the month of a given date/timestamp as integer.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4438,16 +4067,10 @@ def month(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def dayofweek(col: "AbstractColOrName") -> Func:
     """
     Extract the day of the week of a given date/timestamp as integer.
     Ranges from 1 for a Sunday through to 7 for a Saturday
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4468,15 +4091,9 @@ def dayofweek(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def dayofmonth(col: "AbstractColOrName") -> Func:
     """
     Extract the day of the month of a given date/timestamp as integer.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4497,15 +4114,9 @@ def dayofmonth(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def dayofyear(col: "AbstractColOrName") -> Func:
     """
     Extract the day of the year of a given date/timestamp as integer.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4526,15 +4137,9 @@ def dayofyear(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def hour(col: "AbstractColOrName") -> Func:
     """
     Extract the hours of a given timestamp as integer.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4556,15 +4161,9 @@ def hour(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def minute(col: "AbstractColOrName") -> Func:
     """
     Extract the minutes of a given timestamp as integer.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4586,15 +4185,9 @@ def minute(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def second(col: "AbstractColOrName") -> Func:
     """
     Extract the seconds of a given date as integer.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4616,17 +4209,11 @@ def second(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def weekofyear(col: "AbstractColOrName") -> Func:
     """
     Extract the week number of a given date as integer.
     A week is considered to start on a Monday and week 1 is the first week with more than 3 days,
     as defined by ISO 8601
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4647,17 +4234,11 @@ def weekofyear(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def make_date(
     year: "AbstractColOrName", month: "AbstractColOrName", day: "AbstractColOrName"
 ) -> Func:
     """
     Returns a AbstractCol with a date built from the year, month and day AbstractCols.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4682,16 +4263,10 @@ def make_date(
     raise NotImplementedError
 
 
-
 def date_add(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) -> Func:
     """
     Returns the date that is `days` days after `start`. If `days` is a negative value
     then these amount of days will be deducted from `start`.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4720,16 +4295,10 @@ def date_add(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) 
     raise NotImplementedError
 
 
-
 def date_sub(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) -> Func:
     """
     Returns the date that is `days` days before `start`. If `days` is a negative value
     then these amount of days will be added to `start`.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4758,15 +4327,9 @@ def date_sub(start: "AbstractColOrName", days: Union["AbstractColOrName", int]) 
     raise NotImplementedError
 
 
-
 def datediff(end: "AbstractColOrName", start: "AbstractColOrName") -> Func:
     """
     Returns the number of days from `start` to `end`.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4789,18 +4352,12 @@ def datediff(end: "AbstractColOrName", start: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def add_months(
     start: "AbstractColOrName", months: Union["AbstractColOrName", int]
 ) -> Func:
     """
     Returns the date that is `months` months after `start`. If `months` is a negative value
     then these amount of months will be deducted from the `start`.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4829,7 +4386,6 @@ def add_months(
     raise NotImplementedError
 
 
-
 def months_between(
     date1: "AbstractColOrName", date2: "AbstractColOrName", roundOff: bool = True
 ) -> Func:
@@ -4839,11 +4395,6 @@ def months_between(
     A whole number is returned if both inputs have the same day of month or both are the last day
     of their respective months. Otherwise, the difference is calculated assuming 31 days per month.
     The result is rounded off to 8 digits unless `roundOff` is set to `False`.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4872,7 +4423,6 @@ def months_between(
     )
 
 
-
 def to_date(col: "AbstractColOrName", format: Optional[str] = None) -> Func:
     """Converts a :class:`~osos.Col` into :class:`pyspark.sql.types.DateType`
     using the optionally specified format. Specify formats according to `datetime pattern`_.
@@ -4880,11 +4430,6 @@ def to_date(col: "AbstractColOrName", format: Optional[str] = None) -> Func:
     is omitted. Equivalent to ``col.cast("date")``.
 
     .. _datetime pattern: https://spark.apache.org/docs/latest/sql-ref-datetime-pattern.html
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4924,7 +4469,6 @@ def to_timestamp(col: "AbstractColOrName", format: str) -> Func:
     ...
 
 
-
 def to_timestamp(col: "AbstractColOrName", format: Optional[str] = None) -> Func:
     """Converts a :class:`~osos.Col` into :class:`pyspark.sql.types.TimestampType`
     using the optionally specified format. Specify formats according to `datetime pattern`_.
@@ -4933,10 +4477,6 @@ def to_timestamp(col: "AbstractColOrName", format: Optional[str] = None) -> Func
 
     .. _datetime pattern: https://spark.apache.org/docs/latest/sql-ref-datetime-pattern.html
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -4966,15 +4506,9 @@ def to_timestamp(col: "AbstractColOrName", format: Optional[str] = None) -> Func
         raise NotImplementedError
 
 
-
 def trunc(date: "AbstractColOrName", format: str) -> Func:
     """
     Returns date truncated to the unit specified by the format.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5001,15 +4535,9 @@ def trunc(date: "AbstractColOrName", format: str) -> Func:
     raise NotImplementedError
 
 
-
 def date_trunc(format: str, timestamp: "AbstractColOrName") -> Func:
     """
     Returns timestamp truncated to the unit specified by the format.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5038,16 +4566,10 @@ def date_trunc(format: str, timestamp: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def next_day(date: "AbstractColOrName", dayOfWeek: str) -> Func:
     """
     Returns the first date which is later than the value of the date AbstractCol
     based on second `week day` argument.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5071,15 +4593,9 @@ def next_day(date: "AbstractColOrName", dayOfWeek: str) -> Func:
     raise NotImplementedError
 
 
-
 def last_day(date: "AbstractColOrName") -> Func:
     """
     Returns the last day of the month which the given date belongs to.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5100,7 +4616,6 @@ def last_day(date: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def from_unixtime(
     timestamp: "AbstractColOrName", format: str = "yyyy-MM-dd HH:mm:ss"
 ) -> Func:
@@ -5108,11 +4623,6 @@ def from_unixtime(
     Converts the number of seconds from unix epoch (1970-01-01 00:00:00 UTC) to a string
     representing the timestamp of that moment in the current system time zone in the given
     format.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5147,7 +4657,6 @@ def unix_timestamp() -> Func:
     ...
 
 
-
 def unix_timestamp(
     timestamp: Optional["AbstractColOrName"] = None, format: str = "yyyy-MM-dd HH:mm:ss"
 ) -> Func:
@@ -5158,10 +4667,6 @@ def unix_timestamp(
 
     if `timestamp` is None, then it returns current timestamp.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5188,7 +4693,6 @@ def unix_timestamp(
     raise NotImplementedError
 
 
-
 def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") -> Func:
     """
     This is a common function for databases supporting TIMESTAMP WITHOUT TIMEZONE. This function
@@ -5204,10 +4708,6 @@ def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") 
     according to the timezone in the string, and finally display the result by converting the
     timestamp to string according to the session local timezone.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5221,7 +4721,7 @@ def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") 
         supported as aliases of '+00:00'. Other short names are not recommended to use
         because they can be ambiguous.
 
-        
+
            `tz` can take a :class:`~osos.Col` containing timezone ID strings.
 
     Returns
@@ -5242,7 +4742,6 @@ def from_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") 
     raise NotImplementedError
 
 
-
 def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") -> Func:
     """
     This is a common function for databases supporting TIMESTAMP WITHOUT TIMEZONE. This function
@@ -5258,10 +4757,6 @@ def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") ->
     according to the timezone in the string, and finally display the result by converting the
     timestamp to string according to the session local timezone.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5275,7 +4770,7 @@ def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") ->
         supported as aliases of '+00:00'. Other short names are not recommended to use
         because they can be ambiguous.
 
-        
+
            `tz` can take a :class:`~osos.Col` containing timezone ID strings.
 
     Returns
@@ -5296,16 +4791,11 @@ def to_utc_timestamp(timestamp: "AbstractColOrName", tz: "AbstractColOrName") ->
     raise NotImplementedError
 
 
-
 def timestamp_seconds(col: "AbstractColOrName") -> Func:
     """
     Converts the number of seconds from the Unix epoch (1970-01-01T00:00:00Z)
     to a timestamp.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5337,7 +4827,6 @@ def timestamp_seconds(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def window(
     timeAbstractCol: "AbstractColOrName",
     windowDuration: str,
@@ -5362,10 +4851,6 @@ def window(
     The output AbstractCol will be a struct called 'window' by default with the nested AbstractCols 'start'
     and 'end', where 'start' and 'end' will be of :class:`pyspark.sql.types.TimestampType`.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5433,7 +4918,6 @@ def window(
         raise NotImplementedError
 
 
-
 def window_time(
     windowAbstractCol: "AbstractColOrName",
 ) -> Func:
@@ -5443,11 +4927,6 @@ def window_time(
     aggregating operators can be computed as ``window_time(window)`` and are
     ``window.end - lit(1).alias("microsecond")`` (as microsecond is the minimal supported event
     time precision). The window AbstractCol must be one produced by a window aggregating operator.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5483,7 +4962,6 @@ def window_time(
     raise NotImplementedError
 
 
-
 def session_window(
     timeAbstractCol: "AbstractColOrName", gapDuration: Union[AbstractCol, str]
 ) -> Func:
@@ -5503,11 +4981,6 @@ def session_window(
     input row.
     The output AbstractCol will be a struct called 'session_window' by default with the nested AbstractCols
     'start' and 'end', where 'start' and 'end' will be of :class:`pyspark.sql.types.TimestampType`.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5558,14 +5031,10 @@ def session_window(
 # ---------------------------- misc functions ----------------------------------
 
 
-
 def crc32(col: "AbstractColOrName") -> Func:
     """
     Calculates the cyclic redundancy check value  (CRC32) of a binary AbstractCol and
     returns the value as a bigint.
-
-    
-        
 
     Parameters
     ----------
@@ -5577,7 +5046,7 @@ def crc32(col: "AbstractColOrName") -> Func:
     :class:`~osos.Col`
         the AbstractCol for computed results.
 
-    
+
 
     Examples
     --------
@@ -5587,15 +5056,8 @@ def crc32(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def md5(col: "AbstractColOrName") -> Func:
     """Calculates the MD5 digest and returns the value as a 32 character hex string.
-
-    
-
-    
-        
-
     Parameters
     ----------
     col : :class:`~osos.Col` or str
@@ -5614,14 +5076,8 @@ def md5(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def sha1(col: "AbstractColOrName") -> Func:
     """Returns the hex string result of SHA-1.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5641,16 +5097,10 @@ def sha1(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def sha2(col: "AbstractColOrName", numBits: int) -> Func:
     """Returns the hex string result of SHA-2 family of hash functions (SHA-224, SHA-256, SHA-384,
     and SHA-512). The numBits indicates the desired bit length of the result, which must have a
     value of 224, 256, 384, 512, or 0 (which is equivalent to 256).
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5679,14 +5129,8 @@ def sha2(col: "AbstractColOrName", numBits: int) -> Func:
     raise NotImplementedError
 
 
-
 def hash(*cols: "AbstractColOrName") -> Func:
     """Calculates the hash code of given AbstractCols, and returns the result as an int AbstractCol.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5723,15 +5167,9 @@ def hash(*cols: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def xxhash64(*cols: "AbstractColOrName") -> Func:
     """Calculates the hash code of given AbstractCols using the 64-bit variant of the xxHash algorithm,
     and returns the result as a long AbstractCol. The hash computation uses an initial seed of 42.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5768,18 +5206,12 @@ def xxhash64(*cols: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def assert_true(
     col: "AbstractColOrName", errMsg: Optional[Union[AbstractCol, str]] = None
 ) -> Func:
     """
     Returns `null` if the input AbstractCol is `true`; throws an exception
     with the provided error message otherwise.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5826,15 +5258,9 @@ def assert_true(
     raise NotImplementedError
 
 
-
 def raise_error(errMsg: Union[AbstractCol, str]) -> Func:
     """
     Throws an exception with the provided error message.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5870,15 +5296,9 @@ def raise_error(errMsg: Union[AbstractCol, str]) -> Func:
 # ---------------------- String/Binary functions ------------------------------
 
 
-
 def upper(col: "AbstractColOrName") -> Func:
     """
     Converts a string expression to upper case.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5902,21 +5322,15 @@ def upper(col: "AbstractColOrName") -> Func:
     |  PANDAS API|
     +------------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(upper_func, col)
-
 
 
 def lower(col: "AbstractColOrName") -> Func:
     """
     Converts a string expression to lower case.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5940,21 +5354,15 @@ def lower(col: "AbstractColOrName") -> Func:
     |  pandas api|
     +------------+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+
+    col = process_one_col(col)
 
     return Func(lower_func, col)
-
 
 
 def ascii(col: "AbstractColOrName") -> Func:
     """
     Computes the numeric value of the first character of the string AbstractCol.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -5981,15 +5389,9 @@ def ascii(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def base64(col: "AbstractColOrName") -> Func:
     """
     Computes the BASE64 encoding of a binary AbstractCol and returns it as a string AbstractCol.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6016,15 +5418,9 @@ def base64(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def unbase64(col: "AbstractColOrName") -> Func:
     """
     Decodes a BASE64 encoded string AbstractCol and returns it as a binary AbstractCol.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6053,15 +5449,9 @@ def unbase64(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def ltrim(col: "AbstractColOrName") -> Func:
     """
     Trim the spaces from left end for the specified string value.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6088,15 +5478,9 @@ def ltrim(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def rtrim(col: "AbstractColOrName") -> Func:
     """
     Trim the spaces from right end for the specified string value.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6123,15 +5507,9 @@ def rtrim(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def trim(col: "AbstractColOrName") -> Func:
     """
     Trim the spaces from both ends for the specified string AbstractCol.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6158,16 +5536,11 @@ def trim(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def concat_ws(sep: str, *cols: "AbstractColOrName") -> Func:
     """
     Concatenates multiple input string AbstractCols together into a single string AbstractCol,
     using the given separator.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6190,16 +5563,11 @@ def concat_ws(sep: str, *cols: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def decode(col: "AbstractColOrName", charset: str) -> Func:
     """
     Computes the first argument into a string from a binary using the provided character set
     (one of 'US-ASCII', 'ISO-8859-1', 'UTF-8', 'UTF-16BE', 'UTF-16LE', 'UTF-16').
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6226,16 +5594,12 @@ def decode(col: "AbstractColOrName", charset: str) -> Func:
     raise NotImplementedError
 
 
-
 def encode(col: "AbstractColOrName", charset: str) -> Func:
     """
     Computes the first argument into a binary from a string using the provided character set
     (one of 'US-ASCII', 'ISO-8859-1', 'UTF-8', 'UTF-16BE', 'UTF-16LE', 'UTF-16').
 
-    
 
-    
-        
 
     Parameters
     ----------
@@ -6262,16 +5626,10 @@ def encode(col: "AbstractColOrName", charset: str) -> Func:
     raise NotImplementedError
 
 
-
 def format_number(col: "AbstractColOrName", d: int) -> Func:
     """
     Formats the number X to a format like '#,--#,--#.--', rounded to d decimal places
     with HALF_EVEN round mode, and returns the result as a string.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6291,15 +5649,10 @@ def format_number(col: "AbstractColOrName", d: int) -> Func:
     raise NotImplementedError
 
 
-
 def format_string(format: str, *cols: "AbstractColOrName") -> Func:
     """
     Formats the arguments in printf-style and returns the result as a string AbstractCol.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6322,16 +5675,11 @@ def format_string(format: str, *cols: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def instr(str: "AbstractColOrName", substr: str) -> Func:
     """
     Locate the position of the first occurrence of substr AbstractCol in the given string.
     Returns null if either of the arguments are null.
 
-    
-
-    
-        
 
     Notes
     -----
@@ -6359,7 +5707,6 @@ def instr(str: "AbstractColOrName", substr: str) -> Func:
     raise NotImplementedError
 
 
-
 def overlay(
     src: "AbstractColOrName",
     replace: "AbstractColOrName",
@@ -6369,11 +5716,6 @@ def overlay(
     """
     Overlay the specified portion of `src` with `replace`,
     starting from byte position `pos` of `src` and proceeding for `len` bytes.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6419,7 +5761,6 @@ def overlay(
     raise NotImplementedError
 
 
-
 def sentences(
     string: "AbstractColOrName",
     language: Optional["AbstractColOrName"] = None,
@@ -6429,10 +5770,10 @@ def sentences(
     Splits a string into arrays of sentences, where each sentence is an array of words.
     The 'language' and 'country' arguments are optional, and if omitted, the default locale is used.
 
-    
 
-    
-        
+
+
+
 
     Parameters
     ----------
@@ -6473,17 +5814,12 @@ def sentences(
     raise NotImplementedError
 
 
-
 def substring(str: "AbstractColOrName", pos: int, len: int) -> Func:
     """
     Substring starts at `pos` and is of length `len` when str is String type or
     returns the slice of byte array that starts at `pos` in byte and is of length `len`
     when str is Binary type.
 
-    
-
-    
-        
 
     Notes
     -----
@@ -6512,7 +5848,6 @@ def substring(str: "AbstractColOrName", pos: int, len: int) -> Func:
     raise NotImplementedError
 
 
-
 def substring_index(str: "AbstractColOrName", delim: str, count: int) -> Func:
     """
     Returns the substring from string str before count occurrences of the delimiter delim.
@@ -6520,10 +5855,6 @@ def substring_index(str: "AbstractColOrName", delim: str, count: int) -> Func:
     returned. If count is negative, every to the right of the final delimiter (counting from the
     right) is returned. substring_index performs a case-sensitive match when searching for delim.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6550,14 +5881,8 @@ def substring_index(str: "AbstractColOrName", delim: str, count: int) -> Func:
     raise NotImplementedError
 
 
-
 def levenshtein(left: "AbstractColOrName", right: "AbstractColOrName") -> Func:
     """Computes the Levenshtein distance of the two given strings.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6580,15 +5905,9 @@ def levenshtein(left: "AbstractColOrName", right: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def locate(substr: str, str: "AbstractColOrName", pos: int = 1) -> Func:
     """
     Locate the position of the first occurrence of substr in a string AbstractCol, after position pos.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6618,15 +5937,9 @@ def locate(substr: str, str: "AbstractColOrName", pos: int = 1) -> Func:
     raise NotImplementedError
 
 
-
 def lpad(col: "AbstractColOrName", len: int, pad: str) -> Func:
     """
     Left-pad the string AbstractCol to width `len` with `pad`.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6651,15 +5964,10 @@ def lpad(col: "AbstractColOrName", len: int, pad: str) -> Func:
     raise NotImplementedError
 
 
-
 def rpad(col: "AbstractColOrName", len: int, pad: str) -> Func:
     """
     Right-pad the string AbstractCol to width `len` with `pad`.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6684,15 +5992,9 @@ def rpad(col: "AbstractColOrName", len: int, pad: str) -> Func:
     raise NotImplementedError
 
 
-
 def repeat(col: "AbstractColOrName", n: int) -> Func:
     """
     Repeats a string AbstractCol n times, and returns it as a new string AbstractCol.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6715,15 +6017,9 @@ def repeat(col: "AbstractColOrName", n: int) -> Func:
     raise NotImplementedError
 
 
-
 def split(str: "AbstractColOrName", pattern: str, limit: int = -1) -> Func:
     """
     Splits str around matches of the given pattern.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6741,7 +6037,7 @@ def split(str: "AbstractColOrName", pattern: str, limit: int = -1) -> Func:
         * ``limit <= 0``: `pattern` will be applied as many times as possible, and the resulting
                           array can be of any size.
 
-        
+
            `split` now takes an optional `limit` field. If not provided, default limit value is -1.
 
     Returns
@@ -6760,15 +6056,9 @@ def split(str: "AbstractColOrName", pattern: str, limit: int = -1) -> Func:
     raise NotImplementedError
 
 
-
 def regexp_extract(str: "AbstractColOrName", pattern: str, idx: int) -> Func:
     r"""Extract a specific group matched by a Java regex, from the specified string AbstractCol.
     If the regex did not match, or the specified group did not match, an empty string is returned.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6799,18 +6089,12 @@ def regexp_extract(str: "AbstractColOrName", pattern: str, idx: int) -> Func:
     raise NotImplementedError
 
 
-
 def regexp_replace(
     string: "AbstractColOrName",
     pattern: Union[str, AbstractCol],
     replacement: Union[str, AbstractCol],
 ) -> Func:
     r"""Replace all substrings of the specified string value that match regexp with replacement.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6845,14 +6129,8 @@ def regexp_replace(
     raise NotImplementedError
 
 
-
 def initcap(col: "AbstractColOrName") -> Func:
     """Translate the first letter of each word to upper case in the sentence.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6872,15 +6150,9 @@ def initcap(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def soundex(col: "AbstractColOrName") -> Func:
     """
     Returns the SoundEx encoding for a string
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6901,14 +6173,8 @@ def soundex(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def bin(col: "AbstractColOrName") -> Func:
     """Returns the string representation of the binary value of the given AbstractCol.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6929,16 +6195,10 @@ def bin(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def hex(col: "AbstractColOrName") -> Func:
     """Computes hex value of the given AbstractCol, which could be :class:`pyspark.sql.types.StringType`,
     :class:`pyspark.sql.types.BinaryType`, :class:`pyspark.sql.types.IntegerType` or
     :class:`pyspark.sql.types.LongType`.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6958,15 +6218,9 @@ def hex(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def unhex(col: "AbstractColOrName") -> Func:
     """Inverse of hex. Interprets each pair of characters as a hexadecimal number
     and converts to the byte representation of number.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -6986,16 +6240,10 @@ def unhex(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def length(col: "AbstractColOrName") -> Func:
     """Computes the character length of string data or number of bytes of binary data.
     The length of character data includes the trailing spaces. The length of binary data
     includes binary zeros.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -7013,7 +6261,6 @@ def length(col: "AbstractColOrName") -> Func:
     [Row(length=4)]
     """
     raise NotImplementedError
-
 
 
 def octet_length(col: "AbstractColOrName") -> Func:
@@ -7038,7 +6285,6 @@ def octet_length(col: "AbstractColOrName") -> Func:
         [Row(octet_length(cat)=3), Row(octet_length(cat)=4)]
     """
     raise NotImplementedError
-
 
 
 def bit_length(col: "AbstractColOrName") -> Func:
@@ -7066,17 +6312,11 @@ def bit_length(col: "AbstractColOrName") -> Func:
     raise NotImplementedError
 
 
-
 def translate(srcCol: "AbstractColOrName", matching: str, replace: str) -> Func:
     """A function translate any character in the `srcCol` by a character in `matching`.
     The characters in `replace` is corresponding to the characters in `matching`.
     Translation will happen whenever any character in the string is matching with the character
     in the `matching`.
-
-    
-
-    
-        
 
     Parameters
     ----------

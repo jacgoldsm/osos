@@ -1,6 +1,6 @@
 from .exceptions import AnalysisException
 from .utils import flatten_cols
-from typing import Union,List
+from typing import Union, List
 
 from .column import Node, AbstractCol, SimpleContainer, ColumnList, ForwardRef
 

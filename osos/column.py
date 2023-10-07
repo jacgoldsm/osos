@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from numbers import Number
-from typing import Union, Iterable, TYPE_CHECKING,List
+from typing import Union, Iterable, TYPE_CHECKING, List
 import operator
 from copy import deepcopy
 import numpy as np
@@ -14,8 +14,10 @@ if TYPE_CHECKING:
 
 NumOrCol = Union[Number, "AbstractColOrLit"]
 
+
 def rename_series(series, newname: str, _over=None) -> pd.Series:
     return series.rename(newname)
+
 
 class Node:
     def __init__(self, name, args):
@@ -95,6 +97,7 @@ class Node:
     def alias(self, newname):
         return Func(rename_series, self, NameString(newname, ()))
 
+
 class When(Node):
     """
     The `_args` in a `When` Node will have one of the following two structures:
@@ -103,14 +106,18 @@ class When(Node):
     In either case, even numbered elements are conditions, and odd-numbered
     elements are values.
 
-    In the resolved form, `args` is a list of columns, where even-numbered elements are 
+    In the resolved form, `args` is a list of columns, where even-numbered elements are
     boolean conditions, and odd-numbered elements are values.
     """
+
     def __init__(self, condition, value):
         self._name = self._when_func
-        if not isinstance(value,Node):
+        if not isinstance(value, Node):
             value = AbstractLit(value)
-        self._args = [condition,value,]
+        self._args = [
+            condition,
+            value,
+        ]
 
     @staticmethod
     def _when_func(*args: pd.Series, **kwargs):
@@ -120,8 +127,8 @@ class When(Node):
         else:
             null_type = None
         col = np.full(len(args[0].index), null_type)
-        conditions = [args[i] for i in range(len(args)) if i % 2 == 0] # even numbers
-        values = [args[i] for i in range(len(args)) if i % 2 == 1] # odd numbers
+        conditions = [args[i] for i in range(len(args)) if i % 2 == 0]  # even numbers
+        values = [args[i] for i in range(len(args)) if i % 2 == 1]  # odd numbers
 
         # `i` will loop over all the conditions in reverse order,
         # so starting with `True` if `otherwise` exists
@@ -130,21 +137,24 @@ class When(Node):
 
         # make some effort to cast back to int if possible
         # i.e. if all the replacement values were ints and there are no missings
-        if all(np.issubdtype(val,np.integer) for val in values) and not np.isnan(col).any():
+        if (
+            all(np.issubdtype(val, np.integer) for val in values)
+            and not np.isnan(col).any()
+        ):
             col = col.astype(int)
-        
+
         return pd.Series(col)
 
-    def when(self, condition,value):
-        if not isinstance(value,Node):
+    def when(self, condition, value):
+        if not isinstance(value, Node):
             value = AbstractLit(value)
-        self._args += [condition,value]
+        self._args += [condition, value]
         return self
 
-    def otherwise(self,value):
-        if not isinstance(value,Node):
+    def otherwise(self, value):
+        if not isinstance(value, Node):
             value = AbstractLit(value)
-        self._args += [SimpleContainer(True, []),value]
+        self._args += [SimpleContainer(True, []), value]
         return self
 
 
