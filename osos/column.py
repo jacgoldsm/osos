@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from numbers import Number
 from typing import Union, Iterable, TYPE_CHECKING,List
 import operator

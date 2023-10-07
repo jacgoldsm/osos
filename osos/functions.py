@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from osos.utils import flatten_and_process_cols, process_one_col_or_lit, process_one_col
 from .column import (
     AbstractCol,
     AbstractColOrName,
@@ -31,16 +34,10 @@ def col(name: str):
     return AbstractCol(name)
 
 
-
-
 def lit(col: Any) -> Func:
     """
     Creates a :class:`~osos.Col` of literal value.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -106,11 +103,6 @@ def asc(col: "AbstractColOrName") -> Func:
     """
     Returns a sort expression based on the ascending order of the given AbstractCol name.
 
-    
-
-    
-        
-
     Parameters
     ----------
     col : :class:`~osos.Col` or str
@@ -151,8 +143,7 @@ def asc(col: "AbstractColOrName") -> Func:
     |  4|
     +---+
     """
-    if isinstance(col, str):
-        col = AbstractCol(col)
+    col = process_one_col(col)
     return asc_func(col)
 
 
@@ -3078,7 +3069,7 @@ def grouping_id(*cols: "AbstractColOrName") -> Func:
     |   b|   c|            0|      4|
     +----+----+-------------+-------+
     """
-    return Func(grouping_id(), AbstractIndex())
+    return Func(grouping_id_func(), AbstractIndex())
 
 
 
@@ -3134,7 +3125,7 @@ def isnan(col: "AbstractColOrName") -> Func:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    return Func(isnan_func, col)
+    return Func(isnull_func, col)
 
 
 
@@ -3221,7 +3212,7 @@ def last(col: "AbstractColOrName", ignorenulls: bool = False) -> Func:
     """
     if isinstance(col, str):
         col = AbstractCol(col)
-    return Func(last_func, col)
+    return Func(last_func, col, ignorenulls=ignorenulls)
 
 
 
@@ -3438,7 +3429,7 @@ def round(col: "AbstractColOrName", scale: int = 0) -> Func:
     >>> OsosSession.createDataFrame([(2.5,)], ['a']).select(round('a', 0).alias('r')).collect()
     [Row(r=3.0)]
     """
-    raise NotImplementedError
+    return round_func(col,scale=scale,mode="HALF_UP")
 
 
 
@@ -3446,11 +3437,6 @@ def bround(col: "AbstractColOrName", scale: int = 0) -> Func:
     """
     Round the given value to `scale` decimal places using HALF_EVEN rounding mode if `scale` >= 0
     or at integral part when `scale` < 0.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3469,33 +3455,23 @@ def bround(col: "AbstractColOrName", scale: int = 0) -> Func:
     >>> OsosSession.createDataFrame([(2.5,)], ['a']).select(bround('a', 0).alias('r')).collect()
     [Row(r=2.0)]
     """
-    raise NotImplementedError
+    return round_func(col,scale=scale,mode="HALF_EVEN")
 
 
 
 def shiftLeft(col: "AbstractColOrName", numBits: int) -> Func:
     """Shift the given value numBits left.
 
-    
-
-    
-        
-
     .. deprecated:: 3.2.0
         Use :func:`shiftleft` instead.
     """
-    warn("Deprecated in 3.2, use shiftleft instead.", FutureWarning)
-    return shiftleft(col, numBits)
+    warn("Deprecated, use shiftleft instead.", FutureWarning)
+    return shiftleft_func(col, numBits)
 
 
 
 def shiftleft(col: "AbstractColOrName", numBits: int) -> Func:
     """Shift the given value numBits left.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3514,33 +3490,20 @@ def shiftleft(col: "AbstractColOrName", numBits: int) -> Func:
     >>> OsosSession.createDataFrame([(21,)], ['a']).select(shiftleft('a', 1).alias('r')).collect()
     [Row(r=42)]
     """
-    raise NotImplementedError
+    return shiftleft_func(col, numBits)
 
 
 
 def shiftRight(col: "AbstractColOrName", numBits: int) -> Func:
     """(Signed) shift the given value numBits right.
-
-    
-
-    
-        
-
-    .. deprecated:: 3.2.0
-        Use :func:`shiftright` instead.
     """
-    warn("Deprecated in 3.2, use shiftright instead.", FutureWarning)
-    return shiftright(col, numBits)
+    warn("Deprecated, use shiftright instead.", FutureWarning)
+    return shiftright_func(col, numBits)
 
 
 
 def shiftright(col: "AbstractColOrName", numBits: int) -> Func:
     """(Signed) shift the given value numBits right.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3559,33 +3522,19 @@ def shiftright(col: "AbstractColOrName", numBits: int) -> Func:
     >>> OsosSession.createDataFrame([(42,)], ['a']).select(shiftright('a', 1).alias('r')).collect()
     [Row(r=21)]
     """
-    raise NotImplementedError
-
+    return shiftright_func(col, numBits)
 
 
 def shiftRightUnsigned(col: "AbstractColOrName", numBits: int) -> Func:
     """Unsigned shift the given value numBits right.
-
-    
-
-    
-        
-
-    .. deprecated:: 3.2.0
-        Use :func:`shiftrightunsigned` instead.
     """
-    warn("Deprecated in 3.2, use shiftrightunsigned instead.", FutureWarning)
-    return shiftrightunsigned(col, numBits)
+    warn("Deprecated, use shiftrightunsigned instead.", FutureWarning)
+    return shiftrightunsigned_func(col, numBits)
 
 
 
 def shiftrightunsigned(col: "AbstractColOrName", numBits: int) -> Func:
     """Unsigned shift the given value numBits right.
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3605,17 +3554,12 @@ def shiftrightunsigned(col: "AbstractColOrName", numBits: int) -> Func:
     >>> df.select(shiftrightunsigned('a', 1).alias('r')).collect()
     [Row(r=9223372036854775787)]
     """
-    raise NotImplementedError
+    return shiftright_func(col, numBits)
 
 
 
 def spark_partition_id() -> Func:
     """A AbstractCol for partition ID.
-
-    
-
-    
-        
 
     Notes
     -----
@@ -3632,17 +3576,12 @@ def spark_partition_id() -> Func:
     >>> df.repartition(1).select(spark_partition_id().alias("pid")).collect()
     [Row(pid=0), Row(pid=0)]
     """
-    raise NotImplementedError
+    raise NotImplementedError("Spark function not applicable to `osos`")
 
 
 
 def expr(str: str) -> Func:
     """Parses the expression string into the AbstractCol that it represents
-
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3689,11 +3628,6 @@ def struct(
 ) -> Func:
     """Creates a new struct AbstractCol.
 
-    
-
-    
-        
-
     Parameters
     ----------
     cols : list, set, str or :class:`~osos.Col`
@@ -3723,10 +3657,6 @@ def greatest(*cols: "AbstractColOrName") -> Func:
     Returns the greatest value of the list of AbstractCol names, skipping null values.
     This function takes at least 2 parameters. It will return null if all parameters are null.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3749,7 +3679,8 @@ def greatest(*cols: "AbstractColOrName") -> Func:
             error_class="WRONG_NUM_AbstractColS",
             message_parameters={"func_name": "greatest", "num_cols": "2"},
         )
-    raise NotImplementedError
+    cols = flatten_and_process(cols)
+    return greatest_func(cols)
 
 
 
@@ -3758,10 +3689,6 @@ def least(*cols: "AbstractColOrName") -> Func:
     Returns the least value of the list of AbstractCol names, skipping null values.
     This function takes at least 2 parameters. It will return null if all parameters are null.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3784,8 +3711,8 @@ def least(*cols: "AbstractColOrName") -> Func:
             error_class="WRONG_NUM_AbstractColS",
             message_parameters={"func_name": "least", "num_cols": "2"},
         )
-    raise NotImplementedError
-
+    cols = flatten_and_process(cols)
+    return least_func(cols)
 
 
 def when(condition: AbstractCol, value: Any) -> Func:
@@ -3849,10 +3776,6 @@ def log(
     If there is only one argument, then this takes the natural logarithm of the argument.
 
     
-
-    
-        
-
     Parameters
     ----------
     arg1 : :class:`~osos.Col`, str or float
@@ -3888,20 +3811,17 @@ def log(
     |4.605170185988092|
     +-----------------+
     """
+
     if arg2 is None:
-        raise NotImplementedError
+        return log_func(arg1,base=np.e)
     else:
-        raise NotImplementedError
+        return log_func(arg2, base=arg1)
 
 
 
 def log2(col: "AbstractColOrName") -> Func:
     """Returns the base-2 logarithm of the argument.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -3923,7 +3843,7 @@ def log2(col: "AbstractColOrName") -> Func:
     | 2.0|
     +----+
     """
-    raise NotImplementedError
+    return log_func(col,AbstractLit(2))
 
 
 
@@ -3931,10 +3851,6 @@ def conv(col: "AbstractColOrName", fromBase: int, toBase: int) -> Func:
     """
     Convert a number in a string AbstractCol from one base to another.
 
-    
-
-    
-        
 
     Parameters
     ----------
@@ -7103,11 +7019,6 @@ def length(col: "AbstractColOrName") -> Func:
 def octet_length(col: "AbstractColOrName") -> Func:
     """
     Calculates the byte length for the specified string AbstractCol.
-
-    
-
-    
-        
 
     Parameters
     ----------

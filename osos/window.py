@@ -11,17 +11,11 @@ class Window:
     @staticmethod
     def partitionBy(*cols: "ColumnType") -> "WindowSpec":
         cols = flatten_cols(cols)
-        for col in cols:
-            if isinstance(col, str):
-                col = AbstractCol(col)
         return WindowSpec(partition_by=cols)
 
     @staticmethod
     def orderBy(*cols: "ColumnType") -> "WindowSpec":
         cols = flatten_cols(cols)
-        for col in cols:
-            if isinstance(col, str):
-                col = AbstractCol(col)
         return WindowSpec(partition_by=(), order_by=flatten_cols(cols))
 
     @staticmethod
@@ -88,9 +82,6 @@ class WindowSpec(Node):
         if self._partition_by._args:
             raise AnalysisException("PartitionBy is already defined")
         cols = flatten_cols(cols)
-        for col in cols:
-            if isinstance(col, str):
-                col = AbstractCol(col)
 
         cols = ColumnList(cols)
         self._partition_by = cols
@@ -101,9 +92,6 @@ class WindowSpec(Node):
         if self._order_by._args:
             raise AnalysisException("orderBy is already defined")
         cols = flatten_cols(cols)
-        for col in cols:
-            if isinstance(col, str):
-                col = AbstractCol(col)
 
         cols = ColumnList(cols)
         self._order_by = cols

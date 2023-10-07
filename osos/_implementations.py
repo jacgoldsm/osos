@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import pandas as pd
 import numpy as np
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.window.rolling import Rolling as RollingWindow
-from typing import Union, Callable, Iterable, Any, overload, Optional,List,Tuple,Dict
+from typing import Union, Callable, Iterable, Any, overload, Optional,Dict
 from warnings import warn
 
 from .window import EmptyWindow, ConcreteWindowSpec
@@ -568,7 +570,7 @@ def nanvl_func(col1: pd.Series, col2: pd.Series):
 
 def percentile_approx_func(
     col: pd.Series,
-    percentage: Union[pd.Series, float, List[float], Tuple[float]],
+    percentage: pd.Series | float | list[float] | tuple[float],
     accuracy: Union[pd.Series, float] = 10000,
 ):
     
@@ -677,7 +679,7 @@ def struct_func(*cols: pd.Series):
 
 @overload
 def struct_func(
-    __cols: Union[List[pd.Series], Tuple[pd.Series, ...]]
+    __cols: Union[list[pd.Series], tuple[pd.Series, ...]]
 ):
     ...
 
@@ -686,7 +688,7 @@ def struct_func(
 def struct_func(
     *cols: Union[
         pd.Series,
-        Union[List[pd.Series], Tuple[pd.Series, ...]],
+        list[pd.Series] | tuple[pd.Series, ...],
     ]
 ):
     
@@ -746,7 +748,7 @@ def log_func(arg1: float, arg2: pd.Series):
 
 
 def log_func(
-    arg1: Union[pd.Series, float], arg2: Optional[pd.Series] = None
+    arg1: pd.Series | float, arg2: Optional[pd.Series] = None
 ):
     
     if arg2 is None:

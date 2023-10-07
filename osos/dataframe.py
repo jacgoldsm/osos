@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .column import (
     AbstractColOrLit,
     Node,
@@ -11,13 +13,13 @@ from .column import (
 
 from copy import deepcopy, copy
 import numpy as np
-from typing import Iterable, Union, Optional,cast,List
+from typing import Iterable, Union, Optional,cast
 import pandas as pd
 
 
 from .column import make_series_from_literal, ForwardRef, Func
 from ._implementations import SeriesType
-from .utils import flatten_and_process
+from .utils import flatten_and_process_cols
 from .window import EmptyWindow
 from ._forwardrefs import forward_dict
 
@@ -112,7 +114,7 @@ class DataFrame:
         return df
 
     def select(self, *exprs: NodeOrStr) -> "DataFrame":
-        flat_exprs = flatten_and_process(exprs)
+        flat_exprs = flatten_and_process_cols(exprs)
 
         cols = []
         for expr in flat_exprs:
@@ -123,7 +125,7 @@ class DataFrame:
         return newdf
 
     def filter(self, *exprs: NodeOrStr) -> "DataFrame":
-        flat_exprs = flatten_and_process(exprs)
+        flat_exprs = flatten_and_process_cols(exprs)
         newdf = DataFrame(self._data.copy())
 
         for expr in flat_exprs:
@@ -157,7 +159,7 @@ class DataFrame:
         print(result)
 
     def groupBy(self, *exprs: NodeOrStr) -> "GroupedData":
-        flat_exprs = flatten_and_process(exprs)
+        flat_exprs = flatten_and_process_cols(exprs)
 
         cols = []
         for expr in flat_exprs:
@@ -169,7 +171,7 @@ class DataFrame:
 
     def agg(self, *exprs: NodeOrStr) -> "DataFrame":
 
-        flat_exprs = flatten_and_process(exprs)
+        flat_exprs = flatten_and_process_cols(exprs)
         out = []
 
         for expr in flat_exprs:
@@ -200,7 +202,7 @@ class DataFrame:
     def unionAll(self, other: "DataFrame") -> "DataFrame":
         return self.union(other).dropDuplicates()
 
-    def dropDuplicates(self, subset: Optional[List[str]] = None) -> "DataFrame":
+    def dropDuplicates(self, subset: Optional[list[str]] = None) -> "DataFrame":
         return DataFrame(
             self._data.drop_duplicates(subset, ignore_index=True).reindex()
         )
@@ -211,7 +213,7 @@ class DataFrame:
         othersort = other._data.sort_index(axis=1)
         return DataFrame(pd.concat([selfsort, othersort]))
 
-    def join(self, other: "DataFrame", by: Union[str, List], how: str):
+    def join(self, other: "DataFrame", by: Union[str, list], how: str):
         by = [by] if isinstance(by, str) else by
 
         assert how in (
